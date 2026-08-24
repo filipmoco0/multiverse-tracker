@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     let fileSaved = false;
+    let fileError = null;
 
     // 1. Try to write to local seed file (works in local dev environment)
     try {
@@ -25,38 +26,46 @@ export async function POST(request: NextRequest) {
       fs.writeFileSync(targetPath, content, 'utf8');
       fileSaved = true;
     } catch (fsErr: any) {
-      console.log('Local file write skipped (e.g. read-only serverless environment):', fsErr.message);
+      fileError = fsErr.message;
     }
 
-    // 2. If Supabase is configured, also upsert to cloud database
+    // 2. If Supabase is configured, upsert all items in chunks of 40
     let supabaseSaved = false;
+    let supabaseError = null;
+
     try {
       const supabase = createAdminClient();
       if (supabase) {
-        // Upsert full media list
-        const { error } = await supabase
-          .from('franchise_media')
-          .upsert(mediaList, { onConflict: 'id' });
+        const chunkSize = 40;
+        for (let i = 0; i < mediaList.length; i += chunkSize) {
+          const chunk = mediaList.slice(i, i + chunkSize);
+          const { error } = await supabase
+            .from('franchise_media')
+            .upsert(chunk, { onConflict: 'id' });
 
-        if (!error) {
-          supabaseSaved = true;
-        } else {
-          console.warn('Supabase upsert error:', error.message);
+          if (error) {
+            throw error;
+          }
         }
+        supabaseSaved = true;
       }
     } catch (dbErr: any) {
-      console.warn('Supabase sync skipped:', dbErr.message);
+      supabaseError = dbErr.message;
+      console.warn('Supabase upsert error:', dbErr);
     }
+
+    const message = supabaseSaved
+      ? `Saved ${mediaList.length} items to Supabase cloud database!`
+      : fileSaved
+      ? `Saved ${mediaList.length} items to local seed file!`
+      : `Saved in current session (Supabase not connected or errored: ${supabaseError || 'No connection'})`;
 
     return NextResponse.json({
       success: true,
       fileSaved,
       supabaseSaved,
-      message: fileSaved
-        ? `Successfully saved ${mediaList.length} items to ${universe === 'mcu' ? 'mcu-seed.ts' : 'dcu-seed.ts'} on disk!`
-        : supabaseSaved
-        ? `Successfully saved ${mediaList.length} items to Supabase cloud database!`
-        : `Updated in active admin session.`,
+      supabaseError,
+      message,
     });
   } catch (err: any) {
     console.error('Save seed error:', err);

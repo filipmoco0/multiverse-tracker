@@ -86,10 +86,34 @@ export default function AdminDashboardPage() {
   // Notification message
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Load initial media from seed
+  // Supabase connection status
+  const [dbSource, setDbSource] = useState<'supabase' | 'seed'>('seed');
+  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
+
+  // Load media dynamically from live API / Supabase
+  const loadMedia = async (universe: Universe) => {
+    setIsLoadingMedia(true);
+    try {
+      const res = await fetch(`/api/media?universe=${universe}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.media && data.media.length > 0) {
+          setMediaList(data.media);
+          setDbSource(data.source || 'seed');
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to fetch from /api/media, using fallback:', e);
+    } finally {
+      setIsLoadingMedia(false);
+    }
+    const fallback = universe === 'mcu' ? MCU_SEED_DATA : DCU_SEED_DATA;
+    setMediaList(fallback);
+  };
+
   useEffect(() => {
-    const combined = selectedUniverse === 'mcu' ? MCU_SEED_DATA : DCU_SEED_DATA;
-    setMediaList(combined);
+    loadMedia(selectedUniverse);
   }, [selectedUniverse]);
 
   // Check persisted admin session
@@ -419,15 +443,24 @@ export default function AdminDashboardPage() {
         {/* Admin Dashboard Header */}
         <section className="bg-[#141624] border-[4px] border-black shadow-[6px_6px_0px_0px_#000000] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <ComicBadge variant="gold" size="sm">
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" /> CURATOR ADMIN MODE
                 </span>
               </ComicBadge>
               <ComicBadge variant="white" size="sm">
-                {mediaList.length} Titles Loaded
+                {mediaList.length} Titles
               </ComicBadge>
+              {dbSource === 'supabase' ? (
+                <ComicBadge variant="green" size="sm">
+                  ⚡ Cloud Supabase Active
+                </ComicBadge>
+              ) : (
+                <ComicBadge variant="dark" size="sm">
+                  📁 Seed Storage Mode
+                </ComicBadge>
+              )}
             </div>
             <h1 className="text-3xl font-display font-black uppercase text-white tracking-wider">
               Tracklist & Poster Curator Dashboard
