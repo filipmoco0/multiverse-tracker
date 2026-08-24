@@ -13,6 +13,7 @@ import { OrderToggle } from '@/components/filters/OrderToggle';
 import { TypeFilterTabs } from '@/components/filters/TypeFilter';
 import { StatusFilterTabs } from '@/components/filters/StatusFilter';
 import { triggerComicConfetti } from '@/components/comic/ConfettiCelebration';
+import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
 import { clsx } from 'clsx';
 
 interface FranchiseTracklistProps {
@@ -218,6 +219,13 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           </div>
         </div>
       </section>
+
+      {/* Marathon Runtime & Superhero Rank Stats */}
+      <MarathonStatsWidget
+        mediaList={initialMedia}
+        watchedIds={watchedIds}
+        universe={universe}
+      />
 
       {/* Universe Branch Filter Tabs */}
       <section className="bg-[#10121d] border-[3px] border-black p-3 shadow-[4px_4px_0px_0px_#000000] space-y-2">
