@@ -6,6 +6,7 @@ import { X, Zap, ExternalLink, Check, AlertCircle } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
+import { useByokStore } from '@/lib/store/useByokStore';
 import { useRouter } from 'next/navigation';
 
 interface TraktAuthModalProps {
@@ -16,6 +17,7 @@ interface TraktAuthModalProps {
 export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const { setTraktUser, setAuthMode, syncWithTrakt, isSyncing } = useWatchlistStore();
+  const { traktClientId, traktClientSecret } = useByokStore();
 
   const [activeTab, setActiveTab] = useState<'quick' | 'oauth'>('quick');
   const [usernameInput, setUsernameInput] = useState('');
@@ -31,7 +33,8 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
 
   if (!isOpen) return null;
 
-  const hasClientId = Boolean(process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID);
+  const effectiveClientId = traktClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+  const hasClientId = Boolean(effectiveClientId);
 
   const handleQuickConnect = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,14 +69,16 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
   };
 
   const handleOAuthLogin = () => {
-    if (!hasClientId) {
+    if (!effectiveClientId) {
       setStatusMsg({
-        text: 'Trakt OAuth app is not configured yet. Use the Instant Connect tab or configure Trakt API keys.',
+        text: 'Trakt OAuth app is not configured yet. Enter your Client ID in BYOK Keys or use Instant Connect.',
         type: 'error',
       });
       return;
     }
-    window.location.href = '/api/auth/trakt/login';
+
+    const clientSecret = traktClientSecret || '';
+    window.location.href = `/api/auth/trakt/login?client_id=${encodeURIComponent(effectiveClientId)}&client_secret=${encodeURIComponent(clientSecret)}`;
   };
 
   return (
@@ -196,7 +201,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-display uppercase text-zinc-400">OAuth Client ID Status:</span>
                   <ComicBadge variant={hasClientId ? 'green' : 'dark'} size="sm">
-                    {hasClientId ? 'CONFIGURED' : 'OPTIONAL SETUP'}
+                    {hasClientId ? 'BYOK APP ACTIVE' : 'OPTIONAL SETUP'}
                   </ComicBadge>
                 </div>
 
@@ -206,7 +211,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
                     <ol className="list-decimal list-inside space-y-1">
                       <li>Go to <a href="https://trakt.tv/oauth/applications" target="_blank" rel="noreferrer" className="text-cyan-400 underline inline-flex items-center gap-0.5">trakt.tv/oauth/applications <ExternalLink className="w-2.5 h-2.5" /></a></li>
                       <li>Create an app with Redirect URI: <code className="bg-black px-1.5 py-0.5 text-amber-300 border border-zinc-700 text-[10px] break-all">{redirectUri}</code></li>
-                      <li>Add your Client ID & Secret in <strong>BYOK Settings</strong> or environment variables.</li>
+                      <li>Paste your Client ID & Secret into <strong>BYOK Keys</strong> in the navbar.</li>
                     </ol>
                   </div>
                 )}

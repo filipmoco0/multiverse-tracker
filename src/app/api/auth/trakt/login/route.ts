@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+  const { searchParams } = new URL(request.url);
+  const paramClientId = searchParams.get('client_id');
+  const paramClientSecret = searchParams.get('client_secret');
+
+  const clientId = paramClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+  const clientSecret = paramClientSecret || process.env.TRAKT_CLIENT_SECRET;
 
   if (!clientId) {
-    // If Trakt Client ID is not configured, redirect back to landing with friendly note
     const url = new URL('/', request.url);
     url.searchParams.set('error', 'trakt_not_configured');
     return NextResponse.redirect(url);
@@ -20,5 +24,15 @@ export async function GET(request: NextRequest) {
     state: 'multiverse_tracker_state',
   });
 
-  return NextResponse.redirect(`https://trakt.tv/oauth/authorize?${params.toString()}`);
+  const response = NextResponse.redirect(`https://trakt.tv/oauth/authorize?${params.toString()}`);
+
+  // Set short-lived cookies for BYOK credentials during OAuth flow
+  if (paramClientId) {
+    response.cookies.set('trakt_byok_id', paramClientId, { maxAge: 600, path: '/', sameSite: 'lax' });
+  }
+  if (paramClientSecret) {
+    response.cookies.set('trakt_byok_secret', paramClientSecret, { maxAge: 600, path: '/', sameSite: 'lax' });
+  }
+
+  return response;
 }

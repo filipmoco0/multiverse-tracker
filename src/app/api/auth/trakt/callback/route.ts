@@ -9,8 +9,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/?error=trakt_auth_cancelled', request.url));
   }
 
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
-  const clientSecret = process.env.TRAKT_CLIENT_SECRET;
+  const cookieId = request.cookies.get('trakt_byok_id')?.value;
+  const cookieSecret = request.cookies.get('trakt_byok_secret')?.value;
+
+  const clientId = cookieId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+  const clientSecret = cookieSecret || process.env.TRAKT_CLIENT_SECRET;
   const origin = request.nextUrl.origin;
   const redirectUri = `${origin}/api/auth/trakt/callback`;
 
@@ -38,6 +41,8 @@ export async function GET(request: NextRequest) {
 
     const tokenData = await tokenRes.json();
     const accessToken = tokenData.access_token;
+    const refreshToken = tokenData.refresh_token;
+    const expiresIn = tokenData.expires_in || 7776000; // 90 days in seconds
 
     // 2. Fetch User Profile
     const userRes = await fetch('https://api.trakt.tv/users/me', {
@@ -61,44 +66,76 @@ export async function GET(request: NextRequest) {
       username,
       avatar,
       access_token: accessToken,
-      refresh_token: tokenData.refresh_token,
-      expires_at: Date.now() + (tokenData.expires_in || 7776000) * 1000,
+      refresh_token: refreshToken,
+      expires_at: Date.now() + expiresIn * 1000,
     });
 
-    // Return HTML page that syncs to localStorage and redirects to /select
     const html = `
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Authenticating with Trakt...</title>
+          <title>Trakt Authentication Successful</title>
           <style>
-            body { background: #0c0d14; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-            .card { text-align: center; border: 3px solid #000; background: #161824; padding: 30px; box-shadow: 6px 6px 0px #000; }
+            body {
+              background: #0c0d14;
+              color: white;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .card {
+              background: #141624;
+              border: 3px solid #000;
+              box-shadow: 6px 6px 0px #000;
+              padding: 2rem;
+              text-align: center;
+              max-width: 400px;
+            }
+            .badge {
+              background: #E62429;
+              color: white;
+              padding: 4px 12px;
+              font-weight: bold;
+              display: inline-block;
+              margin-bottom: 1rem;
+            }
           </style>
         </head>
         <body>
           <div class="card">
-            <h2>Trakt Connected Successfully!</h2>
-            <p>Syncing your Multiverse watchlist...</p>
+            <div class="badge">TRAKT CONNECTED</div>
+            <h2>Welcome, @${username}!</h2>
+            <p>Your Trakt.tv account has been authenticated. Redirecting back to your multiverse watchlist...</p>
           </div>
           <script>
             try {
               localStorage.setItem('multiverse_tracker_trakt_user_v1', ${JSON.stringify(traktUserData)});
               localStorage.setItem('multiverse_tracker_auth_mode_v1', 'trakt');
-            } catch (e) {
-              console.error(e);
-            }
-            window.location.href = '/select';
+            } catch(e) {}
+            setTimeout(() => {
+              window.location.href = '/select';
+            }, 1000);
           </script>
         </body>
       </html>
     `;
 
-    return new NextResponse(html, {
-      headers: { 'Content-Type': 'text/html' },
+    const response = new NextResponse(html, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+      },
     });
-  } catch (err) {
-    console.error('Trakt OAuth callback error:', err);
-    return NextResponse.redirect(new URL('/?error=server_error', request.url));
+
+    // Clear temporary BYOK cookies
+    response.cookies.delete('trakt_byok_id');
+    response.cookies.delete('trakt_byok_secret');
+
+    return response;
+  } catch (err: any) {
+    console.error('Trakt OAuth callback fatal error:', err);
+    return NextResponse.redirect(new URL('/?error=trakt_callback_error', request.url));
   }
 }
