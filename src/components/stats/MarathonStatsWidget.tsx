@@ -143,15 +143,15 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
               {/* Top Row: Rank Card + Watch Time Card */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* 1. Superhero Rank Card */}
-                <div className="bg-[#161824] border-[3px] border-black p-5 sm:p-6 shadow-[5px_5px_0px_0px_#000000] flex items-center gap-4.5">
-                  <div className="w-12 h-12 min-w-[48px] bg-zinc-950 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_#000000] -skew-x-3">
+                <div className="bg-[#161824] border-[3px] border-black p-5 sm:p-6 shadow-[5px_5px_0px_0px_#000000] flex items-center gap-6 sm:gap-7">
+                  <div className="w-14 h-14 min-w-[56px] bg-zinc-950 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_#000000] -skew-x-3 flex-shrink-0">
                     {currentRank.icon}
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1.5 flex-1 min-w-0">
                     <span className="text-[11px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
                       Current Superhero Rank
                     </span>
-                    <h4 className={clsx('font-display font-black text-xl sm:text-2xl uppercase leading-tight tracking-wide', currentRank.color)}>
+                    <h4 className={clsx('font-display font-black text-xl sm:text-2xl uppercase leading-tight tracking-wide truncate', currentRank.color)}>
                       {currentRank.title}
                     </h4>
                     <p className="text-xs text-zinc-300 font-sans font-medium">
@@ -161,15 +161,15 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
                 </div>
 
                 {/* 2. Total Watch Time Card */}
-                <div className="bg-[#161824] border-[3px] border-black p-5 sm:p-6 shadow-[5px_5px_0px_0px_#000000] flex items-center gap-4.5">
-                  <div className="w-12 h-12 min-w-[48px] bg-zinc-950 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_#000000] -skew-x-3">
+                <div className="bg-[#161824] border-[3px] border-black p-5 sm:p-6 shadow-[5px_5px_0px_0px_#000000] flex items-center gap-6 sm:gap-7">
+                  <div className="w-14 h-14 min-w-[56px] bg-zinc-950 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_#000000] -skew-x-3 flex-shrink-0">
                     ⏱️
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1.5 flex-1 min-w-0">
                     <span className="text-[11px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
                       Total Time Watched
                     </span>
-                    <h4 className="font-display font-black text-xl sm:text-2xl uppercase leading-tight tracking-wide text-cyan-400">
+                    <h4 className="font-display font-black text-xl sm:text-2xl uppercase leading-tight tracking-wide text-cyan-400 truncate">
                       {watchedHours} Hours {remainingMinutes > 0 ? `${remainingMinutes}m` : ''}
                     </h4>
                     <p className="text-xs text-zinc-300 font-sans font-medium">
@@ -183,8 +183,8 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Movies Count */}
                 <div className="bg-zinc-950 border-2 border-black p-4 sm:p-4.5 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Film className="w-4 h-4 text-amber-400" />
+                  <div className="flex items-center gap-3.5">
+                    <Film className="w-4 h-4 text-amber-400 flex-shrink-0" />
                     <div>
                       <span className="block text-[10px] font-display uppercase tracking-wider text-zinc-400 font-bold">Movies</span>
                       <strong className="text-sm font-display text-white mt-0.5 block">
@@ -199,8 +199,8 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
 
                 {/* TV Shows Count */}
                 <div className="bg-zinc-950 border-2 border-black p-4 sm:p-4.5 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Tv className="w-4 h-4 text-cyan-400" />
+                  <div className="flex items-center gap-3.5">
+                    <Tv className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                     <div>
                       <span className="block text-[10px] font-display uppercase tracking-wider text-zinc-400 font-bold">TV Series</span>
                       <strong className="text-sm font-display text-white mt-0.5 block">
@@ -215,8 +215,8 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
 
                 {/* Specials Count */}
                 <div className="bg-zinc-950 border-2 border-black p-4 sm:p-4.5 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Sparkles className="w-4 h-4 text-purple-400" />
+                  <div className="flex items-center gap-3.5">
+                    <Sparkles className="w-4 h-4 text-purple-400 flex-shrink-0" />
                     <div>
                       <span className="block text-[10px] font-display uppercase tracking-wider text-zinc-400 font-bold">Specials & Shorts</span>
                       <strong className="text-sm font-display text-white mt-0.5 block">
