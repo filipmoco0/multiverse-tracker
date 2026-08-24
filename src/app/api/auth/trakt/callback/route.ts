@@ -4,9 +4,11 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const error = searchParams.get('error');
+  const errorDescription = searchParams.get('error_description');
 
   if (error || !code) {
-    return NextResponse.redirect(new URL('/?error=trakt_auth_cancelled', request.url));
+    const errorMsg = errorDescription || error || 'Trakt authorization was cancelled';
+    return NextResponse.redirect(new URL(`/?error=trakt_auth_cancelled&reason=${encodeURIComponent(errorMsg)}`, request.url));
   }
 
   const cookieId = request.cookies.get('trakt_byok_id')?.value;
@@ -36,7 +38,9 @@ export async function GET(request: NextRequest) {
     if (!tokenRes.ok) {
       const errText = await tokenRes.text();
       console.error('Trakt token exchange error:', errText);
-      return NextResponse.redirect(new URL('/?error=token_exchange_failed', request.url));
+      return NextResponse.redirect(
+        new URL(`/?error=token_exchange_failed&reason=${encodeURIComponent('Trakt returned: ' + errText + '. Make sure Redirect URI in your Trakt App matches ' + redirectUri)}`, request.url)
+      );
     }
 
     const tokenData = await tokenRes.json();
@@ -136,6 +140,6 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (err: any) {
     console.error('Trakt OAuth callback fatal error:', err);
-    return NextResponse.redirect(new URL('/?error=trakt_callback_error', request.url));
+    return NextResponse.redirect(new URL(`/?error=trakt_callback_error&reason=${encodeURIComponent(err.message)}`, request.url));
   }
 }

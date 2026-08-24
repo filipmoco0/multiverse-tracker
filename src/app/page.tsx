@@ -1,26 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Zap, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Zap, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import { ComicButton } from '@/components/comic/ComicButton';
 import { ComicBadge } from '@/components/comic/ComicBadge';
 import { TraktAuthModal } from '@/components/auth/TraktAuthModal';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 
-export default function LandingAuthGateway() {
+function LandingContent() {
   const router = useRouter();
-  const { setAuthMode } = useWatchlistStore();
+  const searchParams = useSearchParams();
+  const { setAuthMode, traktUser, authMode } = useWatchlistStore();
+
   const [isEntering, setIsEntering] = useState(false);
   const [isTraktModalOpen, setIsTraktModalOpen] = useState(false);
+
+  const errorParam = searchParams.get('error');
+  const reasonParam = searchParams.get('reason');
 
   const handleGuestEntry = () => {
     setAuthMode('guest');
     setIsEntering(true);
     setTimeout(() => {
       router.push('/select');
-    }, 400);
+    }, 300);
   };
 
   return (
@@ -35,7 +40,7 @@ export default function LandingAuthGateway() {
           initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={isEntering ? { scale: 1.1, opacity: 0 } : { opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
-          className="relative w-full max-w-3xl bg-[#141624] border-[4px] border-black shadow-[10px_10px_0px_0px_#000000] p-6 sm:p-10 z-10 space-y-8"
+          className="relative w-full max-w-3xl bg-[#141624] border-[4px] border-black shadow-[10px_10px_0px_0px_#000000] p-6 sm:p-10 z-10 space-y-7"
         >
           {/* Top Badges */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-black pb-4">
@@ -46,6 +51,17 @@ export default function LandingAuthGateway() {
             </div>
             <ComicBadge variant="gold" size="sm">v1.0 Zero-Cost Edition</ComicBadge>
           </div>
+
+          {/* OAuth Error Feedback Alert */}
+          {errorParam && (
+            <div className="p-3.5 bg-rose-950/90 border-2 border-rose-600 shadow-[3px_3px_0px_0px_#000000] text-rose-200 text-xs font-sans space-y-1">
+              <div className="flex items-center gap-2 font-display uppercase font-bold text-rose-400">
+                <AlertCircle className="w-4 h-4" />
+                Trakt Authorization Notice
+              </div>
+              <p>{reasonParam || 'Authentication was cancelled or failed. Please check your Trakt app settings or use Instant Username Connect.'}</p>
+            </div>
+          )}
 
           {/* Hero Title & Subtitle */}
           <div className="text-center space-y-3">
@@ -88,7 +104,11 @@ export default function LandingAuthGateway() {
               leftIcon={<Zap className="w-5 h-5 text-amber-300" />}
               rightIcon={<ArrowRight className="w-5 h-5" />}
             >
-              <span>Connect with Trakt.tv (Auto-Sync)</span>
+              <span>
+                {authMode === 'trakt' && traktUser
+                  ? `Continue as @${traktUser.username}`
+                  : 'Connect with Trakt.tv (Auto-Sync)'}
+              </span>
             </ComicButton>
 
             {/* Secondary Action 2: Continue as Guest */}
@@ -126,5 +146,13 @@ export default function LandingAuthGateway() {
         onClose={() => setIsTraktModalOpen(false)}
       />
     </>
+  );
+}
+
+export default function LandingAuthGateway() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0b10]" />}>
+      <LandingContent />
+    </Suspense>
   );
 }
