@@ -1,33 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Deep Dark App Background -->
+  <!-- Dark background matching app theme -->
   <rect width="512" height="512" fill="#0c0d14" />
 
-  <!-- Centered -skewX(-6deg) group for 1:1 Navbar Match -->
+  <!-- Large Yellow Box filling 85% of space -->
   <g transform="translate(256, 256) skewX(-6) translate(-256, -256)">
-    <!-- 1. Hard Solid Black Drop Shadow (offset +32px, +32px) -->
+    <!-- Solid Black Drop Shadow -->
     <rect
-      x="132"
-      y="132"
-      width="280"
-      height="280"
+      x="72"
+      y="72"
+      width="390"
+      height="390"
+      rx="12"
       fill="#000000"
     />
 
-    <!-- 2. Main Amber Box with Solid 24px Black Border -->
+    <!-- Main Yellow Box with Solid Black Border -->
     <rect
-      x="100"
-      y="100"
-      width="280"
-      height="280"
+      x="44"
+      y="44"
+      width="390"
+      height="390"
+      rx="12"
       fill="#f59e0b"
       stroke="#000000"
       stroke-width="24"
       stroke-linejoin="miter"
     />
 
-    <!-- 3. Exact Bebas Neue / Impact Bold Black "M" Geometry -->
+    <!-- Massive Bold Black "M" -->
     <path
-      d="M 148,348 L 148,164 L 202,164 L 256,268 L 310,164 L 364,164 L 364,348 L 314,348 L 314,244 L 272,320 L 240,320 L 198,244 L 198,348 Z"
+      d="M 106,378 L 106,128 L 174,128 L 239,252 L 304,128 L 372,128 L 372,378 L 308,378 L 308,232 L 258,328 L 220,328 L 170,232 L 170,378 Z"
       fill="#000000"
     />
   </g>
