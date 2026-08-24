@@ -101,16 +101,17 @@
   z-index: 20;
 }
 
-/* Unwatched grayscale + halftone overlay */
+/* Unwatched grayscale + transition to 100% full color on hover */
 .unwatched-filter {
-  filter: grayscale(85%) contrast(110%);
-  opacity: 0.75;
-  transition: all 0.3s ease;
+  filter: grayscale(90%) contrast(105%) brightness(0.85);
+  opacity: 0.8;
+  transition: filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
 }
 
-.unwatched-filter:hover {
-  filter: grayscale(40%) contrast(100%);
-  opacity: 0.95;
+.unwatched-filter:hover,
+.group:hover .unwatched-filter {
+  filter: grayscale(0%) contrast(100%) brightness(1);
+  opacity: 1;
 }
 
 /* Custom comic scrollbar */

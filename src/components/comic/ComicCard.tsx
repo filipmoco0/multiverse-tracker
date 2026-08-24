@@ -46,7 +46,11 @@ export const ComicCard: React.FC<ComicCardProps> = ({
         )}
       >
         {/* Poster Container */}
-        <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-950 border-b-[3px] border-black group">
+        <div
+          onClick={() => setIsModalOpen(true)}
+          className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-950 border-b-[3px] border-black group cursor-pointer"
+          title="Click to view details and trailer"
+        >
           <ComicPoster
             src={media.poster_path}
             alt={media.title}
@@ -80,36 +84,6 @@ export const ComicCard: React.FC<ComicCardProps> = ({
               </span>
             </ComicBadge>
           </div>
-
-          {/* Quick Info Trigger Button */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="absolute top-2 right-2 z-10 p-1.5 bg-black/80 hover:bg-black text-white border-2 border-white/40 hover:border-white shadow-[2px_2px_0px_0px_#000000] transition active:scale-95 cursor-pointer"
-            title="View Details"
-            aria-label="View Details"
-          >
-            <Info className="w-4 h-4" />
-          </button>
-
-          {/* Quick Watched Stamp Overlay on poster hover */}
-          <button
-            onClick={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type)}
-            className={clsx(
-              'absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-10',
-              isWatched ? 'hover:bg-rose-950/60' : 'hover:bg-emerald-950/60'
-            )}
-          >
-            <div
-              className={clsx(
-                'px-4 py-2 border-[3px] border-black font-display text-base uppercase font-extrabold -skew-x-6 shadow-[4px_4px_0px_0px_#000000] transition transform hover:scale-105',
-                isWatched
-                  ? 'bg-rose-600 text-white'
-                  : 'bg-emerald-400 text-black'
-              )}
-            >
-              {isWatched ? 'Mark Unwatched' : 'Mark Watched'}
-            </div>
-          </button>
         </div>
 
         {/* Card Body */}
