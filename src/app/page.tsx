@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Mail, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle, Cloud } from 'lucide-react';
+import { Mail, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import { ComicButton } from '@/components/comic/ComicButton';
 import { ComicBadge } from '@/components/comic/ComicBadge';
 import { UserAuthModal } from '@/components/auth/UserAuthModal';
@@ -21,9 +21,8 @@ function LandingContent() {
   const errorParam = searchParams.get('error');
   const reasonParam = searchParams.get('reason');
 
-  // Auto-redirect to Universe Selection Gate (/select) if user is already signed in or has saved session
+  // ONLY auto-redirect to Gate (/select) if user has an ACTIVE signed-in account (Supabase or Trakt)
   useEffect(() => {
-    // 1. Check Supabase Auth session
     const supabase = createClient();
     if (supabase) {
       supabase.auth.getSession().then(({ data }) => {
@@ -33,11 +32,9 @@ function LandingContent() {
       });
     }
 
-    // 2. Check local session / Trakt / Guest mode
     if (typeof window !== 'undefined') {
-      const storedMode = localStorage.getItem('multiverse_tracker_auth_mode_v1');
       const storedTrakt = localStorage.getItem('multiverse_tracker_trakt_user_v1');
-      if (storedMode || storedTrakt || traktUser) {
+      if (storedTrakt && traktUser) {
         router.replace('/select');
       }
     }

@@ -148,10 +148,16 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
         await supabase.auth.signOut();
       }
       setCurrentUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('multiverse_tracker_auth_mode_v1');
+        localStorage.removeItem('multiverse_tracker_trakt_user_v1');
+      }
+      useWatchlistStore.setState({ authMode: 'guest', traktUser: null, supabaseUser: null });
       setStatusMsg({ text: 'Signed out of cloud account.', type: 'success' });
       setTimeout(() => {
         onClose();
-      }, 1000);
+        window.location.href = '/';
+      }, 500);
     } catch (err: any) {
       setStatusMsg({ text: err.message, type: 'error' });
     } finally {
