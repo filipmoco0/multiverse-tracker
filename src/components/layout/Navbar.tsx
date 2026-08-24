@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, Layers, Sliders, RefreshCw } from 'lucide-react';
+import { Shield, Layers, Sliders, RefreshCw, BookOpen } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useByokStore } from '@/lib/store/useByokStore';
@@ -116,6 +116,20 @@ export const Navbar: React.FC = () => {
             >
               <Layers className="w-3.5 h-3.5 skew-x-6" />
               <span className="inline-block skew-x-6">Gate</span>
+            </Link>
+
+            <Link
+              href="/guide"
+              className={clsx(
+                'p-1 sm:px-3 sm:py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition border-2 sm:border-[3px] border-black shadow-[2px_2px_0px_0px_#000000] -skew-x-6 hidden md:flex items-center gap-1',
+                pathname?.startsWith('/guide')
+                  ? 'bg-amber-400 text-black font-black'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
+              )}
+              title="Trakt.tv & TMDB Setup Guide"
+            >
+              <BookOpen className="w-3.5 h-3.5 skew-x-6 text-amber-400" />
+              <span className="inline-block skew-x-6">Guide</span>
             </Link>
           </nav>
 

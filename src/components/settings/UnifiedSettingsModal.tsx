@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -23,6 +24,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Zap,
+  BookOpen,
 } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -542,6 +544,16 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         Authorize on Trakt.tv
                       </ComicButton>
                     </div>
+
+                    <div className="text-center pt-1">
+                      <Link
+                        href="/guide"
+                        onClick={onClose}
+                        className="inline-flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read Full Trakt & TMDB Guide
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -687,6 +699,16 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                 <ComicButton type="submit" variant="gold" size="md" className="w-full">
                   Save API Key
                 </ComicButton>
+
+                <div className="text-center pt-1">
+                  <Link
+                    href="/guide"
+                    onClick={onClose}
+                    className="inline-flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" /> Step-by-Step TMDB Key Guide
+                  </Link>
+                </div>
               </form>
             )}
 
