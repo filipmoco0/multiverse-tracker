@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { syncUserProfileToCloud } from '../supabase/user-profile';
 
 interface ByokState {
   tmdbApiKey: string;
@@ -51,6 +52,7 @@ export const useByokStore = create<ByokState>()(
           tmdbApiKey: trimmed,
           isCustomTmdbActive: Boolean(trimmed),
         });
+        syncUserProfileToCloud({ tmdb_api_key: trimmed || null });
       },
 
       setTraktCredentials: (clientId: string, clientSecret: string = '') => {
@@ -71,6 +73,7 @@ export const useByokStore = create<ByokState>()(
           isCustomTmdbActive: false,
           isCustomTraktActive: false,
         });
+        syncUserProfileToCloud({ tmdb_api_key: null });
       },
     }),
     {

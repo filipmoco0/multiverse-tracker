@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { WatchlistState, TraktUser, FranchiseMedia, MediaType, Universe } from '../types';
 import { syncTraktHistory, fetchTraktWatchedItems } from '../trakt/client';
+import { syncUserProfileToCloud } from '../supabase/user-profile';
 
 const WATCHED_STORAGE_KEY = 'multiverse_tracker_watched_v1';
 const TRAKT_USER_KEY = 'multiverse_tracker_trakt_user_v1';
@@ -62,6 +63,7 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
       }
     }
     set({ traktUser: user, authMode: user ? 'trakt' : 'guest' });
+    syncUserProfileToCloud({ trakt_username: user?.username || null, trakt_token: user?.access_token || null });
   },
 
   toggleWatched: async (mediaId, tmdbId, traktId, mediaType = 'movie') => {
@@ -79,6 +81,9 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
       localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(updatedWatched));
     }
     set({ watchedIds: updatedWatched });
+
+    // Cloud sync to Supabase user profile
+    syncUserProfileToCloud({ watched_ids: updatedWatched });
 
     // Sync with Trakt if authenticated with a real token
     if (authMode === 'trakt' && traktUser?.access_token && !traktUser.access_token.startsWith('token_user_')) {
@@ -111,6 +116,9 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     }
     set({ watchedIds: updatedWatched });
 
+    // Cloud sync to Supabase user profile
+    syncUserProfileToCloud({ watched_ids: updatedWatched });
+
     // Sync to Trakt if connected with real OAuth token
     if (authMode === 'trakt' && traktUser?.access_token && !traktUser.access_token.startsWith('token_user_')) {
       for (const item of mediaItems) {
@@ -128,21 +136,38 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
   },
 
   markAllWatched: async (mediaItems: FranchiseMedia[], targetWatched: boolean) => {
-    const { watchedIds } = get();
-    const updatedWatched = targetWatched
-      ? { ...watchedIds, ...Object.fromEntries(mediaItems.map((m) => [m.id, true])) }
-      : { ...watchedIds };
+    const { watchedIds, traktUser, authMode } = get();
+    const updatedWatched = { ...watchedIds };
 
-    if (!targetWatched) {
-      mediaItems.forEach((m) => {
-        delete updatedWatched[m.id];
-      });
+    for (const item of mediaItems) {
+      if (targetWatched) {
+        updatedWatched[item.id] = true;
+      } else {
+        delete updatedWatched[item.id];
+      }
     }
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(updatedWatched));
     }
     set({ watchedIds: updatedWatched });
+
+    // Cloud sync to Supabase user profile
+    syncUserProfileToCloud({ watched_ids: updatedWatched });
+
+    if (authMode === 'trakt' && traktUser?.access_token && !traktUser.access_token.startsWith('token_user_')) {
+      for (const item of mediaItems) {
+        try {
+          await syncTraktHistory(
+            traktUser.access_token,
+            targetWatched ? 'add' : 'remove',
+            { tmdbId: item.tmdb_id, traktId: item.trakt_id, mediaType: item.media_type }
+          );
+        } catch (e) {
+          console.warn('Error syncing all items:', e);
+        }
+      }
+    }
   },
 
   syncWithTrakt: async () => {
@@ -150,70 +175,53 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     if (!traktUser) return;
 
     set({ isSyncing: true });
+
     try {
-      let movies: any[] = [];
-      let shows: any[] = [];
-
+      // 1. If OAuth token exists, fetch watched items
       if (traktUser.access_token && !traktUser.access_token.startsWith('token_user_')) {
-        // Authenticated OAuth sync
-        const res = await fetchTraktWatchedItems(traktUser.access_token);
-        movies = res.movies;
-        shows = res.shows;
-      } else if (traktUser.username) {
-        // Public username fetch
-        const res = await fetch(`/api/trakt/sync?username=${encodeURIComponent(traktUser.username)}`);
-        if (res.ok) {
-          const data = await res.json();
-          movies = data.movies || [];
-          shows = data.shows || [];
+        const { movies, shows } = await fetchTraktWatchedItems(traktUser.access_token);
+        const { watchedIds } = get();
+        const mergedWatched = { ...watchedIds };
+
+        // Auto-match tmdb ids from trakt response
+        movies.forEach((m: any) => {
+          if (m.movie?.ids?.tmdb) mergedWatched[`mcu-tmdb-${m.movie.ids.tmdb}`] = true;
+        });
+        shows.forEach((s: any) => {
+          if (s.show?.ids?.tmdb) mergedWatched[`mcu-tmdb-${s.show.ids.tmdb}`] = true;
+        });
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(mergedWatched));
         }
+
+        set({
+          watchedIds: mergedWatched,
+          lastSyncedAt: Date.now(),
+        });
+        syncUserProfileToCloud({ watched_ids: mergedWatched });
+      } else {
+        // Instant username connection
+        set({ lastSyncedAt: Date.now() });
       }
-
-      const { watchedIds } = get();
-      const newWatched = { ...watchedIds };
-
-      // Map trakt IDs and TMDB IDs from movies
-      const traktMovieIds = new Set(movies.map((m: any) => m.movie?.ids?.trakt).filter(Boolean));
-      const tmdbMovieIds = new Set(movies.map((m: any) => m.movie?.ids?.tmdb).filter(Boolean));
-
-      // Map trakt IDs and TMDB IDs from shows
-      const traktShowIds = new Set(shows.map((s: any) => s.show?.ids?.trakt).filter(Boolean));
-      const tmdbShowIds = new Set(shows.map((s: any) => s.show?.ids?.tmdb).filter(Boolean));
-
-      const { MCU_SEED_DATA } = await import('../seed/mcu-seed');
-      const { DCU_SEED_DATA } = await import('../seed/dcu-seed');
-      const allMedia = [...MCU_SEED_DATA, ...DCU_SEED_DATA];
-
-      allMedia.forEach((media) => {
-        const isWatchedInTrakt =
-          (media.trakt_id && (traktMovieIds.has(media.trakt_id) || traktShowIds.has(media.trakt_id))) ||
-          (media.tmdb_id && (tmdbMovieIds.has(media.tmdb_id) || tmdbShowIds.has(media.tmdb_id)));
-
-        if (isWatchedInTrakt) {
-          newWatched[media.id] = true;
-        }
-      });
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(newWatched));
-      }
-
-      set({ watchedIds: newWatched, lastSyncedAt: Date.now() });
-    } catch (err) {
-      console.error('Trakt synchronization error:', err);
+    } catch (error) {
+      console.error('Trakt synchronization failed:', error);
     } finally {
       set({ isSyncing: false });
     }
   },
 
   exportWatchlistJson: () => {
-    const { watchedIds, authMode } = get();
-    return JSON.stringify({
-      version: 1,
+    const { watchedIds, traktUser, lastSyncedAt } = get();
+    const backupData = {
+      version: '1.0.0',
       exportedAt: new Date().toISOString(),
-      authMode,
+      watchedCount: Object.keys(watchedIds).length,
       watchedIds,
-    }, null, 2);
+      traktUser: traktUser ? { username: traktUser.username } : null,
+      lastSyncedAt,
+    };
+    return JSON.stringify(backupData, null, 2);
   },
 
   importWatchlistJson: (jsonString: string) => {
@@ -223,7 +231,11 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
         if (typeof window !== 'undefined') {
           localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(parsed.watchedIds));
         }
-        set({ watchedIds: parsed.watchedIds });
+        set({
+          watchedIds: parsed.watchedIds,
+          lastSyncedAt: Date.now(),
+        });
+        syncUserProfileToCloud({ watched_ids: parsed.watchedIds });
         return true;
       }
       return false;
@@ -235,22 +247,21 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
 
   resetProgress: (universe?: Universe) => {
     const { watchedIds } = get();
-    if (!universe) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem(WATCHED_STORAGE_KEY);
-      }
-      set({ watchedIds: {} });
-    } else {
-      const updatedWatched = { ...watchedIds };
-      Object.keys(updatedWatched).forEach((key) => {
-        if (key.startsWith(universe)) {
-          delete updatedWatched[key];
+    let updatedWatched: Record<string, boolean> = {};
+
+    if (universe) {
+      // Clear only specific universe prefix
+      Object.keys(watchedIds).forEach((id) => {
+        if (!id.startsWith(universe)) {
+          updatedWatched[id] = watchedIds[id];
         }
       });
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(updatedWatched));
-      }
-      set({ watchedIds: updatedWatched });
     }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(updatedWatched));
+    }
+    set({ watchedIds: updatedWatched });
+    syncUserProfileToCloud({ watched_ids: updatedWatched });
   },
 }));

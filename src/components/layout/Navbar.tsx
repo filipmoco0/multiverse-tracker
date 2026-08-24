@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RefreshCw, Shield, Layers, Database, Zap, Key } from 'lucide-react';
+import { RefreshCw, Shield, Layers, Database, Zap, Key, User, Cloud } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useByokStore } from '@/lib/store/useByokStore';
 import { BackupModal } from './BackupModal';
 import { TraktAuthModal } from '../auth/TraktAuthModal';
 import { ByokModal } from '../settings/ByokModal';
+import { UserAuthModal } from '../auth/UserAuthModal';
+import { createClient } from '@/lib/supabase/client';
+import { loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -19,6 +22,35 @@ export const Navbar: React.FC = () => {
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isTraktModalOpen, setIsTraktModalOpen] = useState(false);
   const [isByokModalOpen, setIsByokModalOpen] = useState(false);
+  const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
+  const [currentAuthUser, setCurrentAuthUser] = useState<any>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    if (supabase) {
+      // Check initial session
+      supabase.auth.getSession().then(({ data }) => {
+        const user = data.session?.user;
+        setCurrentAuthUser(user || null);
+        if (user) {
+          loadUserProfileFromCloud(user.id);
+        }
+      });
+
+      // Listen for auth state changes
+      const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+        const user = session?.user;
+        setCurrentAuthUser(user || null);
+        if (user) {
+          loadUserProfileFromCloud(user.id);
+        }
+      });
+
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    }
+  }, []);
 
   const isMCU = pathname?.startsWith('/mcu');
   const isDCU = pathname?.startsWith('/dcu');
@@ -84,8 +116,28 @@ export const Navbar: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Right Action Icons (BYOK, Trakt Sync, Backup, Admin) */}
+          {/* Right Action Icons (Cloud User, BYOK, Trakt Sync, Backup, Admin) */}
           <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Supabase User Cloud Account Button */}
+            <button
+              onClick={() => setIsUserAuthOpen(true)}
+              className={clsx(
+                'flex items-center gap-1.5 px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer',
+                currentAuthUser
+                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 hover:bg-cyan-500/30'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
+              )}
+              title={currentAuthUser ? `Signed in as ${currentAuthUser.email} (Cloud Synced)` : 'Sign in to sync watchlist across devices'}
+            >
+              <User className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden xl:inline">
+                {currentAuthUser ? currentAuthUser.email?.split('@')[0] : 'Sign In'}
+              </span>
+              {currentAuthUser && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400" title="Cloud Synced" />
+              )}
+            </button>
+
             {/* BYOK API Keys Button */}
             <button
               onClick={() => setIsByokModalOpen(true)}
@@ -98,7 +150,7 @@ export const Navbar: React.FC = () => {
               title="Bring Your Own API Keys (TMDB / Trakt)"
             >
               <Key className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden xl:inline">BYOK Keys</span>
+              <span className="hidden xl:inline">BYOK</span>
               {(isCustomTmdbActive || isCustomTraktActive) && (
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
               )}
@@ -124,7 +176,7 @@ export const Navbar: React.FC = () => {
                 title="Connect Trakt.tv account"
               >
                 <Zap className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden sm:inline">Connect Trakt</span>
+                <span className="hidden sm:inline">Trakt</span>
               </button>
             )}
 
@@ -155,6 +207,9 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Cloud User Auth Modal */}
+      <UserAuthModal isOpen={isUserAuthOpen} onClose={() => setIsUserAuthOpen(false)} />
 
       {/* Guest Backup Modal */}
       <BackupModal isOpen={isBackupOpen} onClose={() => setIsBackupOpen(false)} />
