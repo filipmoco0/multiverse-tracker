@@ -220,27 +220,39 @@ export default function AdminDashboardPage() {
       is_released: formIsReleased,
     };
 
+    let updatedList: FranchiseMedia[];
     if (editingId) {
-      setMediaList((prev) => prev.map((item) => (item.id === editingId ? newItem : item)));
+      updatedList = mediaList.map((item) => (item.id === editingId ? newItem : item));
+      setMediaList(updatedList);
       setStatusMsg({ text: `Updated "${newItem.title}"!`, type: 'success' });
       setEditingId(null);
     } else {
-      setMediaList((prev) => [...prev, newItem].sort((a, b) => a.release_order - b.release_order));
+      updatedList = [...mediaList, newItem].sort((a, b) => a.release_order - b.release_order);
+      setMediaList(updatedList);
       setStatusMsg({ text: `Added "${newItem.title}" to tracklist!`, type: 'success' });
     }
 
-    try {
-      await fetch('/api/media', {
-        method: editingId ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newItem),
-      });
-    } catch (e) {
-      console.warn('Supabase sync skipped/failed:', e);
-    }
+    // Auto-save to local seed file and database
+    saveToCodebase(updatedList, formUniverse);
 
     resetForm();
     setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  const saveToCodebase = async (listToSave: FranchiseMedia[] = mediaList, universeToSave: Universe = selectedUniverse) => {
+    try {
+      const res = await fetch('/api/admin/save-seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ universe: universeToSave, mediaList: listToSave }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatusMsg({ text: data.message || 'Saved to codebase!', type: 'success' });
+      }
+    } catch (e: any) {
+      console.warn('Save to codebase error:', e);
+    }
   };
 
   const resetForm = () => {
@@ -275,13 +287,10 @@ export default function AdminDashboardPage() {
 
   const handleDeleteItem = async (id: string, title: string) => {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
-      setMediaList((prev) => prev.filter((item) => item.id !== id));
-      try {
-        await fetch(`/api/media?id=${id}`, { method: 'DELETE' });
-      } catch (e) {
-        console.warn('Supabase delete skipped:', e);
-      }
-      setStatusMsg({ text: `Deleted "${title}"`, type: 'success' });
+      const updatedList = mediaList.filter((item) => item.id !== id);
+      setMediaList(updatedList);
+      saveToCodebase(updatedList, selectedUniverse);
+      setStatusMsg({ text: `Deleted "${title}" and updated codebase!`, type: 'success' });
       setTimeout(() => setStatusMsg(null), 3000);
     }
   };
@@ -313,12 +322,12 @@ export default function AdminDashboardPage() {
   const handlePosterSelected = (newPosterUrl: string) => {
     if (pickerTargetItem?.id) {
       // Updated directly in table list
-      setMediaList((prev) =>
-        prev.map((item) =>
-          item.id === pickerTargetItem.id ? { ...item, poster_path: newPosterUrl } : item
-        )
+      const updatedList = mediaList.map((item) =>
+        item.id === pickerTargetItem.id ? { ...item, poster_path: newPosterUrl } : item
       );
-      setStatusMsg({ text: `Updated poster for "${pickerTargetItem.title}"!`, type: 'success' });
+      setMediaList(updatedList);
+      saveToCodebase(updatedList, selectedUniverse);
+      setStatusMsg({ text: `Updated poster for "${pickerTargetItem.title}" and saved to codebase!`, type: 'success' });
       setTimeout(() => setStatusMsg(null), 3000);
     } else {
       // Updated in active form
@@ -421,6 +430,14 @@ export default function AdminDashboardPage() {
 
           <div className="flex items-center gap-2 flex-wrap">
             <ComicButton
+              onClick={() => saveToCodebase(mediaList, selectedUniverse)}
+              variant="gold"
+              size="sm"
+              leftIcon={<Save className="w-4 h-4 text-black" />}
+            >
+              Save All to Codebase
+            </ComicButton>
+            <ComicButton
               onClick={() => setIsByokModalOpen(true)}
               variant="dark"
               size="sm"
@@ -429,7 +446,7 @@ export default function AdminDashboardPage() {
               BYOK Keys
             </ComicButton>
             <ComicButton onClick={handleExportSeed} variant="cyan" size="sm" leftIcon={<Download className="w-4 h-4" />}>
-              Export JSON Seed
+              Export JSON
             </ComicButton>
             <ComicButton onClick={handleLogout} variant="danger" size="sm" leftIcon={<Lock className="w-4 h-4" />}>
               Exit Admin
