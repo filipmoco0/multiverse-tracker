@@ -151,9 +151,12 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
       if (typeof window !== 'undefined') {
         localStorage.removeItem('multiverse_tracker_auth_mode_v1');
         localStorage.removeItem('multiverse_tracker_trakt_user_v1');
+        localStorage.removeItem('multiverse_tracker_watched_v1');
+        localStorage.removeItem('multiverse_byok_keys_storage');
       }
-      useWatchlistStore.setState({ authMode: 'guest', traktUser: null, supabaseUser: null });
-      setStatusMsg({ text: 'Signed out of cloud account.', type: 'success' });
+      useByokStore.getState().clearKeys();
+      useWatchlistStore.setState({ authMode: 'guest', traktUser: null, supabaseUser: null, watchedIds: {} });
+      setStatusMsg({ text: 'Signed out of cloud account and cleared device keys.', type: 'success' });
       setTimeout(() => {
         onClose();
         window.location.href = '/';
