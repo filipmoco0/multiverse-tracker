@@ -1,78 +1,55 @@
+import { useByokStore } from '../store/useByokStore';
+
 export const TRAKT_API_URL = 'https://api.trakt.tv';
+const DEFAULT_TRAKT_KEY = '5a6ddbfaea8f5a6fa58dfc924bc01c23f66085a539bc2b5c00e66c6b4129b8c0';
 
-export function getTraktAuthUrl(redirectUri: string): string {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    state: 'trakt_oauth_multiverse',
-  });
-  return `https://trakt.tv/oauth/authorize?${params.toString()}`;
-}
-
-export async function exchangeTraktCodeForToken(code: string, redirectUri: string) {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
-  const clientSecret = process.env.TRAKT_CLIENT_SECRET || '';
-
-  const res = await fetch(`${TRAKT_API_URL}/oauth/token`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      code,
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uri: redirectUri,
-      grant_type: 'authorization_code',
-    }),
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Trakt token exchange failed: ${errorText}`);
+export function getEffectiveTraktClientId(): string {
+  if (typeof window !== 'undefined') {
+    const byokKey = useByokStore.getState().traktClientId;
+    if (byokKey) return byokKey;
   }
-
-  return res.json();
+  return process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
 }
 
-export async function getTraktUserProfile(token: string) {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
-  const res = await fetch(`${TRAKT_API_URL}/users/me`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'trakt-api-version': '2',
-      'trakt-api-key': clientId,
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch Trakt profile');
-  }
-
-  return res.json();
-}
-
-export async function fetchTraktWatchedItems(token: string) {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
-  const headers = {
+export async function fetchTraktWatchedItems(token?: string | null, username?: string | null) {
+  const clientId = getEffectiveTraktClientId();
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'trakt-api-version': '2',
     'trakt-api-key': clientId,
-    Authorization: `Bearer ${token}`,
   };
 
-  const [moviesRes, showsRes] = await Promise.all([
-    fetch(`${TRAKT_API_URL}/sync/watched/movies`, { headers }),
-    fetch(`${TRAKT_API_URL}/sync/watched/shows`, { headers }),
-  ]);
+  if (token && !token.startsWith('token_user_')) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
-  const movies = moviesRes.ok ? await moviesRes.json() : [];
-  const shows = showsRes.ok ? await showsRes.json() : [];
+  try {
+    let moviesEndpoint = `${TRAKT_API_URL}/sync/watched/movies`;
+    let showsEndpoint = `${TRAKT_API_URL}/sync/watched/shows`;
 
-  return { movies, shows };
+    // If no real token, use public user watched endpoints
+    if (!token || token.startsWith('token_user_')) {
+      if (username) {
+        moviesEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/movies`;
+        showsEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/shows`;
+      } else {
+        return { movies: [], shows: [] };
+      }
+    }
+
+    const [moviesRes, showsRes] = await Promise.all([
+      fetch(moviesEndpoint, { headers }),
+      fetch(showsEndpoint, { headers }),
+    ]);
+
+    const movies = moviesRes.ok ? await moviesRes.json() : [];
+    const shows = showsRes.ok ? await showsRes.json() : [];
+
+    return { movies, shows };
+  } catch (err) {
+    console.error('Failed to fetch Trakt watched history:', err);
+    return { movies: [], shows: [] };
+  }
 }
 
 export async function syncTraktHistory(
@@ -80,11 +57,10 @@ export async function syncTraktHistory(
   action: 'add' | 'remove',
   item: { tmdbId?: number | null; traktId?: number | null; mediaType: 'movie' | 'show' | 'special' }
 ) {
-  const clientId = process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
+  const clientId = getEffectiveTraktClientId();
   const endpoint = action === 'add' ? '/sync/history' : '/sync/history/remove';
 
   const bodyData: Record<string, unknown[]> = {};
-
   const idObject: Record<string, number> = {};
   if (item.traktId) idObject.trakt = item.traktId;
   if (item.tmdbId) idObject.tmdb = item.tmdbId;
@@ -107,8 +83,8 @@ export async function syncTraktHistory(
   });
 
   if (!res.ok) {
-    const err = await res.text();
-    console.warn(`Trakt sync error (${action}):`, err);
+    const errText = await res.text();
+    console.warn(`Trakt history sync warning (${res.status}):`, errText);
   }
 
   return res.ok;

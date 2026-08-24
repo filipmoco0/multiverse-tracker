@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { WatchlistState, TraktUser, FranchiseMedia, MediaType, Universe } from '../types';
 import { syncTraktHistory, fetchTraktWatchedItems } from '../trakt/client';
 import { syncUserProfileToCloud } from '../supabase/user-profile';
+import { MCU_SEED_DATA } from '../seed/mcu-seed';
+import { DCU_SEED_DATA } from '../seed/dcu-seed';
 
 const WATCHED_STORAGE_KEY = 'multiverse_tracker_watched_v1';
 const TRAKT_USER_KEY = 'multiverse_tracker_trakt_user_v1';
@@ -177,33 +179,78 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     set({ isSyncing: true });
 
     try {
-      // 1. If OAuth token exists, fetch watched items
-      if (traktUser.access_token && !traktUser.access_token.startsWith('token_user_')) {
-        const { movies, shows } = await fetchTraktWatchedItems(traktUser.access_token);
-        const { watchedIds } = get();
-        const mergedWatched = { ...watchedIds };
+      const { movies, shows } = await fetchTraktWatchedItems(traktUser.access_token, traktUser.username);
+      const { watchedIds } = get();
+      const mergedWatched = { ...watchedIds };
 
-        // Auto-match tmdb ids from trakt response
-        movies.forEach((m: any) => {
-          if (m.movie?.ids?.tmdb) mergedWatched[`mcu-tmdb-${m.movie.ids.tmdb}`] = true;
-        });
-        shows.forEach((s: any) => {
-          if (s.show?.ids?.tmdb) mergedWatched[`mcu-tmdb-${s.show.ids.tmdb}`] = true;
-        });
+      // Build complete media lookup indexes
+      const allMedia = [...MCU_SEED_DATA, ...DCU_SEED_DATA];
+      const tmdbMap = new Map<number, string[]>();
+      const traktMap = new Map<number, string[]>();
+      const titleMap = new Map<string, string[]>();
 
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(mergedWatched));
+      allMedia.forEach((item) => {
+        if (item.tmdb_id) {
+          const arr = tmdbMap.get(item.tmdb_id) || [];
+          arr.push(item.id);
+          tmdbMap.set(item.tmdb_id, arr);
         }
+        if (item.trakt_id) {
+          const arr = traktMap.get(item.trakt_id) || [];
+          arr.push(item.id);
+          traktMap.set(item.trakt_id, arr);
+        }
+        const cleanTitle = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const arr = titleMap.get(cleanTitle) || [];
+        arr.push(item.id);
+        titleMap.set(cleanTitle, arr);
+      });
 
-        set({
-          watchedIds: mergedWatched,
-          lastSyncedAt: Date.now(),
-        });
-        syncUserProfileToCloud({ watched_ids: mergedWatched });
-      } else {
-        // Instant username connection
-        set({ lastSyncedAt: Date.now() });
+      // Match Watched Movies
+      (movies || []).forEach((m: any) => {
+        const movie = m.movie || m;
+        const tmdbId = movie.ids?.tmdb ? Number(movie.ids.tmdb) : null;
+        const traktId = movie.ids?.trakt ? Number(movie.ids.trakt) : null;
+        const cleanTitle = movie.title ? String(movie.title).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+
+        if (tmdbId && tmdbMap.has(tmdbId)) {
+          tmdbMap.get(tmdbId)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+        if (traktId && traktMap.has(traktId)) {
+          traktMap.get(traktId)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+        if (cleanTitle && titleMap.has(cleanTitle)) {
+          titleMap.get(cleanTitle)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+      });
+
+      // Match Watched Shows
+      (shows || []).forEach((s: any) => {
+        const show = s.show || s;
+        const tmdbId = show.ids?.tmdb ? Number(show.ids.tmdb) : null;
+        const traktId = show.ids?.trakt ? Number(show.ids.trakt) : null;
+        const cleanTitle = show.title ? String(show.title).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+
+        if (tmdbId && tmdbMap.has(tmdbId)) {
+          tmdbMap.get(tmdbId)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+        if (traktId && traktMap.has(traktId)) {
+          traktMap.get(traktId)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+        if (cleanTitle && titleMap.has(cleanTitle)) {
+          titleMap.get(cleanTitle)?.forEach((id) => { mergedWatched[id] = true; });
+        }
+      });
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(WATCHED_STORAGE_KEY, JSON.stringify(mergedWatched));
       }
+
+      set({
+        watchedIds: mergedWatched,
+        lastSyncedAt: Date.now(),
+      });
+      syncUserProfileToCloud({ watched_ids: mergedWatched });
     } catch (error) {
       console.error('Trakt synchronization failed:', error);
     } finally {
