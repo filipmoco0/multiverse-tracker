@@ -3,29 +3,52 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Zap, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle, Cloud } from 'lucide-react';
 import { ComicButton } from '@/components/comic/ComicButton';
 import { ComicBadge } from '@/components/comic/ComicBadge';
-import { TraktAuthModal } from '@/components/auth/TraktAuthModal';
+import { UserAuthModal } from '@/components/auth/UserAuthModal';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
+import { createClient } from '@/lib/supabase/client';
 
 function LandingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setAuthMode, traktUser, authMode } = useWatchlistStore();
+  const { setAuthMode, traktUser } = useWatchlistStore();
 
   const [isEntering, setIsEntering] = useState(false);
-  const [isTraktModalOpen, setIsTraktModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const errorParam = searchParams.get('error');
   const reasonParam = searchParams.get('reason');
+
+  // Auto-redirect to Universe Selection Gate (/select) if user is already signed in or has saved session
+  useEffect(() => {
+    // 1. Check Supabase Auth session
+    const supabase = createClient();
+    if (supabase) {
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session?.user) {
+          router.replace('/select');
+        }
+      });
+    }
+
+    // 2. Check local session / Trakt / Guest mode
+    if (typeof window !== 'undefined') {
+      const storedMode = localStorage.getItem('multiverse_tracker_auth_mode_v1');
+      const storedTrakt = localStorage.getItem('multiverse_tracker_trakt_user_v1');
+      if (storedMode || storedTrakt || traktUser) {
+        router.replace('/select');
+      }
+    }
+  }, [router, traktUser]);
 
   const handleGuestEntry = () => {
     setAuthMode('guest');
     setIsEntering(true);
     setTimeout(() => {
       router.push('/select');
-    }, 300);
+    }, 250);
   };
 
   return (
@@ -49,17 +72,17 @@ function LandingContent() {
               <span className="font-display text-zinc-500 font-bold">VS</span>
               <ComicBadge variant="dc" size="sm">DC COMICS</ComicBadge>
             </div>
-            <ComicBadge variant="gold" size="sm">v1.0 Zero-Cost Edition</ComicBadge>
+            <ComicBadge variant="gold" size="sm">v1.0 Edition</ComicBadge>
           </div>
 
-          {/* OAuth Error Feedback Alert */}
+          {/* Error Feedback Alert */}
           {errorParam && (
             <div className="p-3.5 bg-rose-950/90 border-2 border-rose-600 shadow-[3px_3px_0px_0px_#000000] text-rose-200 text-xs font-sans space-y-1">
               <div className="flex items-center gap-2 font-display uppercase font-bold text-rose-400">
                 <AlertCircle className="w-4 h-4" />
-                Trakt Authorization Notice
+                Notice
               </div>
-              <p>{reasonParam || 'Authentication was cancelled or failed. Please check your Trakt app settings or use Instant Username Connect.'}</p>
+              <p>{reasonParam || 'Authentication notification received.'}</p>
             </div>
           )}
 
@@ -69,7 +92,7 @@ function LandingContent() {
               MULTIVERSE <span className="text-amber-400">TRACKER</span>
             </h1>
             <p className="text-sm sm:text-base text-zinc-300 font-sans max-w-xl mx-auto leading-relaxed">
-              The ultimate progress tracker for the Marvel Cinematic Universe and DC Universe. Follow release order or chronological timelines, sync with Trakt.tv, or jump in instantly as a guest!
+              The ultimate progress tracker for the Marvel Cinematic Universe and DC Universe. Follow release order or chronological timelines, sync across all your devices, or jump in instantly!
             </p>
           </div>
 
@@ -85,30 +108,26 @@ function LandingContent() {
             </div>
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-rose-400">
               <Sparkles className="w-4 h-4 mx-auto mb-1 text-white" />
-              Trakt Cloud Sync
+              Trakt & BYOK
             </div>
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-emerald-400">
               <ShieldCheck className="w-4 h-4 mx-auto mb-1 text-white" />
-              Zero DB Lag
+              Cloud Sync
             </div>
           </div>
 
           {/* Action Gate Options */}
           <div className="space-y-4 pt-2">
-            {/* Primary Action 1: Trakt.tv modal connect */}
+            {/* Primary Action 1: Email Sign In / Sign Up */}
             <ComicButton
-              onClick={() => setIsTraktModalOpen(true)}
-              variant="danger"
+              onClick={() => setIsAuthModalOpen(true)}
+              variant="cyan"
               size="lg"
-              className="w-full flex justify-between items-center bg-[#E62429]"
-              leftIcon={<Zap className="w-5 h-5 text-amber-300" />}
-              rightIcon={<ArrowRight className="w-5 h-5" />}
+              className="w-full flex justify-between items-center"
+              leftIcon={<Mail className="w-5 h-5 text-black" />}
+              rightIcon={<ArrowRight className="w-5 h-5 text-black" />}
             >
-              <span>
-                {authMode === 'trakt' && traktUser
-                  ? `Continue as @${traktUser.username}`
-                  : 'Connect with Trakt.tv (Auto-Sync)'}
-              </span>
+              <span>Sign In / Create Free Account (Cloud Sync)</span>
             </ComicButton>
 
             {/* Secondary Action 2: Continue as Guest */}
@@ -127,7 +146,7 @@ function LandingContent() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 text-xs text-zinc-400 font-sans">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                Guest progress is automatically saved to your browser cache.
+                No sign-up required — guest progress saves locally in your browser.
               </span>
               <button
                 onClick={() => router.push('/admin')}
@@ -140,10 +159,10 @@ function LandingContent() {
         </motion.div>
       </main>
 
-      {/* Trakt Connection Modal */}
-      <TraktAuthModal
-        isOpen={isTraktModalOpen}
-        onClose={() => setIsTraktModalOpen(false)}
+      {/* Email / Cloud User Auth Modal */}
+      <UserAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
     </>
   );
