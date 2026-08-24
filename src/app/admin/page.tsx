@@ -278,10 +278,14 @@ export default function AdminDashboardPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setStatusMsg({ text: data.message || 'Saved to codebase!', type: 'success' });
+        setStatusMsg({ text: data.message || 'Saved successfully!', type: 'success' });
+        if (data.supabaseSaved) setDbSource('supabase');
+      } else {
+        setStatusMsg({ text: `Save Error: ${data.error || 'Database save failed.'}`, type: 'error' });
       }
     } catch (e: any) {
-      console.warn('Save to codebase error:', e);
+      console.error('Save to codebase error:', e);
+      setStatusMsg({ text: `Network Error: ${e.message}`, type: 'error' });
     }
   };
 

@@ -13,21 +13,30 @@ create table if not exists public.franchise_media (
   tmdb_id int,
   poster_path text,
   is_released boolean default true,
-  release_date date,
+  release_date text,
   overview text,
+  seasons int,
+  episodes int,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- In case table already exists with date type or missing columns, alter them safely:
+alter table public.franchise_media alter column release_date type text using release_date::text;
+alter table public.franchise_media add column if not exists seasons int;
+alter table public.franchise_media add column if not exists episodes int;
 
 -- Enable Row Level Security (RLS)
 alter table public.franchise_media enable row level security;
 
--- Policy 1: Everyone (public & authenticated) can view curated franchise tracklist
+-- Policy 1: Everyone can view the franchise tracklist
+drop policy if exists "Public can view franchise media" on public.franchise_media;
 create policy "Public can view franchise media" 
 on public.franchise_media 
 for select 
 using (true);
 
--- Policy 2: Service role / Admin can insert, update, delete
+-- Policy 2: Admin / Service full access
+drop policy if exists "Service role and admin full access" on public.franchise_media;
 create policy "Service role and admin full access" 
 on public.franchise_media 
 for all 
