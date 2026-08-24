@@ -14,7 +14,6 @@ import { TypeFilterTabs } from '@/components/filters/TypeFilter';
 import { StatusFilterTabs } from '@/components/filters/StatusFilter';
 import { triggerComicConfetti } from '@/components/comic/ConfettiCelebration';
 import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
-import { UpcomingCountdownWidget } from '@/components/countdown/UpcomingCountdownWidget';
 import { clsx } from 'clsx';
 
 interface FranchiseTracklistProps {
@@ -225,12 +224,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       <MarathonStatsWidget
         mediaList={initialMedia}
         watchedIds={watchedIds}
-        universe={universe}
-      />
-
-      {/* Upcoming Releases & Live Countdown */}
-      <UpcomingCountdownWidget
-        mediaList={initialMedia}
         universe={universe}
       />
 
