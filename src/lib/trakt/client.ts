@@ -2,6 +2,8 @@ import { useByokStore } from '../store/useByokStore';
 
 export const TRAKT_API_URL = 'https://api.trakt.tv';
 const DEFAULT_TRAKT_KEY = '5a6ddbfaea8f5a6fa58dfc924bc01c23f66085a539bc2b5c00e66c6b4129b8c0';
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MultiverseTracker/1.0';
 
 export function getEffectiveTraktClientId(): string {
   if (typeof window !== 'undefined') {
@@ -15,8 +17,10 @@ export async function fetchTraktWatchedItems(token?: string | null, username?: s
   const clientId = getEffectiveTraktClientId();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'User-Agent': BROWSER_USER_AGENT,
     'trakt-api-version': '2',
     'trakt-api-key': clientId,
+    Accept: 'application/json',
   };
 
   if (token && !token.startsWith('token_user_')) {
@@ -75,9 +79,11 @@ export async function syncTraktHistory(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'User-Agent': BROWSER_USER_AGENT,
       'trakt-api-version': '2',
       'trakt-api-key': clientId,
       Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
     },
     body: JSON.stringify(bodyData),
   });

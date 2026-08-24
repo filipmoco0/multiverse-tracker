@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MultiverseTracker/1.0';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
@@ -20,11 +23,15 @@ export async function GET(request: NextRequest) {
   const redirectUri = `${origin}/api/auth/trakt/callback`;
 
   try {
-    // 1. Exchange code for access token
+    // 1. Exchange code for access token with proper headers
     const tokenRes = await fetch('https://api.trakt.tv/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': BROWSER_USER_AGENT,
+        'trakt-api-version': '2',
+        'trakt-api-key': clientId || '',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         code,
@@ -52,9 +59,11 @@ export async function GET(request: NextRequest) {
     const userRes = await fetch('https://api.trakt.tv/users/me', {
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': BROWSER_USER_AGENT,
         'trakt-api-version': '2',
         'trakt-api-key': clientId || '',
         Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/json',
       },
     });
 
