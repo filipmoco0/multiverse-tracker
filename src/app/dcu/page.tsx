@@ -5,6 +5,9 @@ import { Footer } from '@/components/layout/Footer';
 import { FranchiseTracklist } from '@/components/tracklist/FranchiseTracklist';
 import { getFranchiseMedia } from '@/lib/supabase/client';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'DC Universe (DCU) & Elseworlds Watchlist | Multiverse Tracker',
   description: 'Track DCU Chapter 1: Gods and Monsters, the DCEU Era, and Elseworlds films in release and chronological orders.',

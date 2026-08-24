@@ -5,6 +5,9 @@ import { Footer } from '@/components/layout/Footer';
 import { FranchiseTracklist } from '@/components/tracklist/FranchiseTracklist';
 import { getFranchiseMedia } from '@/lib/supabase/client';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Marvel Cinematic Universe (MCU) Watchlist & Timeline | Multiverse Tracker',
   description: 'Track all MCU Phases 1 to 6, Disney+ series, and Special Presentations in release and chronological orders.',
