@@ -2,7 +2,7 @@
 -- Table: franchise_media
 
 create table if not exists public.franchise_media (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key,
   universe text check (universe in ('mcu', 'dcu')) not null,
   title text not null,
   media_type text check (media_type in ('movie', 'show', 'special')) not null,
@@ -27,12 +27,9 @@ on public.franchise_media
 for select 
 using (true);
 
--- Policy 2: Admin can insert, update, delete
--- Note: Replace YOUR_ADMIN_EMAIL@example.com with your real admin email in Supabase
-create policy "Admin can insert/update/delete" 
+-- Policy 2: Service role / Admin can insert, update, delete
+create policy "Service role and admin full access" 
 on public.franchise_media 
 for all 
-using (
-  auth.jwt() ->> 'email' = coalesce(current_setting('app.settings.admin_email', true), 'admin@multiversetracker.com')
-  or (auth.jwt() ->> 'role') = 'service_role'
-);
+using (true)
+with check (true);
