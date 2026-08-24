@@ -3,26 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RefreshCw, Shield, Layers, Database, Zap, Key, User, Cloud } from 'lucide-react';
+import { Shield, Layers, Sliders, Cloud, Zap, RefreshCw } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useByokStore } from '@/lib/store/useByokStore';
-import { BackupModal } from './BackupModal';
-import { TraktAuthModal } from '../auth/TraktAuthModal';
-import { ByokModal } from '../settings/ByokModal';
-import { UserAuthModal } from '../auth/UserAuthModal';
+import { UnifiedSettingsModal, SettingsTab } from '../settings/UnifiedSettingsModal';
 import { createClient } from '@/lib/supabase/client';
 import { loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { authMode, traktUser, isSyncing, syncWithTrakt } = useWatchlistStore();
-  const { isCustomTmdbActive, isCustomTraktActive } = useByokStore();
+  const { traktUser, isSyncing, syncWithTrakt } = useWatchlistStore();
+  const { isCustomTmdbActive } = useByokStore();
 
-  const [isBackupOpen, setIsBackupOpen] = useState(false);
-  const [isTraktModalOpen, setIsTraktModalOpen] = useState(false);
-  const [isByokModalOpen, setIsByokModalOpen] = useState(false);
-  const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [initialTab, setInitialTab] = useState<SettingsTab>('account');
   const [currentAuthUser, setCurrentAuthUser] = useState<any>(null);
 
   useEffect(() => {
@@ -55,6 +50,11 @@ export const Navbar: React.FC = () => {
   const isMCU = pathname?.startsWith('/mcu');
   const isDCU = pathname?.startsWith('/dcu');
   const isAdmin = pathname?.startsWith('/admin');
+
+  const openSettings = (tab: SettingsTab = 'account') => {
+    setInitialTab(tab);
+    setIsSettingsOpen(true);
+  };
 
   return (
     <>
@@ -116,52 +116,14 @@ export const Navbar: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Right Action Icons (Cloud User, BYOK, Trakt Sync, Backup, Admin) */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Supabase User Cloud Account Button */}
-            <button
-              onClick={() => setIsUserAuthOpen(true)}
-              className={clsx(
-                'flex items-center gap-1.5 px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer',
-                currentAuthUser
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 hover:bg-cyan-500/30'
-                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
-              )}
-              title={currentAuthUser ? `Signed in as ${currentAuthUser.email} (Cloud Synced)` : 'Sign in to sync watchlist across devices'}
-            >
-              <User className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden xl:inline">
-                {currentAuthUser ? currentAuthUser.email?.split('@')[0] : 'Sign In'}
-              </span>
-              {currentAuthUser && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400" title="Cloud Synced" />
-              )}
-            </button>
-
-            {/* BYOK API Keys Button */}
-            <button
-              onClick={() => setIsByokModalOpen(true)}
-              className={clsx(
-                'flex items-center gap-1.5 px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer',
-                isCustomTmdbActive || isCustomTraktActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 hover:bg-cyan-500/30'
-                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
-              )}
-              title="Bring Your Own API Keys (TMDB / Trakt)"
-            >
-              <Key className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden xl:inline">BYOK</span>
-              {(isCustomTmdbActive || isCustomTraktActive) && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              )}
-            </button>
-
-            {/* Trakt Status / Connect button */}
-            {authMode === 'trakt' && traktUser ? (
+          {/* Right Action Icons (Unified Settings & Admin) */}
+          <div className="flex items-center gap-2">
+            {/* Quick Trakt Sync Trigger (If Trakt is connected) */}
+            {traktUser && (
               <button
                 onClick={syncWithTrakt}
                 disabled={isSyncing}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-rose-900/50 hover:bg-rose-900/80 text-rose-300 border-2 border-rose-600 shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border-2 border-rose-600 shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer"
                 title={`Trakt Connected: @${traktUser.username}. Click to sync.`}
               >
                 <RefreshCw className={clsx('w-3.5 h-3.5', isSyncing && 'animate-spin')} />
@@ -169,32 +131,33 @@ export const Navbar: React.FC = () => {
                   {isSyncing ? 'Syncing...' : `@${traktUser.username}`}
                 </span>
               </button>
-            ) : (
-              <button
-                onClick={() => setIsTraktModalOpen(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-[#E62429]/90 hover:bg-[#E62429] text-white border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer"
-                title="Connect Trakt.tv account"
-              >
-                <Zap className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden sm:inline">Trakt</span>
-              </button>
             )}
 
-            {/* Guest Backup */}
+            {/* Unified Settings & Account Button */}
             <button
-              onClick={() => setIsBackupOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer"
-              title="Backup or restore watchlist progress"
+              onClick={() => openSettings('account')}
+              className={clsx(
+                'flex items-center gap-2 px-3 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000] text-xs font-display transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5',
+                currentAuthUser
+                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 hover:bg-cyan-500/30'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200'
+              )}
+              title="Settings & Cloud Account"
             >
-              <Database className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden lg:inline">Backup</span>
+              <Sliders className="w-4 h-4 text-amber-400" />
+              <span className="font-bold uppercase tracking-wider hidden sm:inline">
+                {currentAuthUser ? currentAuthUser.email?.split('@')[0] : 'Settings'}
+              </span>
+              {(currentAuthUser || traktUser || isCustomTmdbActive) && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Cloud Active" />
+              )}
             </button>
 
             {/* Admin Dashboard */}
             <Link
               href="/admin"
               className={clsx(
-                'p-1.5 sm:px-2.5 sm:py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display flex items-center gap-1 transition',
+                'p-1.5 sm:px-2.5 sm:py-1.5 border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-xs font-display flex items-center gap-1 transition',
                 isAdmin
                   ? 'bg-amber-400 text-black font-extrabold'
                   : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800'
@@ -208,17 +171,12 @@ export const Navbar: React.FC = () => {
         </div>
       </header>
 
-      {/* Cloud User Auth Modal */}
-      <UserAuthModal isOpen={isUserAuthOpen} onClose={() => setIsUserAuthOpen(false)} />
-
-      {/* Guest Backup Modal */}
-      <BackupModal isOpen={isBackupOpen} onClose={() => setIsBackupOpen(false)} />
-
-      {/* Trakt Connection Modal */}
-      <TraktAuthModal isOpen={isTraktModalOpen} onClose={() => setIsTraktModalOpen(false)} />
-
-      {/* BYOK API Keys Modal */}
-      <ByokModal isOpen={isByokModalOpen} onClose={() => setIsByokModalOpen(false)} />
+      {/* Unified Settings Modal Hub */}
+      <UnifiedSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        initialTab={initialTab}
+      />
     </>
   );
 };

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Film, Tv, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Universe, MediaType } from '@/lib/types';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 
 interface ComicPosterProps {
   src?: string | null;
@@ -24,6 +25,7 @@ export const ComicPoster: React.FC<ComicPosterProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { greyscaleUnwatched } = useSettingsStore();
 
   const isMCU = universe === 'mcu';
   const hasValidUrl = src && src.startsWith('http') && !src.includes('placeholder');
@@ -42,7 +44,7 @@ export const ComicPoster: React.FC<ComicPosterProps> = ({
           isMCU
             ? 'bg-gradient-to-br from-[#1b121c] via-[#2a131b] to-[#12131c]'
             : 'bg-gradient-to-br from-[#0c1424] via-[#10203a] to-[#080d18]',
-          !isWatched && 'unwatched-filter',
+          !isWatched && greyscaleUnwatched && 'unwatched-filter',
           className
         )}
       >
@@ -105,7 +107,7 @@ export const ComicPoster: React.FC<ComicPosterProps> = ({
         onLoad={() => setIsLoaded(true)}
         className={clsx(
           'w-full h-full object-cover transition-all duration-300',
-          !isWatched && 'unwatched-filter',
+          !isWatched && greyscaleUnwatched && 'unwatched-filter',
           !isLoaded && 'opacity-0 scale-95',
           isLoaded && 'opacity-100 scale-100',
           className

@@ -2,9 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter } from 'lucide-react';
+import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter, SlidersHorizontal } from 'lucide-react';
 import { FranchiseMedia, OrderMode, TypeFilter, StatusFilter, Universe } from '@/lib/types';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { ComicCard } from '@/components/comic/ComicCard';
 import { ComicBadge } from '@/components/comic/ComicBadge';
 import { ComicButton } from '@/components/comic/ComicButton';
@@ -36,18 +37,19 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress } = useWatchlistStore();
+  const { showMarathonStats, enableConfetti } = useSettingsStore();
 
   const isMCU = universe === 'mcu';
 
   // Branch Categories for Marvel
   const marvelBranches = [
     { id: 'all', label: 'All Marvel Multiverse' },
-    { id: 'mcu_main', label: 'MCU Sacred Timeline (Phases 1–6)', match: (p: string) => p.startsWith('Phase') },
+    { id: 'mcu_main', label: 'MCU Timeline (Phases 1–6)', match: (p: string) => p.startsWith('Phase') },
     { id: 'ssu', label: 'Sony Spider-Man (SSU)', match: (p: string) => p.includes('SSU') },
     { id: 'spider_verse', label: 'Spider-Verse & Raimi/Webb', match: (p: string) => p.includes('Spider-Verse') || p.includes('Legacy Spider-Man') },
     { id: 'x_men', label: 'Fox X-Men Universe', match: (p: string) => p.includes('X-Men') },
     { id: 'fox_f4', label: 'Fox Fantastic Four & Daredevil', match: (p: string) => p.includes('Fox Fantastic') },
-    { id: 'defenders', label: 'Marvel Television & Defenders Saga', match: (p: string) => p.includes('Defenders') || p.includes('Marvel Television') },
+    { id: 'defenders', label: 'Defenders & TV Saga', match: (p: string) => p.includes('Defenders') || p.includes('Marvel Television') },
     { id: 'legacy', label: 'Marvel Legacy Standalone', match: (p: string) => p.includes('Marvel Legacy') },
   ];
 
@@ -61,43 +63,52 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   const branches = isMCU ? marvelBranches : dcuBranches;
 
-  // Filter and sort items
+  // Filter and Sort media
   const filteredAndSortedMedia = useMemo(() => {
     return initialMedia
       .filter((item) => {
-        // Branch sub-universe filter
+        // 1. Branch continuity filter
         if (branchFilter !== 'all') {
-          const branch = branches.find((b) => b.id === branchFilter);
-          if (branch && branch.match && !branch.match(item.phase_or_chapter)) {
-            return false;
+          const currentBranch = branches.find((b) => b.id === branchFilter);
+          if (currentBranch && currentBranch.match) {
+            if (!currentBranch.match(item.phase_or_chapter)) return false;
           }
         }
 
-        // Media type filter
-        if (typeFilter !== 'all' && item.media_type !== typeFilter) return false;
+        // 2. Type filter
+        if (typeFilter !== 'all' && item.media_type !== typeFilter) {
+          return false;
+        }
 
-        // Watch status filter
-        const isWatched = Boolean(watchedIds[item.id]);
-        if (statusFilter === 'watched' && !isWatched) return false;
-        if (statusFilter === 'unwatched' && isWatched) return false;
+        // 3. Status filter
+        if (statusFilter === 'watched' && !watchedIds[item.id]) {
+          return false;
+        }
+        if (statusFilter === 'unwatched' && watchedIds[item.id]) {
+          return false;
+        }
 
-        // Search query
+        // 4. Search query
         if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase().trim();
+          const q = searchQuery.toLowerCase();
           const matchTitle = item.title.toLowerCase().includes(q);
-          const matchOverview = item.overview?.toLowerCase().includes(q);
           const matchPhase = item.phase_or_chapter.toLowerCase().includes(q);
-          if (!matchTitle && !matchOverview && !matchPhase) return false;
+          const matchOverview = item.overview?.toLowerCase().includes(q);
+          if (!matchTitle && !matchPhase && !matchOverview) {
+            return false;
+          }
         }
 
         return true;
       })
       .sort((a, b) => {
-        if (orderMode === 'release') {
-          return a.release_order - b.release_order;
+        if (orderMode === 'chronological') {
+          const aOrder = a.chronological_order !== null ? a.chronological_order : a.release_order;
+          const bOrder = b.chronological_order !== null ? b.chronological_order : b.release_order;
+          return aOrder - bOrder;
         } else {
-          const aOrder = a.chronological_order ?? 9999;
-          const bOrder = b.chronological_order ?? 9999;
+          const aOrder = a.release_order;
+          const bOrder = b.release_order;
           return aOrder - bOrder;
         }
       });
@@ -135,7 +146,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     const targetState = !allCurrentlyWatched;
     markPhaseWatched(phaseItems, targetState);
 
-    if (targetState) {
+    if (targetState && enableConfetti) {
       triggerComicConfetti(universe);
     }
   };
@@ -143,19 +154,18 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const handleFranchiseAllToggle = () => {
     const allCurrentlyWatched = filteredAndSortedMedia.every((item) => watchedIds[item.id]);
     markAllWatched(filteredAndSortedMedia, !allCurrentlyWatched);
-    if (!allCurrentlyWatched) {
+    if (!allCurrentlyWatched && enableConfetti) {
       triggerComicConfetti(universe);
     }
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 py-6">
-      {/* Franchise Hero Banner */}
-      <section className="relative bg-[#141624] border-[4px] border-black shadow-[8px_8px_0px_0px_#000000] p-6 sm:p-8 overflow-hidden">
-        {/* Background Halftone Pattern */}
+    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      {/* Streamlined Franchise Hero Banner */}
+      <section className="relative bg-[#141624] border-[4px] border-black shadow-[8px_8px_0px_0px_#000000] p-5 sm:p-7 overflow-hidden">
         <div className={isMCU ? 'absolute inset-0 bg-halftone-marvel opacity-60 pointer-events-none' : 'absolute inset-0 bg-halftone-dc opacity-60 pointer-events-none'} />
 
-        <div className="relative z-10 space-y-6">
+        <div className="relative z-10 space-y-5">
           {/* Header Title Row */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
@@ -163,7 +173,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                 <ComicBadge variant={isMCU ? 'marvel' : 'dc'} size="md">
                   <span className="flex items-center gap-1.5 font-black">
                     {isMCU ? <Flame className="w-4 h-4 text-amber-300" /> : <Zap className="w-4 h-4 text-white" />}
-                    {isMCU ? 'MARVEL MULTIVERSE & MCU' : 'DC UNIVERSE & ELSEWORLDS'}
+                    {isMCU ? 'MARVEL MULTIVERSE' : 'DC UNIVERSE'}
                   </span>
                 </ComicBadge>
                 <ComicBadge variant="white" size="sm">
@@ -177,12 +187,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                   </ComicBadge>
                 )}
               </div>
-              <h1 className="text-3xl sm:text-5xl font-display font-black uppercase text-white tracking-wider">
+              <h1 className="text-2xl sm:text-4xl font-display font-black uppercase text-white tracking-wider">
                 {title}
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-300 font-sans max-w-xl">
-                {subtitle}
-              </p>
             </div>
 
             {/* Quick Franchise Actions */}
@@ -208,11 +215,11 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           </div>
 
           {/* Overall Global Progress HP Bar */}
-          <div className="bg-zinc-950 border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000000] space-y-2">
+          <div className="bg-zinc-950 border-2 border-black p-3.5 shadow-[3px_3px_0px_0px_#000000]">
             <ProgressBar
               total={totalItems}
               watched={totalWatched}
-              label={branchFilter === 'all' ? `${universe.toUpperCase()} Full Multiverse Progress` : `${branches.find(b => b.id === branchFilter)?.label} Progress`}
+              label={branchFilter === 'all' ? `${universe.toUpperCase()} Multiverse Progress` : `${branches.find(b => b.id === branchFilter)?.label} Progress`}
               universe={universe}
               size="lg"
             />
@@ -220,81 +227,77 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         </div>
       </section>
 
-      {/* Marathon Runtime & Superhero Rank Stats */}
-      <MarathonStatsWidget
-        mediaList={initialMedia}
-        watchedIds={watchedIds}
-        universe={universe}
-      />
+      {/* Optional Marathon Stats (Configured via Settings) */}
+      {showMarathonStats && (
+        <MarathonStatsWidget
+          mediaList={initialMedia}
+          watchedIds={watchedIds}
+          universe={universe}
+        />
+      )}
 
-      {/* Universe Branch Filter Tabs */}
-      <section className="bg-[#10121d] border-[3px] border-black p-3 shadow-[4px_4px_0px_0px_#000000] space-y-2">
-        <div className="flex items-center gap-2 text-xs font-display uppercase tracking-wider text-zinc-400">
-          <Filter className="w-3.5 h-3.5 text-amber-400" />
-          <span>Multiverse Universes & Continuities:</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {branches.map((branch) => {
-            const isActive = branchFilter === branch.id;
-            return (
-              <button
-                key={branch.id}
-                onClick={() => setBranchFilter(branch.id)}
-                className={clsx(
-                  'px-3 py-1 font-display text-xs sm:text-sm font-bold uppercase transition border-2 border-black -skew-x-3 select-none cursor-pointer',
-                  isActive
-                    ? isMCU
-                      ? 'bg-marvel-crimson text-white shadow-[2px_2px_0px_0px_#000000]'
-                      : 'bg-[#005792] text-white shadow-[2px_2px_0px_0px_#000000]'
-                    : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 shadow-[1px_1px_0px_0px_#000000]'
-                )}
-              >
-                <span className="inline-block skew-x-3">{branch.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Control / Filter Bar */}
-      <section className="sticky top-20 z-30 bg-[#0d0e17]/95 backdrop-blur-md border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-        {/* Left: Order Mode Toggle */}
-        <div className="flex items-center">
-          <OrderToggle
-            orderMode={orderMode}
-            onChange={setOrderMode}
-            universe={universe}
-          />
+      {/* Unified Compact Sticky Filter Toolbar */}
+      <section className="sticky top-16 sm:top-20 z-30 bg-[#0d0e17]/95 backdrop-blur-md border-[3px] border-black shadow-[5px_5px_0px_0px_#000000] p-3.5 sm:p-4 space-y-3">
+        {/* Row 1: Continuity Universe Selector Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-[11px] font-display uppercase tracking-wider text-zinc-400 font-bold flex items-center gap-1 flex-shrink-0">
+            <Filter className="w-3.5 h-3.5 text-amber-400" /> Universe:
+          </span>
+          <div className="flex items-center gap-1.5 flex-nowrap">
+            {branches.map((branch) => {
+              const isActive = branchFilter === branch.id;
+              return (
+                <button
+                  key={branch.id}
+                  onClick={() => setBranchFilter(branch.id)}
+                  className={clsx(
+                    'px-2.5 py-1 font-display text-xs font-bold uppercase transition border-2 border-black -skew-x-3 select-none flex-shrink-0 cursor-pointer',
+                    isActive
+                      ? isMCU
+                        ? 'bg-marvel-crimson text-white shadow-[2px_2px_0px_0px_#000000]'
+                        : 'bg-[#005792] text-white shadow-[2px_2px_0px_0px_#000000]'
+                      : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  )}
+                >
+                  <span className="inline-block skew-x-3">{branch.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Center: Type and Status Filters */}
-        <div className="flex flex-wrap items-center gap-2">
-          <TypeFilterTabs
-            currentType={typeFilter}
-            onChange={setTypeFilter}
-            universe={universe}
-          />
-          <StatusFilterTabs
-            currentStatus={statusFilter}
-            onChange={setStatusFilter}
-          />
-        </div>
+        {/* Row 2: Order Toggle + Type + Status + Search */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 pt-2 border-t border-zinc-800">
+          <div className="flex flex-wrap items-center gap-2">
+            <OrderToggle
+              orderMode={orderMode}
+              onChange={setOrderMode}
+              universe={universe}
+            />
+            <TypeFilterTabs
+              currentType={typeFilter}
+              onChange={setTypeFilter}
+              universe={universe}
+            />
+            <StatusFilterTabs
+              currentStatus={statusFilter}
+              onChange={setStatusFilter}
+            />
+          </div>
 
-        {/* Right: Search Input */}
-        <div className="relative flex-1 lg:max-w-xs">
-          <div className="relative flex items-center">
+          <div className="relative min-w-[200px] lg:w-64">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search movie, show, or hero..."
-              className="w-full bg-zinc-950 border-2 border-black px-3.5 py-1.5 pl-9 text-xs sm:text-sm text-white placeholder-zinc-500 font-sans focus:outline-none focus:border-amber-400 shadow-[2px_2px_0px_0px_#000000]"
+              placeholder={`Search ${universe.toUpperCase()} titles...`}
+              className="w-full bg-zinc-950 border-2 border-black px-3.5 py-1.5 pl-8 text-xs font-sans text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-400 shadow-[2px_2px_0px_0px_#000000]"
             />
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3 pointer-events-none" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2 text-zinc-400 hover:text-white p-1 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -303,86 +306,73 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         </div>
       </section>
 
-      {/* Tracklist Groups / Media Cards Grid */}
-      <div className="space-y-12">
+      {/* Media Grid Grouped by Phase/Chapter */}
+      <div className="space-y-10">
         {groupedMedia.length === 0 ? (
-          <div className="text-center py-20 bg-[#161824] border-[3px] border-black shadow-[6px_6px_0px_0px_#000000] p-8 space-y-4">
-            <p className="text-xl font-display uppercase text-zinc-400">
-              No titles match your active filters
+          <div className="p-12 text-center bg-[#141624] border-[3px] border-black shadow-[5px_5px_0px_0px_#000000]">
+            <h3 className="font-display font-black text-2xl uppercase text-amber-400 mb-2">
+              No Multiverse Media Found
+            </h3>
+            <p className="text-zinc-400 text-sm font-sans max-w-md mx-auto mb-4">
+              Try adjusting your search query, content type, or universe filter tabs above.
             </p>
             <ComicButton
               onClick={() => {
-                setBranchFilter('all');
                 setTypeFilter('all');
                 setStatusFilter('all');
+                setBranchFilter('all');
                 setSearchQuery('');
               }}
-              variant="gold"
+              variant="cyan"
               size="sm"
             >
-              Reset All Filters
+              Reset Filters
             </ComicButton>
           </div>
         ) : (
           groupedMedia.map((group) => {
-            const phaseTotal = group.items.length;
-            const phaseWatched = group.items.filter((item) => Boolean(watchedIds[item.id])).length;
-            const isPhaseComplete = phaseTotal > 0 && phaseWatched === phaseTotal;
+            const groupWatchedCount = group.items.filter((item) => watchedIds[item.id]).length;
+            const isGroupComplete = groupWatchedCount === group.items.length && group.items.length > 0;
 
             return (
               <section key={group.phase} className="space-y-4">
-                {/* Phase / Chapter Header Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#161824] border-[3px] border-black p-3.5 shadow-[4px_4px_0px_0px_#000000]">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <ComicBadge
-                      variant={isPhaseComplete ? 'green' : isMCU ? 'marvel' : 'cyan'}
-                      size="md"
-                    >
+                {/* Phase Chapter Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-[#12131e] border-l-[6px] border-l-amber-400 border-y-2 border-r-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-lg sm:text-xl font-display font-black uppercase text-white tracking-wider">
                       {group.phase}
+                    </h2>
+                    <ComicBadge variant={isGroupComplete ? 'green' : 'white'} size="sm">
+                      {groupWatchedCount} / {group.items.length}
                     </ComicBadge>
-                    <span className="text-xs font-sans text-zinc-400">
-                      <strong className="text-white font-display text-sm">{phaseWatched}</strong> / {phaseTotal} watched
-                    </span>
                   </div>
 
-                  {/* Batch Mark Phase Action */}
                   <div className="flex items-center gap-2">
-                    <ComicButton
+                    <button
                       onClick={() => handlePhaseToggle(group.items, group.phase)}
-                      variant={isPhaseComplete ? 'danger' : 'gold'}
-                      size="sm"
-                      leftIcon={<CheckCircle2 className="w-4 h-4" />}
+                      className={clsx(
+                        'px-2.5 py-1 text-xs font-display font-bold uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer',
+                        isGroupComplete
+                          ? 'bg-rose-600 hover:bg-rose-500 text-white'
+                          : 'bg-emerald-500 hover:bg-emerald-400 text-black'
+                      )}
                     >
-                      {isPhaseComplete ? 'Unmark Section' : 'Mark Section Watched'}
-                    </ComicButton>
+                      {isGroupComplete ? 'Unmark Phase' : 'Mark Phase Watched'}
+                    </button>
                   </div>
                 </div>
 
-                {/* Phase Mini Progress Meter */}
-                <div className="w-full bg-zinc-950 h-2 border-2 border-black overflow-hidden shadow-[2px_2px_0px_0px_#000000]">
-                  <div
-                    className={
-                      isMCU
-                        ? 'bg-gradient-to-r from-amber-400 to-marvel-crimson h-full transition-all duration-300'
-                        : 'bg-gradient-to-r from-blue-500 to-cyan-400 h-full transition-all duration-300'
-                    }
-                    style={{ width: `${(phaseWatched / phaseTotal) * 100}%` }}
-                  />
-                </div>
-
-                {/* Responsive Media Cards Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                  <AnimatePresence mode="popLayout">
-                    {group.items.map((media) => (
-                      <ComicCard
-                        key={media.id}
-                        media={media}
-                        isWatched={Boolean(watchedIds[media.id])}
-                        orderMode={orderMode}
-                        onToggleWatched={toggleWatched}
-                      />
-                    ))}
-                  </AnimatePresence>
+                {/* Cards Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
+                  {group.items.map((media) => (
+                    <ComicCard
+                      key={media.id}
+                      media={media}
+                      isWatched={Boolean(watchedIds[media.id])}
+                      orderMode={orderMode}
+                      onToggleWatched={toggleWatched}
+                    />
+                  ))}
                 </div>
               </section>
             );

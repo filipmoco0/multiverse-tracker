@@ -19,6 +19,7 @@ import {
   ChevronUp,
 } from 'lucide-react';
 import { FranchiseMedia } from '@/lib/types';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { ComicBadge } from './ComicBadge';
 import { ComicButton } from './ComicButton';
 import { ComicPoster } from './ComicPoster';
@@ -53,10 +54,11 @@ export const MediaModal: React.FC<MediaModalProps> = ({
   const [details, setDetails] = useState<ExtraDetails | null>(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const { showTrailersAndStreaming } = useSettingsStore();
 
   // Fetch TMDB trailer and watch providers whenever media changes
   useEffect(() => {
-    if (!isOpen || !media || !media.tmdb_id) {
+    if (!isOpen || !media || !media.tmdb_id || !showTrailersAndStreaming) {
       setDetails(null);
       setShowTrailer(false);
       return;
