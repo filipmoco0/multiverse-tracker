@@ -3,16 +3,19 @@ import { FranchiseMedia } from '../types';
 import { MCU_SEED_DATA } from '../seed/mcu-seed';
 import { DCU_SEED_DATA } from '../seed/dcu-seed';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const DEFAULT_SUPABASE_URL = 'https://zpdhjktfkojgqqacfuta.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpwZGhqa3Rma29qZ3FxYWNmdXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzY5MzksImV4cCI6MjEwMzE1MjkzOX0.adY7bNE5owZzO2nvuYcnKO3YDm506STURoGJHdI2nWA';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured = true;
 
 export function createClient() {
-  if (!isSupabaseConfigured) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
     return null;
   }
-  return createBrowserClient(supabaseUrl!, supabaseAnonKey!);
+  return createBrowserClient(url, key);
 }
 
 /**
@@ -20,10 +23,6 @@ export function createClient() {
  */
 export async function getFranchiseMedia(universe: 'mcu' | 'dcu'): Promise<FranchiseMedia[]> {
   const seed = universe === 'mcu' ? MCU_SEED_DATA : DCU_SEED_DATA;
-  
-  if (!isSupabaseConfigured) {
-    return seed;
-  }
 
   try {
     const supabase = createClient();
