@@ -15,6 +15,7 @@ import { TypeFilterTabs } from '@/components/filters/TypeFilter';
 import { StatusFilterTabs } from '@/components/filters/StatusFilter';
 import { triggerComicConfetti } from '@/components/comic/ConfettiCelebration';
 import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
+import { PassportModal } from '@/components/passport/PassportModal';
 import { clsx } from 'clsx';
 
 interface FranchiseTracklistProps {
@@ -35,8 +36,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [branchFilter, setBranchFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isPassportOpen, setIsPassportOpen] = useState(false);
 
-  const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress } = useWatchlistStore();
+  const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, traktUser } = useWatchlistStore();
   const { showMarathonStats, enableConfetti } = useSettingsStore();
 
   const isMCU = universe === 'mcu';
@@ -194,6 +196,14 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
             {/* Quick Franchise Actions */}
             <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+              <ComicButton
+                onClick={() => setIsPassportOpen(true)}
+                variant="cyan"
+                size="sm"
+                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+              >
+                Share Passport
+              </ComicButton>
               <ComicButton
                 onClick={handleFranchiseAllToggle}
                 variant={totalWatched === totalItems && totalItems > 0 ? 'danger' : 'gold'}
@@ -379,6 +389,16 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           })
         )}
       </div>
+
+      {/* Multiverse Citizen Passport Modal */}
+      <PassportModal
+        isOpen={isPassportOpen}
+        onClose={() => setIsPassportOpen(false)}
+        mediaList={initialMedia}
+        watchedIds={watchedIds}
+        universe={universe}
+        userName={traktUser?.username}
+      />
     </div>
   );
 };
