@@ -31,6 +31,7 @@ import { useByokStore } from '@/lib/store/useByokStore';
 import { useSettingsStore, AppSettings } from '@/lib/store/useSettingsStore';
 import { createClient } from '@/lib/supabase/client';
 import { syncUserProfileToCloud, loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
+import { triggerComicConfetti } from '../comic/ConfettiCelebration';
 import { clsx } from 'clsx';
 
 export type SettingsTab = 'account' | 'trakt' | 'features' | 'byok' | 'data';
@@ -604,7 +605,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
 
                   {/* Toggle 3: Confetti Celebration */}
                   <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
-                    <div className="space-y-0.5 max-w-[80%]">
+                    <div className="space-y-1 max-w-[70%]">
                       <div className="flex items-center gap-2">
                         <strong className="font-display text-sm uppercase tracking-wide text-white">
                           Comic Confetti Celebrations
@@ -614,6 +615,13 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       <p className="text-xs text-zinc-400 font-sans">
                         Fires superhero-themed confetti blasts when completing phases or chapters.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => triggerComicConfetti('mcu')}
+                        className="inline-flex items-center gap-1 text-[11px] font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline pt-0.5 cursor-pointer"
+                      >
+                        <Sparkles className="w-3 h-3" /> Test Confetti Blast
+                      </button>
                     </div>
                     <button
                       onClick={() => settings.toggleSetting('enableConfetti')}

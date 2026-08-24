@@ -13,7 +13,7 @@ import { ProgressBar } from '@/components/comic/ProgressBar';
 import { OrderToggle } from '@/components/filters/OrderToggle';
 import { TypeFilterTabs } from '@/components/filters/TypeFilter';
 import { StatusFilterTabs } from '@/components/filters/StatusFilter';
-import { triggerComicConfetti } from '@/components/comic/ConfettiCelebration';
+import { triggerComicConfetti, triggerGrandCelebration } from '@/components/comic/ConfettiCelebration';
 import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
 import { PassportModal } from '@/components/passport/PassportModal';
 import { clsx } from 'clsx';
@@ -143,6 +143,37 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     return groups;
   }, [filteredAndSortedMedia, initialMedia, orderMode]);
 
+  const handleSingleCardToggle = (
+    mediaId: string,
+    tmdbId?: number | null,
+    traktId?: number | null,
+    mediaType?: FranchiseMedia['media_type']
+  ) => {
+    const isCurrentlyWatched = Boolean(watchedIds[mediaId]);
+    toggleWatched(mediaId, tmdbId, traktId, mediaType);
+
+    if (!isCurrentlyWatched && enableConfetti) {
+      // Check if this action completes its phase
+      const targetItem = initialMedia.find((m) => m.id === mediaId);
+      if (targetItem) {
+        const phaseItems = initialMedia.filter((m) => m.phase_or_chapter === targetItem.phase_or_chapter);
+        const otherItemsWatched = phaseItems
+          .filter((m) => m.id !== mediaId)
+          .every((m) => Boolean(watchedIds[m.id]));
+
+        if (otherItemsWatched && phaseItems.length >= 1) {
+          triggerComicConfetti(universe);
+        }
+      }
+
+      // Check if entire franchise just completed
+      const currentWatchedCount = initialMedia.filter((m) => Boolean(watchedIds[m.id])).length;
+      if (currentWatchedCount + 1 >= initialMedia.length && initialMedia.length > 0) {
+        triggerGrandCelebration(universe);
+      }
+    }
+  };
+
   const handlePhaseToggle = (phaseItems: FranchiseMedia[], phaseName: string) => {
     const allCurrentlyWatched = phaseItems.every((item) => watchedIds[item.id]);
     const targetState = !allCurrentlyWatched;
@@ -157,7 +188,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     const allCurrentlyWatched = filteredAndSortedMedia.every((item) => watchedIds[item.id]);
     markAllWatched(filteredAndSortedMedia, !allCurrentlyWatched);
     if (!allCurrentlyWatched && enableConfetti) {
-      triggerComicConfetti(universe);
+      triggerGrandCelebration(universe);
     }
   };
 
@@ -182,11 +213,17 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                   {initialMedia.length} Total Titles
                 </ComicBadge>
                 {franchisePercentage === 100 && (
-                  <ComicBadge variant="green" size="md">
-                    <span className="flex items-center gap-1">
-                      <Sparkles className="w-4 h-4" /> 100% COMPLETED!
-                    </span>
-                  </ComicBadge>
+                  <button
+                    onClick={() => triggerGrandCelebration(universe)}
+                    className="cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                    title="Click for celebratory fireworks!"
+                  >
+                    <ComicBadge variant="green" size="md">
+                      <span className="flex items-center gap-1">
+                        <Sparkles className="w-4 h-4" /> 100% COMPLETED! 🎉
+                      </span>
+                    </ComicBadge>
+                  </button>
                 )}
               </div>
               <h1 className="text-2xl sm:text-4xl font-display font-black uppercase text-white tracking-wider">
@@ -380,7 +417,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                       media={media}
                       isWatched={Boolean(watchedIds[media.id])}
                       orderMode={orderMode}
-                      onToggleWatched={toggleWatched}
+                      onToggleWatched={handleSingleCardToggle}
                     />
                   ))}
                 </div>
