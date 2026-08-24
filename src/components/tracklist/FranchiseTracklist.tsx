@@ -162,7 +162,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div className="space-y-6 max-w-[1920px] w-full mx-auto px-3.5 sm:px-8 xl:px-12 py-5 sm:py-7 overflow-x-hidden">
       {/* Streamlined Franchise Hero Banner */}
       <section className="relative bg-[#141624] border-[4px] border-black shadow-[8px_8px_0px_0px_#000000] p-5 sm:p-7 overflow-hidden">
         <div className={isMCU ? 'absolute inset-0 bg-halftone-marvel opacity-60 pointer-events-none' : 'absolute inset-0 bg-halftone-dc opacity-60 pointer-events-none'} />
@@ -373,7 +373,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                 </div>
 
                 {/* Cards Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 3xl:grid-cols-8 gap-3.5 sm:gap-4.5">
                   {group.items.map((media) => (
                     <ComicCard
                       key={media.id}
