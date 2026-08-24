@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
               <img
                 src="/logo.png"
                 alt="Multiverse Tracker Logo"
-                className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] group-hover:rotate-6 transition-transform flex-shrink-0"
+                className="w-8 h-8 sm:w-10 sm:h-10 object-contain group-hover:rotate-6 transition-transform flex-shrink-0"
               />
               <div className="flex flex-col">
                 <span className="font-display font-black text-base sm:text-xl tracking-wider text-white group-hover:text-amber-400 transition-colors uppercase leading-none">
