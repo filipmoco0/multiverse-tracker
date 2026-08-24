@@ -247,11 +247,11 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "release_order": 18,
     "chronological_order": 18,
     "phase_or_chapter": "Chapter 1: Gods & Monsters",
-    "tmdb_id": 1061181,
-    "poster_path": "https://image.tmdb.org/t/p/w500/7cIqNt2YPK1nCf904NFISEScCzk.jpg",
+    "tmdb_id": 539972,
+    "poster_path": "https://image.tmdb.org/t/p/w500/ombsmhYUqkhpnZlhDY1aqtBaiv4.jpg",
     "is_released": true,
-    "release_date": "2023-07-28",
-    "overview": "To defend their kingdom against a sudden invasion, a mighty general returns to the battlefield alongside a war orphan, now grown up, who dreams of glory."
+    "release_date": "2025-07-11",
+    "overview": "Follows the titular superhero as he reconciles his heritage with his human upbringing. He is the embodiment of truth, justice and the American way in a world that views kindness as old-fashioned."
   },
   {
     "id": "dcu-19",
@@ -264,8 +264,8 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 110492,
     "poster_path": "https://image.tmdb.org/t/p/w500/eYzbGcYnOUlvj2fa76pTgIXogd7.jpg",
     "is_released": true,
-    "release_date": "2022-01-13",
-    "overview": "The continuing story of Peacemaker, a vainglorious superhero/supervillain who believes in peace at any cost — no matter how many people he has to kill. After a miraculous recovery from his duel with Bloodsport, Peacemaker soon discovers that his freedom comes at a price."
+    "release_date": "2025-08-01",
+    "overview": "Peacemaker and his ragtag team return for the second season under James Gunn's DCU."
   },
   {
     "id": "dcu-20",
@@ -277,9 +277,9 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Chapter 1: Gods & Monsters",
     "tmdb_id": 1084199,
     "poster_path": "https://image.tmdb.org/t/p/w500/oCoTgC3UyWGfyQ9thE10ulWR7bn.jpg",
-    "is_released": true,
-    "release_date": "2025-01-22",
-    "overview": "During a weekend getaway at a secluded lakeside estate, a group of friends finds themselves entangled in a web of secrets, deception, and advanced technology. As tensions rise and loyalties are tested, they uncover unsettling truths about themselves and the world around them."
+    "is_released": false,
+    "release_date": "2026-06-26",
+    "overview": "Kara Zor-El travels across the cosmos with Krypto to help a young alien girl seek vengeance for her destroyed world."
   },
   {
     "id": "dcu-21",
@@ -291,9 +291,9 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Chapter 1: Gods & Monsters",
     "tmdb_id": 219113,
     "poster_path": "https://image.tmdb.org/t/p/w500/bZledG7Q3TyMu57grHO6ZvCKjpG.jpg",
-    "is_released": true,
-    "release_date": "2011-06-01",
-    "overview": "In this show, host Adam Richman travels to cities around the U.S. to try the signature food dishes of their local eateries. Unlike the previous three seasons of Man v. Food, where he himself took on a food challenge at a local restaurant, in this season, Richman recruits residents of the city he visits to take on a food challenge, while he serves as their coach by giving them tips and advice on how to beat their challenges, using the skills he learned previously from his own food challenges"
+    "is_released": false,
+    "release_date": "2026-09-01",
+    "overview": "Intergalactic cops Hal Jordan and John Stewart investigate a dark mystery on Earth in this gritty detective HBO series."
   },
   {
     "id": "dcu-22",
@@ -307,7 +307,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": null,
     "is_released": false,
     "release_date": "2027-01-01",
-    "overview": "Official DC Chapter 1: Gods & Monsters release."
+    "overview": "The DCU introduction of Batman and his son Damian Wayne as Robin."
   },
   {
     "id": "dcu-23",
@@ -346,10 +346,10 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 25,
     "phase_or_chapter": "Elseworlds",
     "tmdb_id": 137437,
-    "poster_path": "https://image.tmdb.org/t/p/w500/9VW8wF6KpG01fMY4erZ9bw7A4Er.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/yrp5UKKMcRfK68zT74tlDxdsrOI.jpg",
     "is_released": true,
-    "release_date": "2022-12-14",
-    "overview": "While searching for history's greatest treasure, Jess Valenzuela unburies her family's secret past."
+    "release_date": "2024-09-19",
+    "overview": "Following the events of The Batman, Oz Cobb seeks to seize control of the criminal underworld in Gotham City."
   },
   {
     "id": "dcu-26",
@@ -374,9 +374,9 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 27,
     "phase_or_chapter": "Elseworlds",
     "tmdb_id": 974950,
-    "poster_path": "https://image.tmdb.org/t/p/w500/7seqaCaaXDNUHOx4DqwpoOH8pPa.jpg",
-    "is_released": true,
-    "release_date": "2024-08-21",
-    "overview": "Rita, an underrated lawyer working for a large law firm more interested in getting criminals out of jail than bringing them to justice, is hired by the leader of a criminal organization."
+    "poster_path": "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
+    "is_released": false,
+    "release_date": "2026-10-02",
+    "overview": "The second chapter of Matt Reeves' epic Batman crime saga starring Robert Pattinson."
   }
 ];

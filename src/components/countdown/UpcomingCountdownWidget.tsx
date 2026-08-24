@@ -7,10 +7,6 @@ import {
   Hourglass,
   ChevronDown,
   ChevronUp,
-  Sparkles,
-  Flame,
-  Zap,
-  ExternalLink,
 } from 'lucide-react';
 import { FranchiseMedia, Universe } from '@/lib/types';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -32,22 +28,19 @@ export const UpcomingCountdownWidget: React.FC<UpcomingCountdownWidgetProps> = (
   const isMCU = universe === 'mcu';
   const now = new Date().getTime();
 
-  // Filter upcoming or unreleased media items and sort by earliest release date
+  // Filter strictly future/upcoming releases
   const upcomingMedia = useMemo(() => {
     return mediaList
       .filter((item) => {
-        // Explicit unreleased flag
-        if (item.is_released === false) return true;
-        // Or future release date
+        // If release_date is defined, check if it's in the future
         if (item.release_date) {
           const itemTime = new Date(item.release_date).getTime();
-          if (!isNaN(itemTime) && itemTime > now) return true;
-          // Check if string is a future year (e.g., "2026", "2027")
-          const parsedYear = parseInt(item.release_date, 10);
-          const currentYear = new Date().getFullYear();
-          if (!isNaN(parsedYear) && parsedYear >= currentYear) return true;
+          if (!isNaN(itemTime)) {
+            return itemTime > now;
+          }
         }
-        return false;
+        // If unreleased flag is explicitly false and no past date
+        return item.is_released === false;
       })
       .sort((a, b) => {
         const timeA = a.release_date ? new Date(a.release_date).getTime() : 9999999999999;
@@ -64,7 +57,6 @@ export const UpcomingCountdownWidget: React.FC<UpcomingCountdownWidgetProps> = (
 
     const target = new Date(releaseDateStr).getTime();
     if (isNaN(target)) {
-      // If it's just a year like "2026"
       return { text: `Coming in ${releaseDateStr}`, isClose: false };
     }
 
@@ -130,7 +122,7 @@ export const UpcomingCountdownWidget: React.FC<UpcomingCountdownWidgetProps> = (
               <div className="p-5 sm:p-6">
                 {/* Horizontal Scrollable Deck */}
                 <div className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x scrollbar-thin scrollbar-thumb-zinc-700">
-                  {upcomingMedia.map((item, idx) => {
+                  {upcomingMedia.map((item) => {
                     const countdown = getCountdownString(item.release_date);
                     const formattedDate = item.release_date && !isNaN(new Date(item.release_date).getTime())
                       ? new Date(item.release_date).toLocaleDateString('en-US', {

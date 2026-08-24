@@ -883,7 +883,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 822119,
     "poster_path": "https://image.tmdb.org/t/p/w500/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-02-14",
     "overview": "Sam Wilson officially takes up the mantle of Captain America and navigates an international crisis."
   },
   {
@@ -898,7 +898,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 202555,
     "poster_path": "https://image.tmdb.org/t/p/w500/xDUoAsU8lQHOOoRkFiBuarmACDN.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-03-04",
     "overview": "Matt Murdock and Wilson Fisk try to leave behind their darker alter-egos to serve the people of New York."
   },
   {
@@ -913,7 +913,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 986056,
     "poster_path": "https://image.tmdb.org/t/p/w500/hqcexYHbiTBfDIdDWxrxPtVndBX.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-05-02",
     "overview": "An irreverent team-up featuring depressed assassin Yelena Belova alongside the MCU’s least anticipated band of misfits."
   },
   {
@@ -928,7 +928,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 114473,
     "poster_path": "https://image.tmdb.org/t/p/w500/77w0N4C9m4p6fW5v3A9L1zX3u6A.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-06-24",
     "overview": "Genius inventor Riri Williams creates the most advanced suit of armor since Iron Man."
   },
   {
@@ -943,7 +943,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 617126,
     "poster_path": "https://image.tmdb.org/t/p/w500/nf5qaSEvyYSNeFH0YhSs5EsBLX9.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-07-25",
     "overview": "Set against the vibrant backdrop of a 1960s-inspired retro-futuristic world, Marvel's First Family balances superhero life and Galactus."
   },
   {
@@ -958,7 +958,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 241257,
     "poster_path": "https://image.tmdb.org/t/p/w500/w0w2d3P8fA6e5u2T9s7J7e0p6k2.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-08-06",
     "overview": "Throughout Wakandan history, brave warriors have been tasked to retrieve dangerous vibranium artifacts around the globe."
   },
   {
@@ -973,7 +973,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 138505,
     "poster_path": "https://image.tmdb.org/t/p/w500/uYfW8X2qZpL4u5B6W9e5s9q2p3A.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
+    "release_date": "2025-10-03",
     "overview": "A new generation of heroes must battle an ever-spreading zombie scourge in this animated TV-MA series."
   },
   {
@@ -988,7 +988,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 204541,
     "poster_path": "https://image.tmdb.org/t/p/w500/e9s9v2q4f5f8s7w6e5r4t3y2u1o.jpg",
     "is_released": true,
-    "release_date": "2026-01-01",
+    "release_date": "2025-12-01",
     "overview": "Simon Williams is an actor and stuntman who gains superpowers to become superhero Wonder Man."
   },
   {
@@ -1002,8 +1002,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "trakt_id": null,
     "tmdb_id": 202555,
     "poster_path": "https://image.tmdb.org/t/p/w500/xDUoAsU8lQHOOoRkFiBuarmACDN.jpg",
-    "is_released": true,
-    "release_date": "2026-01-01",
+    "is_released": false,
+    "release_date": "2026-03-01",
     "overview": "The next chapter in Matt Murdock's crusade across Hell's Kitchen and New York City."
   },
   {
@@ -1017,8 +1017,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "trakt_id": null,
     "tmdb_id": null,
     "poster_path": "https://image.tmdb.org/t/p/w500/dOkJ6TJKQjsz2XwXyp2VYpkeE5g.jpg",
-    "is_released": true,
-    "release_date": "2026-01-01",
+    "is_released": false,
+    "release_date": "2026-04-01",
     "overview": "Frank Castle returns for a definitive special presentation mission."
   },
   {
@@ -1032,8 +1032,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "trakt_id": null,
     "tmdb_id": 969681,
     "poster_path": "https://image.tmdb.org/t/p/w500/4q2NNj4S5dG2RLF9CpXsej7yXl.jpg",
-    "is_released": true,
-    "release_date": "2026-01-01",
+    "is_released": false,
+    "release_date": "2026-07-24",
     "overview": "Peter Parker navigates a fresh chapter as a street-level Spider-Man in New York City."
   },
   {
@@ -1047,8 +1047,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "trakt_id": null,
     "tmdb_id": null,
     "poster_path": "https://image.tmdb.org/t/p/w500/ijWWwINc8h71NQ8j1LTJMFSj5wr.jpg",
-    "is_released": true,
-    "release_date": "2026-01-01",
+    "is_released": false,
+    "release_date": "2026-09-01",
     "overview": "White Vision embarks on a journey of self-discovery to regain his memories and humanity."
   },
   {
@@ -1062,8 +1062,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "trakt_id": null,
     "tmdb_id": 1003596,
     "poster_path": "https://image.tmdb.org/t/p/w500/h5k0d7f4A9s6w5e4r3t2y1u0i9o.jpg",
-    "is_released": true,
-    "release_date": "2026-01-01",
+    "is_released": false,
+    "release_date": "2026-05-01",
     "overview": "Earth's mightiest heroes clash with Doctor Doom in a universe-altering showdown."
   },
   {
@@ -1078,7 +1078,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 138503,
     "poster_path": "https://image.tmdb.org/t/p/w500/5mUBVvYq22t5k01Z7z6u9g2K9uA.jpg",
     "is_released": false,
-    "release_date": "2027-01-01",
+    "release_date": "2026-11-01",
     "overview": "The second season following Peter Parker's high school superhero journey."
   },
   {
@@ -1108,7 +1108,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 1003598,
     "poster_path": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
     "is_released": false,
-    "release_date": "2027-01-01",
+    "release_date": "2027-05-07",
     "overview": "The catastrophic culmination of the Multiverse Saga as realities collide on Battleworld."
   },
   {
