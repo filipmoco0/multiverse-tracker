@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 export const viewport: Viewport = {
   themeColor: '#0c0d14',
@@ -44,9 +43,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Multiverse" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
-      <body className="font-sans bg-[#0c0d14] text-zinc-100 min-h-screen flex flex-col selection:bg-amber-400 selection:text-black pb-16 sm:pb-0">
+      <body className="font-sans bg-[#0c0d14] text-zinc-100 min-h-screen flex flex-col selection:bg-amber-400 selection:text-black">
         {children}
-        <MobileBottomNav />
       </body>
     </html>
   );

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Full Amber Yellow Background -->
+  <rect width="512" height="512" fill="#f59e0b" />
+
+  <!-- Inner Comic Border -->
+  <rect x="16" y="16" width="480" height="480" fill="none" stroke="#000000" stroke-width="24" />
+
+  <!-- Giant Bold Black "M" centered and slanted -6deg -->
+  <g transform="translate(256, 256) skewX(-6) translate(-256, -256)">
+    <!-- Solid Black Shadow -->
+    <path
+      d="M 124,396 L 124,136 L 194,136 L 256,256 L 318,136 L 388,136 L 388,396 L 324,396 L 324,244 L 274,340 L 238,340 L 188,244 L 188,396 Z"
+      fill="#000000"
+      transform="translate(12, 12)"
+      opacity="0.3"
+    />
+    <!-- Main Black Letter "M" -->
+    <path
+      d="M 124,396 L 124,136 L 194,136 L 256,256 L 318,136 L 388,136 L 388,396 L 324,396 L 324,244 L 274,340 L 238,340 L 188,244 L 188,396 Z"
+      fill="#000000"
+    />
+  </g>
+</svg>
