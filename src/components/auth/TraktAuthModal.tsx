@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Zap, Key, User, ExternalLink, Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { X, Zap, ExternalLink, Check, AlertCircle } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
@@ -21,6 +21,13 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
   const [usernameInput, setUsernameInput] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [redirectUri, setRedirectUri] = useState('https://multiverse-tracker.vercel.app/api/auth/trakt/callback');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRedirectUri(`${window.location.origin}/api/auth/trakt/callback`);
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -29,7 +36,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
   const handleQuickConnect = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameInput.trim()) {
-      setStatusMsg({ text: 'Please enter your Trakt username', type: 'error' });
+      setStatusMsg({ text: 'Please enter your Trakt.tv username', type: 'error' });
       return;
     }
 
@@ -61,7 +68,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
   const handleOAuthLogin = () => {
     if (!hasClientId) {
       setStatusMsg({
-        text: 'Trakt OAuth Client ID is not set in .env.local yet. Use the Quick Connect tab or configure NEXT_PUBLIC_TRAKT_CLIENT_ID.',
+        text: 'Trakt OAuth app is not configured yet. Use the Instant Connect tab or configure Trakt API keys.',
         type: 'error',
       });
       return;
@@ -139,7 +146,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
             /* TAB 1: Instant Username Connect */
             <form onSubmit={handleQuickConnect} className="space-y-4">
               <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                Enter your Trakt.tv username to sync your viewing history across all MCU and DCU titles without needing to create API applications!
+                Enter your public Trakt.tv username to sync your watched movies and TV series across all MCU and DCU timelines instantly!
               </p>
 
               <div>
@@ -153,7 +160,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
                     required
                     value={usernameInput}
                     onChange={(e) => setUsernameInput(e.target.value)}
-                    placeholder="e.g. filipmoslavac or moviefan"
+                    placeholder="e.g. superhero_fan or movielover"
                     className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-8 text-sm text-white font-sans focus:outline-none focus:border-amber-400"
                   />
                 </div>
@@ -182,24 +189,24 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
             /* TAB 2: Trakt OAuth 2.0 App Setup */
             <div className="space-y-4">
               <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                Connect directly through Trakt’s official OAuth popup window.
+                Connect securely through Trakt’s official OAuth authorization window.
               </p>
 
               <div className="bg-zinc-900 border-2 border-black p-3.5 shadow-[3px_3px_0px_0px_#000000] space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-display uppercase text-zinc-400">OAuth Client ID Status:</span>
                   <ComicBadge variant={hasClientId ? 'green' : 'dark'} size="sm">
-                    {hasClientId ? 'CONFIGURED' : 'NOT SET IN .ENV.LOCAL'}
+                    {hasClientId ? 'CONFIGURED' : 'OPTIONAL SETUP'}
                   </ComicBadge>
                 </div>
 
                 {!hasClientId && (
                   <div className="text-[11px] text-zinc-400 font-sans space-y-1.5 pt-2 border-t border-zinc-800">
-                    <p className="font-bold text-amber-300">How to enable Trakt OAuth:</p>
+                    <p className="font-bold text-amber-300">How to configure custom Trakt OAuth:</p>
                     <ol className="list-decimal list-inside space-y-1">
-                      <li>Go to <a href="https://trakt.tv/oauth/applications" target="_blank" rel="noreferrer" className="text-cyan-400 underline">trakt.tv/oauth/applications</a></li>
-                      <li>Create an app with Redirect URI: <code className="bg-black px-1.5 py-0.5 text-amber-300 border border-zinc-700 text-[10px]">http://localhost:3000/api/auth/trakt/callback</code></li>
-                      <li>Add <code className="bg-black px-1 text-white">NEXT_PUBLIC_TRAKT_CLIENT_ID</code> and <code className="bg-black px-1 text-white">TRAKT_CLIENT_SECRET</code> to <code className="text-amber-300">.env.local</code>.</li>
+                      <li>Go to <a href="https://trakt.tv/oauth/applications" target="_blank" rel="noreferrer" className="text-cyan-400 underline inline-flex items-center gap-0.5">trakt.tv/oauth/applications <ExternalLink className="w-2.5 h-2.5" /></a></li>
+                      <li>Create an app with Redirect URI: <code className="bg-black px-1.5 py-0.5 text-amber-300 border border-zinc-700 text-[10px] break-all">{redirectUri}</code></li>
+                      <li>Add your Client ID & Secret in <strong>BYOK Settings</strong> or environment variables.</li>
                     </ol>
                   </div>
                 )}
