@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Lock, Mail, Check, AlertCircle, Sparkles, Cloud, RefreshCw, LogOut } from 'lucide-react';
+import { X, Lock, Mail, Check, AlertCircle, Sparkles, Cloud, RefreshCw, LogOut } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
 import { createClient } from '@/lib/supabase/client';
@@ -16,8 +16,10 @@ interface UserAuthModalProps {
 }
 
 export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose }) => {
-  const { watchedIds, traktUser } = useWatchlistStore();
-  const { tmdbApiKey } = useByokStore();
+  const watchedIds = useWatchlistStore((s) => s.watchedIds);
+  const traktUser = useWatchlistStore((s) => s.traktUser);
+  const tmdbApiKey = useByokStore((s) => s.tmdbApiKey);
+  const traktClientId = useByokStore((s) => s.traktClientId);
 
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -27,12 +29,16 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // Check current auth status on open
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       const supabase = createClient();
       if (supabase) {
         supabase.auth.getSession().then(({ data }) => {
-          setCurrentUser(data.session?.user || null);
+          const user = data.session?.user || null;
+          setCurrentUser(user);
+          if (user) {
+            loadUserProfileFromCloud(user.id);
+          }
         });
       }
     }
@@ -61,7 +67,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
         setStatusMsg({ text: error.message, type: 'error' });
       } else if (data.user) {
         setCurrentUser(data.user);
-        setStatusMsg({ text: 'Signed in! Syncing your cloud watchlist...', type: 'success' });
+        setStatusMsg({ text: 'Signed in! Syncing cloud watchlist...', type: 'success' });
         
         // Load and hydrate profile
         await loadUserProfileFromCloud(data.user.id);
@@ -114,6 +120,21 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
       }
     } catch (err: any) {
       setStatusMsg({ text: err.message || 'Failed to sign up', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualSync = async () => {
+    setLoading(true);
+    try {
+      await syncUserProfileToCloud();
+      if (currentUser?.id) {
+        await loadUserProfileFromCloud(currentUser.id);
+      }
+      setStatusMsg({ text: 'Watchlist, Trakt & BYOK keys synced with cloud!', type: 'success' });
+    } catch (err: any) {
+      setStatusMsg({ text: 'Sync failed: ' + err.message, type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -202,7 +223,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
                 </div>
                 <p className="font-mono text-sm text-cyan-300 break-all">{currentUser.email}</p>
 
-                <div className="pt-2 border-t border-zinc-800 text-xs text-zinc-400 space-y-1 font-sans">
+                <div className="pt-2 border-t border-zinc-800 text-xs text-zinc-400 space-y-1.5 font-sans">
                   <div className="flex items-center justify-between">
                     <span>Watched Titles:</span>
                     <strong className="text-white">{Object.keys(watchedIds).length} titles</strong>
@@ -212,23 +233,40 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
                     <strong className="text-amber-400">{traktUser ? `@${traktUser.username}` : 'None'}</strong>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>BYOK API Key:</span>
+                    <span>BYOK TMDB Key:</span>
                     <strong className="text-cyan-400">{tmdbApiKey ? 'Configured' : 'None'}</strong>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>BYOK Trakt App:</span>
+                    <strong className="text-marvel-crimson">{traktClientId ? 'Configured' : 'None'}</strong>
                   </div>
                 </div>
               </div>
 
-              <ComicButton
-                type="button"
-                onClick={handleSignOut}
-                disabled={loading}
-                variant="danger"
-                size="md"
-                className="w-full"
-                leftIcon={<LogOut className="w-4 h-4" />}
-              >
-                {loading ? 'Signing Out...' : 'Sign Out of Account'}
-              </ComicButton>
+              <div className="flex items-center gap-2">
+                <ComicButton
+                  type="button"
+                  onClick={handleManualSync}
+                  disabled={loading}
+                  variant="gold"
+                  size="md"
+                  className="flex-1"
+                  leftIcon={<RefreshCw className={`w-4 h-4 text-black ${loading ? 'animate-spin' : ''}`} />}
+                >
+                  Sync Now
+                </ComicButton>
+
+                <ComicButton
+                  type="button"
+                  onClick={handleSignOut}
+                  disabled={loading}
+                  variant="danger"
+                  size="md"
+                  leftIcon={<LogOut className="w-4 h-4" />}
+                >
+                  Sign Out
+                </ComicButton>
+              </div>
             </div>
           ) : (
             /* Sign In / Sign Up Tabs */

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key, X, Check, ExternalLink, ShieldCheck, AlertCircle, Trash2, RefreshCw, Sparkles } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
@@ -30,6 +30,16 @@ export const ByokModal: React.FC<ByokModalProps> = ({ isOpen, onClose }) => {
 
   const [isTestingTmdb, setIsTestingTmdb] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // Sync inputs whenever modal opens or store keys update
+  useEffect(() => {
+    if (isOpen) {
+      setInputTmdb(tmdbApiKey || '');
+      setInputTraktId(traktClientId || '');
+      setInputTraktSecret(traktClientSecret || '');
+      setTestResult(null);
+    }
+  }, [isOpen, tmdbApiKey, traktClientId, traktClientSecret]);
 
   if (!isOpen) return null;
 
@@ -61,10 +71,10 @@ export const ByokModal: React.FC<ByokModalProps> = ({ isOpen, onClose }) => {
   const handleSave = () => {
     setTmdbApiKey(inputTmdb);
     setTraktCredentials(inputTraktId, inputTraktSecret);
-    setTestResult({ success: true, message: 'BYOK keys saved locally in your browser!' });
+    setTestResult({ success: true, message: 'BYOK keys saved and synced!' });
     setTimeout(() => {
       onClose();
-    }, 1200);
+    }, 1000);
   };
 
   const handleClearAll = () => {
@@ -122,9 +132,9 @@ export const ByokModal: React.FC<ByokModalProps> = ({ isOpen, onClose }) => {
           <div className="bg-zinc-950 border-2 border-black p-3.5 shadow-[3px_3px_0px_0px_#000000] flex items-start gap-2.5 text-xs text-zinc-300 font-sans">
             <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
             <div>
-              <strong className="text-white font-display uppercase tracking-wide">100% Client-Side Privacy:</strong>
+              <strong className="text-white font-display uppercase tracking-wide">Cloud & Local Storage:</strong>
               <p className="mt-0.5">
-                Your keys are stored exclusively in your browser’s <code>localStorage</code>. They are never sent to external third-party servers.
+                Your keys are stored in your browser and automatically synced to your logged-in account.
               </p>
             </div>
           </div>
@@ -214,7 +224,7 @@ export const ByokModal: React.FC<ByokModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <p className="text-xs text-zinc-400 font-sans">
-              Used for OAuth watch history syncing and 1-click Trakt scrobbling. Redirect URI: <code>https://your-domain.vercel.app/api/auth/trakt/callback</code>.
+              Used for OAuth watch history syncing and 1-click Trakt scrobbling.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

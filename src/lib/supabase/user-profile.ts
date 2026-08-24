@@ -7,12 +7,14 @@ export interface UserProfileData {
   trakt_username?: string | null;
   trakt_token?: string | null;
   tmdb_api_key?: string | null;
+  trakt_client_id?: string | null;
+  trakt_client_secret?: string | null;
 }
 
 /**
  * Saves or updates user profile in Supabase table `user_profiles`.
  */
-export async function syncUserProfileToCloud(data: Partial<UserProfileData>) {
+export async function syncUserProfileToCloud(data: Partial<UserProfileData> = {}) {
   try {
     const supabase = createClient();
     if (!supabase) return;
@@ -21,11 +23,18 @@ export async function syncUserProfileToCloud(data: Partial<UserProfileData>) {
     const user = sessionData.session?.user;
     if (!user) return;
 
+    const currentWatched = useWatchlistStore.getState().watchedIds;
+    const currentTrakt = useWatchlistStore.getState().traktUser;
+    const currentByok = useByokStore.getState();
+
     const payload: any = {
       id: user.id,
       email: user.email,
+      watched_ids: data.watched_ids !== undefined ? data.watched_ids : currentWatched,
+      trakt_username: data.trakt_username !== undefined ? data.trakt_username : (currentTrakt?.username || null),
+      trakt_token: data.trakt_token !== undefined ? data.trakt_token : (currentTrakt?.access_token || null),
+      tmdb_api_key: data.tmdb_api_key !== undefined ? data.tmdb_api_key : (currentByok.tmdbApiKey || null),
       updated_at: new Date().toISOString(),
-      ...data,
     };
 
     const { error } = await supabase
@@ -63,7 +72,6 @@ export async function loadUserProfileFromCloud(userId: string) {
       // 1. Hydrate Watched IDs
       if (data.watched_ids && typeof data.watched_ids === 'object') {
         const store = useWatchlistStore.getState();
-        // Merge with any local progress
         const mergedWatched = { ...store.watchedIds, ...data.watched_ids };
         localStorage.setItem('multiverse_tracker_watched_v1', JSON.stringify(mergedWatched));
         useWatchlistStore.setState({ watchedIds: mergedWatched });
@@ -86,6 +94,9 @@ export async function loadUserProfileFromCloud(userId: string) {
       }
 
       return data;
+    } else {
+      // If profile does not exist yet, initialize it with current state
+      await syncUserProfileToCloud();
     }
   } catch (err) {
     console.warn('Load user profile fatal error:', err);
