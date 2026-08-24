@@ -246,8 +246,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         />
       )}
 
-      {/* Unified Compact Sticky Filter Toolbar */}
-      <section className="sticky top-16 sm:top-20 z-30 bg-[#0d0e17]/95 backdrop-blur-md border-[3px] border-black shadow-[5px_5px_0px_0px_#000000] p-3.5 sm:p-4 space-y-3">
+      {/* Unified Compact Filter Toolbar (Static, scrolls naturally with page) */}
+      <section className="relative bg-[#0d0e17] border-[3px] border-black shadow-[5px_5px_0px_0px_#000000] p-3.5 sm:p-4 space-y-3">
         {/* Row 1: Continuity Universe Selector Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[11px] font-display uppercase tracking-wider text-zinc-400 font-bold flex items-center gap-1 flex-shrink-0">
