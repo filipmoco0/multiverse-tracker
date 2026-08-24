@@ -41,10 +41,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Multiverse" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=6" />
-        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png?v=6" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=6" />
-        <link rel="shortcut icon" href="/favicon.ico?v=6" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=7" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png?v=7" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=7" />
+        <link rel="shortcut icon" href="/favicon.ico?v=7" />
       </head>
       <body className="font-sans bg-[#0c0d14] text-zinc-100 min-h-screen flex flex-col selection:bg-amber-400 selection:text-black">
         {children}
