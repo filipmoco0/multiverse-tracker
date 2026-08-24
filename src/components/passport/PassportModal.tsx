@@ -17,6 +17,7 @@ import {
   Zap,
   Flame,
   CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
@@ -44,6 +45,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -102,11 +104,12 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const handleDownload = async () => {
     if (!cardRef.current) return;
     setIsDownloading(true);
+    setShareFeedback(null);
 
     try {
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
-        pixelRatio: 2, // High resolution
+        pixelRatio: 2,
         backgroundColor: '#0c0d14',
       });
 
@@ -114,37 +117,78 @@ export const PassportModal: React.FC<PassportModalProps> = ({
       link.download = `multiverse-passport-${universe}-${holderName.replace('@', '')}.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
+      setShareFeedback('Passport image downloaded successfully!');
+      setTimeout(() => setShareFeedback(null), 4000);
+    } catch (err: any) {
       console.error('Failed to generate passport image:', err);
+      setShareFeedback('Failed to download image. Try taking a screenshot.');
     } finally {
       setIsDownloading(false);
     }
   };
 
-  // Copy share message
-  const handleCopyText = () => {
-    const shareText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!\nTrack yours at https://multiverse-tracker.vercel.app/${universe}`;
-    navigator.clipboard.writeText(shareText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+  // Cross-browser clipboard helper
+  const copyTextToClipboard = async (text: string): Promise<boolean> => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        // Fall back to execCommand
+      }
+    }
+
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return successful;
+    } catch {
+      return false;
+    }
   };
 
-  // Mobile Web Share
-  const handleNativeShare = async () => {
-    const shareData = {
-      title: `${holderName}'s Multiverse Passport`,
-      text: `🦸‍♂️ My ${isMCU ? 'Marvel' : 'DC'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!`,
-      url: `https://multiverse-tracker.vercel.app/${universe}`,
-    };
+  // Share action with native Web Share and Clipboard fallback
+  const handleShare = async () => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://multiverse-tracker.vercel.app/${universe}`;
+    const shareText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!\nTrack yours at ${shareUrl}`;
 
-    if (navigator.share) {
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
       try {
-        await navigator.share(shareData);
-      } catch (err) {
-        // Ignored if cancelled
+        await navigator.share({
+          title: `${holderName}'s Multiverse Passport`,
+          text: shareText,
+          url: shareUrl,
+        });
+        setShareFeedback('Shared successfully!');
+        setTimeout(() => setShareFeedback(null), 4000);
+        return;
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          return; // User dismissed share sheet
+        }
       }
+    }
+
+    // Fallback: Copy to clipboard
+    const success = await copyTextToClipboard(shareText);
+    if (success) {
+      setCopied(true);
+      setShareFeedback('Copied share text and link to clipboard! Ready to paste.');
+      setTimeout(() => {
+        setCopied(false);
+        setShareFeedback(null);
+      }, 4000);
     } else {
-      handleCopyText();
+      setShareFeedback(`Please copy link manually: ${shareUrl}`);
     }
   };
 
@@ -192,6 +236,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
             </button>
           </div>
 
+          {/* Feedback banner */}
+          {shareFeedback && (
+            <div className="p-3 bg-emerald-950 border-b-2 border-black text-xs font-sans text-emerald-300 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+              <span>{shareFeedback}</span>
+            </div>
+          )}
+
           {/* Body with Scroll */}
           <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
             {/* The Actual Passport Card that gets captured */}
@@ -216,7 +268,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                     </span>
                   </div>
                   <span className="text-[10px] font-mono text-zinc-400 tracking-wider">
-                    ID: #{universe.toUpperCase()}-{Math.floor(10000 + Math.random() * 90000)}
+                    ID: #{universe.toUpperCase()}-84920
                   </span>
                 </div>
                 <ComicBadge variant="gold" size="sm">
@@ -325,7 +377,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </ComicButton>
 
               <ComicButton
-                onClick={handleNativeShare}
+                onClick={handleShare}
                 variant="cyan"
                 size="md"
                 className="flex-1"
