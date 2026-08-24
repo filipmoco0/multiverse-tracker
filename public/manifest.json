@@ -1,0 +1,35 @@
+{
+  "name": "Multiverse Tracker - MCU & DCU Watchlist",
+  "short_name": "Multiverse",
+  "description": "The ultimate comic-style watchlist tracker for Marvel Cinematic Universe and DC Universe.",
+  "start_url": "/select",
+  "display": "standalone",
+  "background_color": "#0c0d14",
+  "theme_color": "#0c0d14",
+  "orientation": "portrait",
+  "categories": ["entertainment", "movies", "comics"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Marvel MCU Tracklist",
+      "short_name": "Marvel",
+      "description": "Open Marvel Cinematic Universe tracklist",
+      "url": "/mcu",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "DC Universe Tracklist",
+      "short_name": "DC",
+      "description": "Open DC Universe tracklist",
+      "url": "/dcu",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}
