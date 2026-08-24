@@ -102,23 +102,29 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const targetEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@multiversetracker.com';
+    setAuthError('');
 
-    if (
-      adminEmailInput.toLowerCase().trim() === targetEmail.toLowerCase().trim() ||
-      adminEmailInput.toLowerCase().trim() === 'admin' ||
-      adminPassInput === 'multiverse2025' ||
-      adminPassInput === 'admin'
-    ) {
-      setIsAdminAuthenticated(true);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('multiverse_admin_auth', 'true');
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmailInput, password: adminPassInput }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIsAdminAuthenticated(true);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('multiverse_admin_auth', 'true');
+        }
+        setAuthError('');
+      } else {
+        setAuthError(data.error || 'Invalid admin email or security passcode.');
       }
-      setAuthError('');
-    } else {
-      setAuthError(`Invalid admin credentials. Authorized: ${targetEmail}`);
+    } catch (err: any) {
+      setAuthError('Authentication request failed. Please try again.');
     }
   };
 
