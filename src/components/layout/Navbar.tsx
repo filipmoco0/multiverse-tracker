@@ -64,9 +64,11 @@ export const Navbar: React.FC = () => {
               href="/select"
               className="flex items-center gap-1.5 sm:gap-2 group transition-transform active:scale-95"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-400 border-[2.5px] sm:border-[3px] border-black shadow-[2px_2px_0px_0px_#000000] -skew-x-6 flex items-center justify-center font-display font-black text-lg sm:text-2xl text-black group-hover:rotate-6 transition-transform">
-                M
-              </div>
+              <img
+                src="/logo.png"
+                alt="Multiverse Tracker Logo"
+                className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] group-hover:rotate-6 transition-transform flex-shrink-0"
+              />
               <div className="flex flex-col">
                 <span className="font-display font-black text-base sm:text-xl tracking-wider text-white group-hover:text-amber-400 transition-colors uppercase leading-none">
                   <span className="hidden xs:inline">Multiverse</span>

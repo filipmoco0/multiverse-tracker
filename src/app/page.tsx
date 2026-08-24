@@ -84,7 +84,12 @@ function LandingContent() {
           )}
 
           {/* Hero Title & Subtitle */}
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-3 flex flex-col items-center">
+            <img
+              src="/logo.png"
+              alt="Multiverse Tracker Logo"
+              className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] -skew-x-6"
+            />
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-wider uppercase leading-none text-white">
               MULTIVERSE <span className="text-amber-400">TRACKER</span>
             </h1>
