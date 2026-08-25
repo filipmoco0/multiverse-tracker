@@ -44,7 +44,7 @@ export interface WatchlistState {
   lastSyncedAt: number | null;
   
   // Actions
-  toggleWatched: (mediaId: string, tmdbId?: number | null, traktId?: number | null, mediaType?: MediaType) => Promise<void>;
+  toggleWatched: (mediaId: string, tmdbId?: number | null, traktId?: number | null, mediaType?: MediaType, seasonNumber?: number | number[] | null) => Promise<void>;
   markPhaseWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
   markAllWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
   setAuthMode: (mode: 'guest' | 'trakt' | 'supabase') => void;

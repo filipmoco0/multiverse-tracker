@@ -70,7 +70,12 @@ export async function fetchTraktWatchedItems(token?: string | null, username?: s
 export async function syncTraktHistory(
   token: string,
   action: 'add' | 'remove',
-  item: { tmdbId?: number | null; traktId?: number | null; mediaType: 'movie' | 'show' | 'special' }
+  item: {
+    tmdbId?: number | null;
+    traktId?: number | null;
+    mediaType: 'movie' | 'show' | 'special';
+    seasonNumber?: number | number[] | null;
+  }
 ) {
   const clientId = getEffectiveTraktClientId();
   const endpoint = action === 'add' ? '/sync/history' : '/sync/history/remove';
@@ -83,7 +88,17 @@ export async function syncTraktHistory(
   if (item.mediaType === 'movie' || item.mediaType === 'special') {
     bodyData.movies = [{ ids: idObject }];
   } else {
-    bodyData.shows = [{ ids: idObject }];
+    if (item.seasonNumber) {
+      const seasonsArr = Array.isArray(item.seasonNumber) ? item.seasonNumber : [item.seasonNumber];
+      bodyData.shows = [
+        {
+          ids: idObject,
+          seasons: seasonsArr.map((num) => ({ number: num })),
+        },
+      ];
+    } else {
+      bodyData.shows = [{ ids: idObject }];
+    }
   }
 
   const res = await fetch(`${TRAKT_API_URL}${endpoint}`, {
