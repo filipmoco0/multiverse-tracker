@@ -11,6 +11,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://multiversetracker.com'),
   title: 'Multiverse Tracker | MCU & DCU Watchlist & Progress Tracker',
   description: 'Curated progress tracker for Marvel Cinematic Universe & DC Universe in release and chronological orders. Sync with Trakt.tv or track as Guest.',
   manifest: '/manifest.json',
@@ -27,6 +28,21 @@ export const metadata: Metadata = {
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
+  },
+  openGraph: {
+    title: 'Multiverse Tracker | Marvel & DC Cinematic Universe',
+    description: 'Track your MCU & DCU movies and TV shows in release and chronological orders.',
+    url: 'https://multiversetracker.com',
+    siteName: 'Multiverse Tracker',
+    images: [
+      {
+        url: '/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Multiverse Tracker Logo',
+      },
+    ],
+    type: 'website',
   },
 };
 

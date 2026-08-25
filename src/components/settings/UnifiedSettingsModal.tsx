@@ -643,7 +643,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                             <button
                               type="button"
                               onClick={() => {
-                                const uri = typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiverse-tracker.vercel.app/api/auth/trakt/callback';
+                                const uri = typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiversetracker.com/api/auth/trakt/callback';
                                 navigator.clipboard.writeText(uri);
                                 setStatusMsg({ text: 'Redirect URI copied to clipboard!', type: 'success' });
                               }}

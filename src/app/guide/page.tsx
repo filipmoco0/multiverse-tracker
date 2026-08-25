@@ -46,7 +46,7 @@ export default function GuidePage() {
   const currentRedirectUri =
     typeof window !== 'undefined'
       ? `${window.location.origin}/api/auth/trakt/callback`
-      : 'https://multiverse-tracker.vercel.app/api/auth/trakt/callback';
+      : 'https://multiversetracker.com/api/auth/trakt/callback';
 
   return (
     <div className="min-h-screen bg-[#0a0b10] text-zinc-100 flex flex-col selection:bg-amber-400 selection:text-black">

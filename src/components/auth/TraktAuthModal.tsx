@@ -23,7 +23,7 @@ export const TraktAuthModal: React.FC<TraktAuthModalProps> = ({ isOpen, onClose 
   const [usernameInput, setUsernameInput] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
-  const [redirectUri, setRedirectUri] = useState('https://multiverse-tracker.vercel.app/api/auth/trakt/callback');
+  const [redirectUri, setRedirectUri] = useState('https://multiversetracker.com/api/auth/trakt/callback');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

@@ -158,7 +158,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   // Share action with native Web Share and Clipboard fallback
   const handleShare = async () => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://multiverse-tracker.vercel.app/${universe}`;
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://multiversetracker.com/${universe}`;
     const shareText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!\nTrack yours at ${shareUrl}`;
 
     if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
