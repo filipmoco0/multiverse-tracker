@@ -197,7 +197,8 @@ export async function GET(request: NextRequest) {
           avatar: avatar,
           access_token: accessToken,
           refresh_token: refreshToken,
-          expires_at: Date.now() + (expiresIn * 1000)
+          expires_at: Date.now() + (expiresIn * 1000),
+          client_id: clientId
         };
 
         // 3. Save to localStorage

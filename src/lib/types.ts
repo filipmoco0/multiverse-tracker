@@ -31,6 +31,7 @@ export interface TraktUser {
   access_token: string;
   refresh_token?: string;
   expires_at?: number;
+  client_id?: string;
 }
 
 export interface WatchlistState {

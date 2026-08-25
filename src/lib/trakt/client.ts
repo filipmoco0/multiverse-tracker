@@ -7,8 +7,19 @@ const BROWSER_USER_AGENT =
 
 export function getEffectiveTraktClientId(): string {
   if (typeof window !== 'undefined') {
+    // First try BYOK store
     const byokKey = useByokStore.getState().traktClientId;
     if (byokKey) return byokKey;
+
+    // Then try the client_id stored alongside the OAuth token
+    // This ensures the Client ID always matches the app that issued the token
+    try {
+      const raw = localStorage.getItem('multiverse_tracker_trakt_user_v1');
+      if (raw) {
+        const user = JSON.parse(raw);
+        if (user?.client_id) return user.client_id;
+      }
+    } catch {}
   }
   return process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
 }
