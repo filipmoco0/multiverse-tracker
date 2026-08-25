@@ -64,7 +64,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     resetProgress,
   } = useWatchlistStore();
 
-  const { tmdbApiKey, setTmdbApiKey, clearKeys } = useByokStore();
+  const { tmdbApiKey, setTmdbApiKey, traktClientId, traktClientSecret, setTraktCredentials, clearKeys } = useByokStore();
   const settings = useSettingsStore();
 
   // Local state for Account Tab
@@ -74,8 +74,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   const [authPassword, setAuthPassword] = useState('');
   const [isSignUpMode, setIsSignUpMode] = useState(false);
 
-  // Local state for BYOK Tab
+  // Local state for BYOK & Trakt Credentials
   const [inputTmdbKey, setInputTmdbKey] = useState('');
+  const [inputTraktClientId, setInputTraktClientId] = useState('');
+  const [inputTraktClientSecret, setInputTraktClientSecret] = useState('');
 
   // Local state for Trakt Quick Connect Tab
   const [traktUsernameInput, setTraktUsernameInput] = useState('');
@@ -104,7 +106,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
       });
     }
 
-    setInputTmdbKey(useByokStore.getState().tmdbApiKey || '');
+    const byok = useByokStore.getState();
+    setInputTmdbKey(byok.tmdbApiKey || '');
+    setInputTraktClientId(byok.traktClientId || '');
+    setInputTraktClientSecret(byok.traktClientSecret || '');
   }, [isOpen]);
 
   // Clear feedback after 4 seconds
@@ -214,20 +219,35 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   const handleSaveByok = (e: React.FormEvent) => {
     e.preventDefault();
     setTmdbApiKey(inputTmdbKey.trim());
-    syncUserProfileToCloud({ tmdb_api_key: inputTmdbKey.trim() || null });
-    setStatusMsg({ text: 'TMDB API key saved to device and cloud!', type: 'success' });
+    setTraktCredentials(inputTraktClientId.trim(), inputTraktClientSecret.trim());
+    syncUserProfileToCloud({
+      tmdb_api_key: inputTmdbKey.trim() || null,
+      trakt_client_id: inputTraktClientId.trim() || null,
+      trakt_client_secret: inputTraktClientSecret.trim() || null,
+    });
+    setStatusMsg({ text: 'API keys saved to device and cloud!', type: 'success' });
   };
 
   // Trakt Handlers
-  const handleTraktOAuthLogin = () => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const byok = useByokStore.getState();
-    let url = `/api/auth/trakt/login?redirect_uri=${encodeURIComponent(origin + '/api/auth/trakt/callback')}`;
-    if (byok.traktClientId) {
-      url += `&client_id=${encodeURIComponent(byok.traktClientId)}`;
+  const handleTraktOAuthLogin = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanClientId = inputTraktClientId.trim();
+    const cleanClientSecret = inputTraktClientSecret.trim();
+
+    if (!cleanClientId) {
+      setStatusMsg({
+        text: 'Please enter your Trakt Client ID (from trakt.tv/oauth/applications) or use Quick Username Connect below.',
+        type: 'error',
+      });
+      return;
     }
-    if (byok.traktClientSecret) {
-      url += `&client_secret=${encodeURIComponent(byok.traktClientSecret)}`;
+
+    setTraktCredentials(cleanClientId, cleanClientSecret);
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    let url = `/api/auth/trakt/login?redirect_uri=${encodeURIComponent(origin + '/api/auth/trakt/callback')}&client_id=${encodeURIComponent(cleanClientId)}`;
+    if (cleanClientSecret) {
+      url += `&client_secret=${encodeURIComponent(cleanClientSecret)}`;
     }
     window.location.href = url;
   };
@@ -566,38 +586,96 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {/* Method A: 1-Click OAuth */}
-                    <div className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
+                    {/* Method 1: OAuth 2.0 with Client ID & Secret */}
+                    <form onSubmit={handleTraktOAuthLogin} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-amber-400">
-                          1-Click Trakt OAuth 2.0 (Recommended)
+                          1. Trakt 2-Way OAuth 2.0 (Recommended)
                         </h4>
-                        <ComicBadge variant="marvel" size="sm">2-Way</ComicBadge>
+                        <ComicBadge variant="marvel" size="sm">2-Way Sync</ComicBadge>
                       </div>
-                      <p className="text-xs text-zinc-400 font-sans">
-                        Authorizes direct two-way synchronization with your Trakt.tv account.
+
+                      <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                        Enter your Trakt App keys from{' '}
+                        <a
+                          href="https://trakt.tv/oauth/applications/new"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-amber-400 underline font-bold"
+                        >
+                          trakt.tv/oauth/applications/new ↗
+                        </a>
                       </p>
+
+                      <div className="space-y-2">
+                        <div>
+                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
+                            Trakt Client ID
+                          </label>
+                          <input
+                            type="text"
+                            value={inputTraktClientId}
+                            onChange={(e) => setInputTraktClientId(e.target.value)}
+                            placeholder="e.g. 5a6ddbfaea8f5a6fa58dfc924bc01..."
+                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
+                            Trakt Client Secret
+                          </label>
+                          <input
+                            type="password"
+                            value={inputTraktClientSecret}
+                            onChange={(e) => setInputTraktClientSecret(e.target.value)}
+                            placeholder="e.g. e84c478a8f1bc45..."
+                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        <div className="p-2.5 bg-zinc-900/80 border border-zinc-700 text-[11px] font-sans text-zinc-300 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-zinc-200">Required Trakt App Redirect URI:</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const uri = typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiverse-tracker.vercel.app/api/auth/trakt/callback';
+                                navigator.clipboard.writeText(uri);
+                                setStatusMsg({ text: 'Redirect URI copied to clipboard!', type: 'success' });
+                              }}
+                              className="text-amber-400 hover:text-amber-300 underline font-display uppercase cursor-pointer"
+                            >
+                              Copy URI
+                            </button>
+                          </div>
+                          <code className="text-amber-300 font-mono block break-all text-[10px]">
+                            {typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiverse-tracker.vercel.app/api/auth/trakt/callback'}
+                          </code>
+                        </div>
+                      </div>
+
                       <ComicButton
-                        onClick={handleTraktOAuthLogin}
+                        type="submit"
                         variant="danger"
                         size="md"
                         className="w-full bg-[#E62429]"
                         leftIcon={<Zap className="w-5 h-5 text-amber-300" />}
                       >
-                        Authorize on Trakt.tv
+                        Authorize with Trakt.tv
                       </ComicButton>
-                    </div>
+                    </form>
 
-                    {/* Method B: Quick Username Connect */}
+                    {/* Method 2: Quick Username Connect */}
                     <form onSubmit={handleTraktQuickConnect} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-cyan-400">
-                          Or Connect by Username (Fast Public Sync)
+                          2. Or Quick Sync by Username (No App Needed)
                         </h4>
-                        <ComicBadge variant="cyan" size="sm">Quick</ComicBadge>
+                        <ComicBadge variant="cyan" size="sm">Quick Import</ComicBadge>
                       </div>
                       <p className="text-xs text-zinc-400 font-sans">
-                        Enter your public Trakt username to import watched movies without OAuth:
+                        Don't want to create an API app? Enter your public Trakt username to import watched history:
                       </p>
                       <div className="flex gap-2">
                         <input
@@ -624,7 +702,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         onClick={onClose}
                         className="inline-flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline"
                       >
-                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read Full Trakt & TMDB Guide
+                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read Full Trakt & TMDB Setup Guide
                       </Link>
                     </div>
                   </div>
