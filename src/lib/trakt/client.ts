@@ -52,29 +52,27 @@ export async function syncTraktHistory(
 ) {
   const clientId = getEffectiveTraktClientId();
 
-  try {
-    const res = await fetch('/api/trakt/history', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token,
-        action,
-        item,
-        clientId,
-      }),
-    });
+  const res = await fetch('/api/trakt/history', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token,
+      action,
+      item,
+      clientId,
+    }),
+  });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.warn(`Trakt history proxy error (${res.status}):`, errText);
-      return false;
-    }
+  const data = await res.json().catch(() => ({}));
 
-    return true;
-  } catch (err) {
-    console.error('Failed to post Trakt history via proxy:', err);
-    return false;
+  if (!res.ok) {
+    const msg = typeof data.error === 'string'
+      ? data.error
+      : JSON.stringify(data.error || data);
+    throw new Error(`Trakt sync failed (${res.status}): ${msg}`);
   }
+
+  return data;
 }

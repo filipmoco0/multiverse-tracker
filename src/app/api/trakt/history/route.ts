@@ -1,22 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const DEFAULT_TRAKT_KEY = '5a6ddbfaea8f5a6fa58dfc924bc01c23f66085a539bc2b5c00e66c6b4129b8c0';
-const BROWSER_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MultiverseTracker/1.0';
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { token, action, item, clientId: customClientId } = body;
 
-    if (!token || token.startsWith('token_user_')) {
+    if (!token) {
       return NextResponse.json({ error: 'OAuth token required for syncing history' }, { status: 401 });
+    }
+
+    // token_user_ prefix means read-only username connect — no write permission
+    if (token.startsWith('token_user_')) {
+      return NextResponse.json(
+        { error: 'Read-only connection. Authorize via OAuth 2.0 in Settings → Trakt.tv to enable 2-way sync.' },
+        { status: 401 }
+      );
     }
 
     if (!item) {
       return NextResponse.json({ error: 'Item data is required' }, { status: 400 });
     }
 
-    const clientId = customClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
+    const clientId = customClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+    if (!clientId) {
+      return NextResponse.json(
+        { error: 'No Trakt Client ID configured. Add your Client ID in Settings → Trakt.tv → Method 1.' },
+        { status: 400 }
+      );
+    }
+
     const endpoint = action === 'add' ? '/sync/history' : '/sync/history/remove';
 
     const idObject: Record<string, number> = {};
@@ -95,7 +107,6 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': BROWSER_USER_AGENT,
         'trakt-api-version': '2',
         'trakt-api-key': clientId,
         Authorization: `Bearer ${token}`,
@@ -105,9 +116,18 @@ export async function POST(request: NextRequest) {
     });
 
     const resData = await traktRes.json().catch(() => ({}));
+    console.log(`Trakt ${endpoint} response ${traktRes.status}:`, JSON.stringify(resData));
+
     if (!traktRes.ok) {
-      console.warn('Trakt API error response:', traktRes.status, resData);
-      return NextResponse.json({ error: resData, status: traktRes.status }, { status: traktRes.status });
+      // Surface the exact Trakt error message
+      const traktMsg =
+        typeof resData === 'string'
+          ? resData
+          : resData?.error || resData?.message || JSON.stringify(resData);
+      return NextResponse.json(
+        { error: `Trakt ${traktRes.status}: ${traktMsg}` },
+        { status: traktRes.status }
+      );
     }
 
     return NextResponse.json({ success: true, data: resData });
