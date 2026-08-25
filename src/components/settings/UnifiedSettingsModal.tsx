@@ -233,25 +233,8 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   // Trakt Handlers
   const handleTraktOAuthLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const cleanClientId = inputTraktClientId.trim();
-    const cleanClientSecret = inputTraktClientSecret.trim();
-
-    if (!cleanClientId) {
-      setStatusMsg({
-        text: 'Please enter your Trakt Client ID (from trakt.tv/oauth/applications) or use Quick Username Connect below.',
-        type: 'error',
-      });
-      return;
-    }
-
-    setTraktCredentials(cleanClientId, cleanClientSecret);
-
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    let url = `/api/auth/trakt/login?redirect_uri=${encodeURIComponent(origin + '/api/auth/trakt/callback')}&client_id=${encodeURIComponent(cleanClientId)}`;
-    if (cleanClientSecret) {
-      url += `&client_secret=${encodeURIComponent(cleanClientSecret)}`;
-    }
-    window.location.href = url;
+    // Uses server-side NEXT_PUBLIC_TRAKT_CLIENT_ID env var — no user input needed
+    window.location.href = '/api/auth/trakt/login';
   };
 
   const handleTraktQuickConnect = async (e: React.FormEvent) => {
@@ -614,96 +597,40 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {/* Method 1: OAuth 2.0 with Client ID & Secret */}
-                    <form onSubmit={handleTraktOAuthLogin} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
+                    {/* Primary OAuth Connect */}
+                    <div className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-amber-400">
-                          1. Trakt 2-Way OAuth 2.0 (Recommended)
+                          Connect Trakt.tv Account
                         </h4>
-                        <ComicBadge variant="marvel" size="sm">2-Way Sync</ComicBadge>
+                        <ComicBadge variant="green" size="sm">2-Way Sync</ComicBadge>
                       </div>
 
                       <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                        Enter your Trakt App keys from{' '}
-                        <a
-                          href="https://trakt.tv/oauth/applications/new"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-amber-400 underline font-bold"
-                        >
-                          trakt.tv/oauth/applications/new ↗
-                        </a>
+                        Connect your Trakt.tv account to enable full 2-way sync. Marking items as watched here will instantly update your Trakt history — and vice versa.
                       </p>
 
-                      <div className="space-y-2">
-                        <div>
-                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
-                            Trakt Client ID
-                          </label>
-                          <input
-                            type="text"
-                            value={inputTraktClientId}
-                            onChange={(e) => setInputTraktClientId(e.target.value)}
-                            placeholder="e.g. 5a6ddbfaea8f5a6fa58dfc924bc01..."
-                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
-                            Trakt Client Secret
-                          </label>
-                          <input
-                            type="password"
-                            value={inputTraktClientSecret}
-                            onChange={(e) => setInputTraktClientSecret(e.target.value)}
-                            placeholder="e.g. e84c478a8f1bc45..."
-                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
-                          />
-                        </div>
-
-                        <div className="p-2.5 bg-zinc-900/80 border border-zinc-700 text-[11px] font-sans text-zinc-300 space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-zinc-200">Required Trakt App Redirect URI:</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const uri = typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiversetracker.com/api/auth/trakt/callback';
-                                navigator.clipboard.writeText(uri);
-                                setStatusMsg({ text: 'Redirect URI copied to clipboard!', type: 'success' });
-                              }}
-                              className="text-amber-400 hover:text-amber-300 underline font-display uppercase cursor-pointer"
-                            >
-                              Copy URI
-                            </button>
-                          </div>
-                          <code className="text-amber-300 font-mono block break-all text-[10px]">
-                            {typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiversetracker.com/api/auth/trakt/callback'}
-                          </code>
-                        </div>
-                      </div>
-
                       <ComicButton
-                        type="submit"
+                        onClick={handleTraktOAuthLogin}
                         variant="danger"
                         size="md"
                         className="w-full bg-[#E62429]"
                         leftIcon={<Zap className="w-5 h-5 text-amber-300" />}
                       >
-                        Authorize with Trakt.tv
+                        Connect with Trakt.tv
                       </ComicButton>
-                    </form>
+                    </div>
 
-                    {/* Method 2: Quick Username Connect */}
+                    {/* Quick Username Import */}
                     <form onSubmit={handleTraktQuickConnect} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-cyan-400">
-                          2. Or Quick Sync by Username (No App Needed)
+                          Or Quick Import by Username
                         </h4>
-                        <ComicBadge variant="cyan" size="sm">Quick Import</ComicBadge>
+                        <ComicBadge variant="cyan" size="sm">Read-Only</ComicBadge>
                       </div>
                       <p className="text-xs text-zinc-400 font-sans">
-                        Don't want to create an API app? Enter your public Trakt username to import watched history:
+                        Pulls your existing Trakt history to mark items as watched. Does <strong>not</strong> push new watches to Trakt.
                       </p>
                       <div className="flex gap-2">
                         <input
@@ -719,7 +646,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                           variant="cyan"
                           size="sm"
                         >
-                          {isTraktQuickLoading ? 'Syncing...' : 'Connect'}
+                          {isTraktQuickLoading ? 'Syncing...' : 'Import'}
                         </ComicButton>
                       </div>
                     </form>
@@ -730,7 +657,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         onClick={onClose}
                         className="inline-flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline"
                       >
-                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read Full Trakt & TMDB Setup Guide
+                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read the Setup Guide
                       </Link>
                     </div>
                   </div>
