@@ -27,33 +27,65 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No valid TMDB or Trakt ID provided for media item' }, { status: 400 });
     }
 
+    const TMDB_KEY = process.env.TMDB_API_KEY || process.env.NEXT_PUBLIC_TMDB_API_KEY || '15d2ea6d0dc1d476efbca3eba2b9bbfb';
+
+    const getSeasonEpisodeNumbers = async (tmdbId: number, seasonNum: number): Promise<number[]> => {
+      try {
+        const tmdbRes = await fetch(
+          `https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNum}?api_key=${TMDB_KEY}`
+        );
+        if (tmdbRes.ok) {
+          const tmdbData = await tmdbRes.json();
+          if (Array.isArray(tmdbData.episodes) && tmdbData.episodes.length > 0) {
+            return tmdbData.episodes
+              .map((ep: any) => ep.episode_number || ep.number)
+              .filter((n: any) => typeof n === 'number' && n > 0);
+          }
+        }
+      } catch (e) {
+        console.warn('TMDB season episodes fetch warning:', e);
+      }
+      return Array.from({ length: 24 }, (_, i) => i + 1);
+    };
+
     const bodyData: Record<string, unknown[]> = {};
 
     if (item.mediaType === 'movie' || item.mediaType === 'special') {
       bodyData.movies = [{ ids: idObject }];
     } else {
-      if (item.seasonNumber) {
-        const seasonsArr: number[] = Array.isArray(item.seasonNumber) ? item.seasonNumber : [Number(item.seasonNumber)];
-        if (action === 'add') {
-          bodyData.shows = [
-            {
-              ids: idObject,
-              seasons: seasonsArr.map((num) => ({
-                number: num,
-                watched_at: new Date().toISOString(),
-              })),
-            },
-          ];
-        } else {
-          bodyData.shows = [
-            {
-              ids: idObject,
-              seasons: seasonsArr.map((num) => ({
-                number: num,
-              })),
-            },
-          ];
-        }
+      if (item.seasonNumber && item.tmdbId) {
+        const seasonsArr: number[] = Array.isArray(item.seasonNumber)
+          ? item.seasonNumber
+          : [Number(item.seasonNumber)];
+
+        const seasonsWithEpisodes = await Promise.all(
+          seasonsArr.map(async (seasonNum) => {
+            const eps = await getSeasonEpisodeNumbers(Number(item.tmdbId), seasonNum);
+            if (action === 'add') {
+              return {
+                number: seasonNum,
+                episodes: eps.map((epNum) => ({
+                  number: epNum,
+                  watched_at: new Date().toISOString(),
+                })),
+              };
+            } else {
+              return {
+                number: seasonNum,
+                episodes: eps.map((epNum) => ({
+                  number: epNum,
+                })),
+              };
+            }
+          })
+        );
+
+        bodyData.shows = [
+          {
+            ids: idObject,
+            seasons: seasonsWithEpisodes,
+          },
+        ];
       } else {
         bodyData.shows = [{ ids: idObject }];
       }
