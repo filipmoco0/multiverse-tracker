@@ -38,17 +38,26 @@ export async function getFranchiseMedia(universe: 'mcu' | 'dcu'): Promise<Franch
       return seed;
     }
 
-    // Merge Supabase entries while guaranteeing master canonical chronological order from seed
-    return seed.map((seedItem) => {
-      const dbItem = data.find((d: any) => d.id === seedItem.id);
-      if (!dbItem) return seedItem;
-      return {
-        ...seedItem,
-        poster_path: dbItem.poster_path || seedItem.poster_path,
-        is_released: dbItem.is_released !== undefined ? dbItem.is_released : seedItem.is_released,
-        chronological_order: seedItem.chronological_order,
-      };
-    });
+    return data.map((d: any) => ({
+      id: String(d.id),
+      universe: d.universe,
+      title: d.title,
+      media_type: d.media_type,
+      release_order: Number(d.release_order) || 1,
+      chronological_order:
+        d.chronological_order !== null && d.chronological_order !== undefined && d.chronological_order !== ''
+          ? Number(d.chronological_order)
+          : null,
+      phase_or_chapter: d.phase_or_chapter || (universe === 'mcu' ? 'Phase 1' : 'Chapter 1'),
+      trakt_id: d.trakt_id ? Number(d.trakt_id) : null,
+      tmdb_id: d.tmdb_id ? Number(d.tmdb_id) : null,
+      poster_path: d.poster_path || null,
+      is_released: Boolean(d.is_released),
+      release_date: d.release_date || null,
+      overview: d.overview || null,
+      seasons: d.seasons ? Number(d.seasons) : undefined,
+      episodes: d.episodes ? Number(d.episodes) : undefined,
+    }));
   } catch (err) {
     return seed;
   }

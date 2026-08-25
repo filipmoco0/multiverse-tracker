@@ -323,9 +323,19 @@ export default function AdminDashboardPage() {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
       const updatedList = mediaList.filter((item) => item.id !== id);
       setMediaList(updatedList);
-      saveToCodebase(updatedList, selectedUniverse);
-      setStatusMsg({ text: `Deleted "${title}" and updated codebase!`, type: 'success' });
-      setTimeout(() => setStatusMsg(null), 3000);
+
+      try {
+        // 1. Direct delete from database
+        await fetch(`/api/media?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        // 2. Sync full remaining list to seed and database
+        await saveToCodebase(updatedList, selectedUniverse);
+        setStatusMsg({ text: `Permanently deleted "${title}" from tracklist and database!`, type: 'success' });
+      } catch (err: any) {
+        console.error('Delete error:', err);
+        setStatusMsg({ text: `Deleted locally, but sync error: ${err.message}`, type: 'error' });
+      }
+
+      setTimeout(() => setStatusMsg(null), 3500);
     }
   };
 
