@@ -259,7 +259,7 @@ export default function GuidePage() {
                     Paste Client ID & Secret in Settings & Authorize
                   </h3>
                   <p className="text-xs sm:text-sm text-zinc-300 font-sans">
-                    Trakt will now display your <strong>Client ID</strong> and <strong>Client Secret</strong>. Paste them in <strong>⚙️ Settings $\rightarrow$ Trakt.tv</strong> and click <strong>"Authorize on Trakt.tv"</strong>.
+                    Trakt will now display your <strong>Client ID</strong> and <strong>Client Secret</strong>. Paste them in <strong>⚙️ Settings → Trakt.tv</strong> and click <strong>"Authorize on Trakt.tv"</strong>.
                   </p>
                   <ComicButton
                     variant="gold"
@@ -286,9 +286,9 @@ export default function GuidePage() {
               </p>
               <div className="bg-zinc-950 border-2 border-black p-4 space-y-2 max-w-xl">
                 <ol className="list-decimal list-inside text-xs text-zinc-300 space-y-1 font-sans">
-                  <li>Open <strong>⚙️ Settings $\rightarrow$ Trakt.tv</strong>.</li>
+                  <li>Open <strong>⚙️ Settings → Trakt.tv</strong>.</li>
                   <li>In the <strong>"Or Quick Sync by Username"</strong> field, enter your username (e.g. <code>filipmoco</code>).</li>
-                  <li>Click <strong>Connect</strong> $\rightarrow$ All watched items sync automatically!</li>
+                  <li>Click <strong>Connect</strong> → All watched items sync automatically!</li>
                 </ol>
               </div>
             </div>
@@ -395,7 +395,7 @@ export default function GuidePage() {
                     Request an API Key
                   </h3>
                   <p className="text-xs sm:text-sm text-zinc-300 font-sans">
-                    Go to <strong>Settings $\rightarrow$ API</strong> and click <strong>Create API Key (Developer)</strong>. Fill in the short form to get your 32-character key.
+                    Go to <strong>Settings → API</strong> and click <strong>Create API Key (Developer)</strong>. Fill in the short form to get your 32-character key.
                   </p>
                   <a
                     href="https://www.themoviedb.org/settings/api"
@@ -418,7 +418,7 @@ export default function GuidePage() {
                     Paste Key in Settings Hub
                   </h3>
                   <p className="text-xs sm:text-sm text-zinc-300 font-sans">
-                    Open <strong>Settings $\rightarrow$ API Keys (BYOK)</strong>, paste your TMDB key, and click <strong>Save API Key</strong>.
+                    Open <strong>Settings → API Keys (BYOK)</strong>, paste your TMDB key, and click <strong>Save API Key</strong>.
                   </p>
                   <ComicButton
                     variant="cyan"
