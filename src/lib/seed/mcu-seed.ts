@@ -13,7 +13,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 1726,
     "poster_path": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg",
     "is_released": true,
-    "release_date": "2008-01-01",
+    "release_date": "2008-04-30",
     "overview": "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil."
   },
   {
@@ -28,7 +28,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 1724,
     "poster_path": "https://image.tmdb.org/t/p/w500/gKzYx79y0AQTL4UAk1cBQJ3nvrm.jpg",
     "is_released": true,
-    "release_date": "2008-01-01",
+    "release_date": "2008-06-12",
     "overview": "Scientist Bruce Banner scours the planet for an antidote to the unbridled force of rage within him."
   },
   {
@@ -43,7 +43,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 10138,
     "poster_path": "https://image.tmdb.org/t/p/w500/6WBeq4fCfn7AN0o21W9qNcRF2l9.jpg",
     "is_released": true,
-    "release_date": "2010-01-01",
+    "release_date": "2010-04-28",
     "overview": "With the world now aware of his identity as Iron Man, Tony Stark must contend with both his declining health and a vengeful madman."
   },
   {
@@ -58,7 +58,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 10195,
     "poster_path": "https://image.tmdb.org/t/p/w500/prSfAi1xGrhLQNxVSUFh61xQ4Qy.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-04-21",
     "overview": "Against his father Odin's will, The Mighty Thor - a powerful but arrogant warrior god - is cast down to Earth."
   },
   {
@@ -73,7 +73,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 1771,
     "poster_path": "https://image.tmdb.org/t/p/w500/vSNxAJTlD0r02V9sPYpOjqDZXUK.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-07-22",
     "overview": "During World War II, Steve Rogers is transformed into the super-soldier Captain America."
   },
   {
@@ -88,7 +88,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 76122,
     "poster_path": "https://image.tmdb.org/t/p/w500/xqNLXUUvBnfVk6m3QFGGU0Grgs7.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-09-13",
     "overview": "Agents Coulson and Sitwell plot how to prevent Emil Blonsky from being released into the Avengers Initiative."
   },
   {
@@ -103,7 +103,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 76535,
     "poster_path": "https://image.tmdb.org/t/p/w500/njrOqsmFH4pxBrhcoslqLfw2OGk.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-10-25",
     "overview": "Agent Phil Coulson stops at a convenience store on his way to New Mexico and handles a robbery."
   },
   {
@@ -118,7 +118,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 24428,
     "poster_path": "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg",
     "is_released": true,
-    "release_date": "2012-01-01",
+    "release_date": "2012-04-25",
     "overview": "Earth's Mightiest Heroes must come together and learn to fight as a team to stop Loki and an alien army."
   },
   {
@@ -133,7 +133,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 119569,
     "poster_path": "https://image.tmdb.org/t/p/w500/hnSxG8clwLuAXEkp9emc8HCUcHD.jpg",
     "is_released": true,
-    "release_date": "2012-01-01",
+    "release_date": "2012-08-29",
     "overview": "A down-on-their-luck couple finds a discarded Chitauri gun following the Battle of New York."
   },
   {
@@ -148,7 +148,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 68721,
     "poster_path": "https://image.tmdb.org/t/p/w500/qhPtAc1TKbMPqNvcdXSOn9Bn7hZ.jpg",
     "is_released": true,
-    "release_date": "2013-01-01",
+    "release_date": "2013-04-18",
     "overview": "When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding."
   },
   {
@@ -161,9 +161,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 2",
     "trakt_id": null,
     "tmdb_id": 211387,
-    "poster_path": "https://image.tmdb.org/t/p/w500/u3vK3K9z4w63G3WzJkYwQf4H6c7.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/4vFKKWPvCVDJTOWiwReBfpAMScP.jpg",
     "is_released": true,
-    "release_date": "2013-01-01",
+    "release_date": "2013-10-04",
     "overview": "Peggy Carter undertakes a solo field mission to retrieve the mysterious Zodiac key."
   },
   {
@@ -178,7 +178,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 76338,
     "poster_path": "https://image.tmdb.org/t/p/w500/wp6OxE4poJ4G7c0U2ZIXasTSMR7.jpg",
     "is_released": true,
-    "release_date": "2013-01-01",
+    "release_date": "2013-10-30",
     "overview": "Thor fights to restore order across the cosmos as an ancient race led by Malekith returns."
   },
   {
@@ -191,9 +191,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 2",
     "trakt_id": null,
     "tmdb_id": 253980,
-    "poster_path": "https://image.tmdb.org/t/p/w500/f877h89kE9L1yX4K0u7fB6FwQvB.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/y0QYZPWgeGKOvyrzi6Oz3aJPxJa.jpg",
     "is_released": true,
-    "release_date": "2014-01-01",
+    "release_date": "2014-02-04",
     "overview": "Trevor Slattery is enjoying his newfound fame behind bars at Seagate Prison until an unexpected visitor arrives."
   },
   {
@@ -208,7 +208,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 100402,
     "poster_path": "https://image.tmdb.org/t/p/w500/tVFRpFw3xTedgPGqxW0AOI8Qhh0.jpg",
     "is_released": true,
-    "release_date": "2014-01-01",
+    "release_date": "2014-03-20",
     "overview": "Steve Rogers teams up with Natasha Romanoff and Sam Wilson to battle a powerful enemy within S.H.I.E.L.D."
   },
   {
@@ -223,7 +223,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 118340,
     "poster_path": "https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg",
     "is_released": true,
-    "release_date": "2014-01-01",
+    "release_date": "2014-07-30",
     "overview": "An unruly band of galactic misfits must rally together to stop a cosmic warrior from cleansing the universe."
   },
   {
@@ -238,7 +238,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 99861,
     "poster_path": "https://image.tmdb.org/t/p/w500/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg",
     "is_released": true,
-    "release_date": "2015-01-01",
+    "release_date": "2015-04-22",
     "overview": "When Tony Stark jumpstarts a dormant peacekeeping program, things go awry and the Avengers face Ultron."
   },
   {
@@ -253,7 +253,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 102899,
     "poster_path": "https://image.tmdb.org/t/p/w500/rQRnQfUl3kfp78nCWq8Ks04vnq1.jpg",
     "is_released": true,
-    "release_date": "2015-01-01",
+    "release_date": "2015-07-14",
     "overview": "Armed with the astonishing ability to shrink in scale but increase in strength, master thief Scott Lang becomes Ant-Man."
   },
   {
@@ -268,7 +268,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 271110,
     "poster_path": "https://image.tmdb.org/t/p/w500/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg",
     "is_released": true,
-    "release_date": "2016-01-01",
+    "release_date": "2016-04-27",
     "overview": "Political pressure mounts to install a system of accountability when the actions of the Avengers lead to collateral damage."
   },
   {
@@ -283,7 +283,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 284052,
     "poster_path": "https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg",
     "is_released": true,
-    "release_date": "2016-01-01",
+    "release_date": "2016-10-25",
     "overview": "After a horrific car crash robs him of his hands, brilliant neurosurgeon Stephen Strange learns the mystic arts."
   },
   {
@@ -298,7 +298,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 283995,
     "poster_path": "https://image.tmdb.org/t/p/w500/y4MBh0EjBlMuOzv9axM4qJlmhzz.jpg",
     "is_released": true,
-    "release_date": "2017-01-01",
+    "release_date": "2017-04-25",
     "overview": "The Guardians must fight to keep their newfound family together as they unravel the mystery of Peter Quill's true parentage."
   },
   {
@@ -313,7 +313,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 315635,
     "poster_path": "https://image.tmdb.org/t/p/w500/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg",
     "is_released": true,
-    "release_date": "2017-01-01",
+    "release_date": "2017-07-05",
     "overview": "Following the events of Captain America: Civil War, Peter Parker navigates high school life while fighting the Vulture."
   },
   {
@@ -328,7 +328,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 284053,
     "poster_path": "https://image.tmdb.org/t/p/w500/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg",
     "is_released": true,
-    "release_date": "2017-01-01",
+    "release_date": "2017-10-02",
     "overview": "Thor is imprisoned on the other side of the universe and must race against time to stop Hela from destroying Asgard."
   },
   {
@@ -343,7 +343,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 284054,
     "poster_path": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-02-13",
     "overview": "T'Challa returns home to the isolated, technologically advanced African nation of Wakanda to serve as its new king."
   },
   {
@@ -358,7 +358,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 299536,
     "poster_path": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-04-25",
     "overview": "The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos."
   },
   {
@@ -373,7 +373,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 363088,
     "poster_path": "https://image.tmdb.org/t/p/w500/cFQEO687n1K6umXbInzocxcnAQz.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-07-04",
     "overview": "Scott Lang grapples with the consequences of his choices as both a superhero and a father as he teams with Hope van Dyne."
   },
   {
@@ -388,7 +388,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 299537,
     "poster_path": "https://image.tmdb.org/t/p/w500/AtsgWhDnHTq68L0lLsUrCnM7TjG.jpg",
     "is_released": true,
-    "release_date": "2019-01-01",
+    "release_date": "2019-03-06",
     "overview": "The story follows Carol Danvers as she becomes one of the universe's most powerful heroes when galactic war reaches Earth."
   },
   {
@@ -403,7 +403,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 299534,
     "poster_path": "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
     "is_released": true,
-    "release_date": "2019-01-01",
+    "release_date": "2019-04-24",
     "overview": "After the devastating events of Infinity War, the surviving Avengers assemble once more to reverse Thanos's actions."
   },
   {
@@ -418,7 +418,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 429617,
     "poster_path": "https://image.tmdb.org/t/p/w500/4q2NNj4S5dG2RLF9CpXsej7yXl.jpg",
     "is_released": true,
-    "release_date": "2019-01-01",
+    "release_date": "2019-06-28",
     "overview": "Peter Parker and his friends go on a summer trip to Europe, where Peter finds himself helping Nick Fury against Elementals."
   },
   {
@@ -431,10 +431,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 85271,
-    "poster_path": "https://image.tmdb.org/t/p/w500/ijWWwINc8h71NQ8j1LTJMFSj5wr.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/8BSVNGpZwZDScVv8e5S1c8XIjeJ.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
-    "overview": "Wanda Maximoff and Vision are living idealized suburban lives in Westview until they suspect everything is not as it seems."
+    "release_date": "2021-01-15",
+    "overview": "Wanda Maximoff and Vision—two super-powered beings living idealized suburban lives—begin to suspect that everything is not as it seems.",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-30",
@@ -448,8 +450,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 88396,
     "poster_path": "https://image.tmdb.org/t/p/w500/6kbAMLteGO8yyewYau6bJ683sw7.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
-    "overview": "Sam Wilson and Bucky Barnes team up on a global adventure that tests their abilities and their patience."
+    "release_date": "2021-03-19",
+    "overview": "Following the events of “Avengers: Endgame”, the Falcon, Sam Wilson and the Winter Soldier, Bucky Barnes team up in a global adventure that tests their abilities, and their patience.",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-31",
@@ -461,10 +465,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 84958,
-    "poster_path": "https://image.tmdb.org/t/p/w500/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/8uVqe9ThcuYVNdh4O0kuijIWMLL.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
-    "overview": "The mercurial villain Loki resumes his role as the God of Mischief in a new series that takes place after Avengers: Endgame."
+    "release_date": "2021-06-09",
+    "overview": "Loki, the God of Mischief, steps out of his brother's shadow to embark on an adventure that takes place after the events of \"Avengers: Endgame.\"",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-32",
@@ -478,7 +484,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 497698,
     "poster_path": "https://image.tmdb.org/t/p/w500/qAZ0pzat24kLdO3o8ejmbLxyOac.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
+    "release_date": "2021-07-07",
     "overview": "Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."
   },
   {
@@ -491,10 +497,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 91363,
-    "poster_path": "https://image.tmdb.org/t/p/w500/zaqfFDUrSfIljdD0OBxSjcutX8n.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/lztz5XBMG1x6Y5ubz7CxfPFsAcW.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
-    "overview": "Taking inspiration from the comic books of the same name, each episode explores a pivotal moment from the MCU turned on its head."
+    "release_date": "2021-08-11",
+    "overview": "Taking inspiration from the comic books of the same name, each episode of this animated anthology series questions, revisits and twists classic Marvel Cinematic moments.",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-34",
@@ -508,7 +516,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 566525,
     "poster_path": "https://image.tmdb.org/t/p/w500/9f2Q0U3IOsLgrI2HkvldwSABZy5.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
+    "release_date": "2021-09-01",
     "overview": "Shang-Chi must confront the past he thought he left behind when he is drawn into the web of the mysterious Ten Rings organization."
   },
   {
@@ -523,7 +531,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 524434,
     "poster_path": "https://image.tmdb.org/t/p/w500/lFByFSLV5WDJEv3KabbdAF959F2.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
+    "release_date": "2021-11-03",
     "overview": "The Eternals, a race of immortal beings with superhuman powers who have secretly lived on Earth for thousands of years, reunite."
   },
   {
@@ -536,10 +544,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 88329,
-    "poster_path": "https://image.tmdb.org/t/p/w500/ct5pNE5dDHryHLDnxyZPYcqO1sz.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/nGcqeKieycPFvsxOeLJssCTt3mL.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
-    "overview": "Former Avenger Clint Barton has a seemingly simple mission: get back to his family for Christmas. Possible? Maybe with help from Kate Bishop."
+    "release_date": "2021-11-24",
+    "overview": "Former Avenger Clint Barton has a seemingly simple mission: get back to his family for Christmas. Possible? Maybe with the help of Kate Bishop, a 22-year-old archer with dreams of becoming a superhero. The two are forced to work together when a presence from Barton’s past threatens to derail far more than the festive spirit.",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-37",
@@ -553,7 +563,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 634649,
     "poster_path": "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
+    "release_date": "2021-12-15",
     "overview": "Peter Parker seeks Doctor Strange's help to make everyone forget he is Spider-Man, which breaks the multiverse open."
   },
   {
@@ -566,10 +576,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 92749,
-    "poster_path": "https://image.tmdb.org/t/p/w500/x6FsYvt33846IQnDSFxla9j0RX8.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/zPFm8ZbvdzoViRHnLi8cH7TBS1B.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
-    "overview": "Mild-mannered gift-shop employee Steven Grant becomes plagued with blackouts and discovers he has dissociative identity disorder."
+    "release_date": "2022-03-30",
+    "overview": "When Steven Grant, a mild-mannered gift-shop employee, becomes plagued with blackouts and memories of another life, he discovers he has dissociative identity disorder and shares a body with mercenary Marc Spector. As Steven/Marc’s enemies converge upon them, they must navigate their complex identities while thrust into a deadly mystery among the powerful gods of Egypt.",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-39",
@@ -583,7 +595,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 453395,
     "poster_path": "https://image.tmdb.org/t/p/w500/ddJcSKbcp4rKZTmuyWaMhuwcfMz.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-05-04",
     "overview": "Doctor Strange traverses the mind-bending and dangerous alternate realities of the Multiverse with America Chavez."
   },
   {
@@ -596,10 +608,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 92782,
-    "poster_path": "https://image.tmdb.org/t/p/w500/3HWWh92kZbD7odwJX7nKmXNZsYo.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/4qoFtoPvFGjlIXYfFVNKhOwZ6zD.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
-    "overview": "A great student, an avid gamer and a voracious fan-fiction scribe, Kamala Khan feels like she doesn't fit in until she gets superpowers."
+    "release_date": "2022-06-08",
+    "overview": "A great student, avid gamer, and voracious fan-fic scribe, Kamala Khan has a special affinity for superheroes, particularly Captain Marvel. However, she struggles to fit in at home and at school — that is, until she gets superpowers like the heroes she’s always looked up to. Life is easier with superpowers, right?",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-41",
@@ -613,7 +627,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 616037,
     "poster_path": "https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-07-06",
     "overview": "Thor embarks on a journey unlike anything he's ever faced -- a quest for inner peace. But his retirement is interrupted by Gorr."
   },
   {
@@ -626,10 +640,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 114478,
-    "poster_path": "https://image.tmdb.org/t/p/w500/lG9ltUP4FwvsQBcwOJYceDbP48E.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/iVSuIqEiLzOd8rnEsYehqzfvPOq.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
-    "overview": "A collection of shorts following Baby Groot’s glory days growing up, and getting into trouble, among the stars."
+    "release_date": "2021-09-22",
+    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses.",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-43",
@@ -641,10 +657,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
     "tmdb_id": 92783,
-    "poster_path": "https://image.tmdb.org/t/p/w500/5xz2orV8f0usyrfGNshcoXHmiaV.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/41Iekrap0j80u808Z2004t88r6o.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
-    "overview": "Jennifer Walters navigates the complicated life of a single, 30-something attorney who also happens to be a green 6-foot-7-inch superpowered hulk."
+    "release_date": "2022-08-18",
+    "overview": "Jennifer Walters navigates the complicated life of a single, 30-something attorney who also happens to be a green 6-foot-7-inch superpowered hulk.",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-44",
@@ -658,7 +676,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 894205,
     "poster_path": "https://image.tmdb.org/t/p/w500/mvIvNKRIJPPS7WSFarFhOAGIVnU.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-09-25",
     "overview": "On a dark and somber night, a secret cabal of monster hunters emerge from the shadows and gather at the Bloodstone Temple."
   },
   {
@@ -673,7 +691,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 505642,
     "poster_path": "https://image.tmdb.org/t/p/w500/sv1xJUazXeYqALzczSZ3O6nkH75.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-11-09",
     "overview": "Queen Ramonda, Shuri, M'Baku, Okoye and the Dora Milaje fight to protect their nation from intervening world powers and Namor."
   },
   {
@@ -688,7 +706,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 774752,
     "poster_path": "https://image.tmdb.org/t/p/w500/8dqXyslZ2hv49Oiob9UjlGSHSTR.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-11-24",
     "overview": "On a mission to make Christmas unforgettable for Quill, the Guardians head to Earth in search of the perfect present."
   },
   {
@@ -703,7 +721,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 640146,
     "poster_path": "https://image.tmdb.org/t/p/w500/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
+    "release_date": "2023-02-15",
     "overview": "Super-Hero partners Scott Lang and Hope van Dyne return to continue their adventures as Ant-Man and the Wasp in the Quantum Realm."
   },
   {
@@ -718,7 +736,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 447365,
     "poster_path": "https://image.tmdb.org/t/p/w500/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
+    "release_date": "2023-05-03",
     "overview": "Peter Quill must rally his team around him to defend the universe along with protecting one of their own: Rocket."
   },
   {
@@ -731,10 +749,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 114479,
-    "poster_path": "https://image.tmdb.org/t/p/w500/mztdt3y6GBsJR69zHtszFezTCLT.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/uk60hHZW6Svot6DLPLKwAkD9BlN.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
-    "overview": "Nick Fury learns of a clandestine invasion of Earth by a faction of shapeshifting Skrulls."
+    "release_date": "2024-06-04",
+    "overview": "A hundred years before the rise of the Empire, the Jedi Order and the Galactic Republic have prospered for centuries without war. During this time, an investigation into a shocking crime spree pits a Jedi Master against a dangerous warrior from his past.",
+    "seasons": 1,
+    "episodes": 8
   },
   {
     "id": "marvel-50",
@@ -746,10 +766,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 114478,
-    "poster_path": "https://image.tmdb.org/t/p/w500/8yECMpsZ8wAvra4Sow6Bz9WOO5f.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/1H7BPccgrk6v94608TuXS8F4rJv.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
-    "overview": "The troublemaking twig returns for mischief in the second season of I Am Groot."
+    "release_date": "2023-05-04",
+    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses.",
+    "seasons": 2,
+    "episodes": 9
   },
   {
     "id": "marvel-51",
@@ -761,10 +783,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 84958,
-    "poster_path": "https://image.tmdb.org/t/p/w500/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/oJdVHUYrjdS2IqiNztVIP4GPB1p.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
-    "overview": "Loki navigates an ever-expanding and increasingly dangerous multiverse in search of Sylvie, Judge Renslayer and Miss Minutes."
+    "release_date": "2023-10-05",
+    "overview": "In the aftermath of Season 1, Loki finds himself in a battle for the soul of the Time Variance Authority. Along with Mobius, Hunter B-15 and a team of new and returning characters, Loki navigates an ever-expanding and increasingly dangerous multiverse in search of Sylvie, Judge Renslayer, Miss Minutes and the truth of what it means to possess free will and glorious purpose.",
+    "seasons": 2,
+    "episodes": 6
   },
   {
     "id": "marvel-52",
@@ -778,7 +802,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 609681,
     "poster_path": "https://image.tmdb.org/t/p/w500/9GBhzXMFjgcZ3FdR9w3bUMMTps5.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
+    "release_date": "2023-11-08",
     "overview": "Carol Danvers, Kamala Khan, and Monica Rambeau discover their powers have become entangled, swapping places whenever they are used."
   },
   {
@@ -791,10 +815,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 91363,
-    "poster_path": "https://image.tmdb.org/t/p/w500/zaqfFDUrSfIljdD0OBxSjcutX8n.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/3yhoq5LVMgKy9rEriH6ytq9BoJV.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
-    "overview": "The Watcher continues the journey through the vast multiverse, introducing brand-new and familiar faces."
+    "release_date": "2023-12-22",
+    "overview": "Season two continues the journey as The Watcher guides viewers through the vast multiverse, introducing brand new and familiar faces throughout the MCU.",
+    "seasons": 2,
+    "episodes": 9
   },
   {
     "id": "marvel-54",
@@ -806,10 +832,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 122226,
-    "poster_path": "https://image.tmdb.org/t/p/w500/vFyJH630cF68LohVYjQW49074Sy.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/eVqz9zgvGYVqvHOg1QlHWrGTpz3.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
-    "overview": "Maya Lopez must face her past, reconnect with her Native American roots and embrace the meaning of family."
+    "release_date": "2024-01-09",
+    "overview": "Pursued by Wilson Fisk's criminal empire, Maya's journey brings her home and she must confront her own family and legacy.",
+    "seasons": 1,
+    "episodes": 5
   },
   {
     "id": "marvel-55",
@@ -823,7 +851,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 533535,
     "poster_path": "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
+    "release_date": "2024-07-24",
     "overview": "A listless Wade Wilson toils away in civilian life until a threat to his home world sends him on a mission with Wolverine."
   },
   {
@@ -836,10 +864,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 138501,
-    "poster_path": "https://image.tmdb.org/t/p/w500/mGsxKwXUjojitRv2E9qMTbxbBRd.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/cXEE6EsLJNwEwOCedX04Uixfq5O.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
-    "overview": "Agatha Harkness gathers an eclectic coven of witches to walk the Witches' Road and regain her power."
+    "release_date": "2024-09-18",
+    "overview": "The infamous Agatha Harkness finds herself down and out of power after a suspicious goth Teen helps break her free from a distorted spell. Her interest is piqued when he begs her to take him on the legendary Witches' Road, a magical gauntlet of trials that, if survived, rewards a witch with what they're missing. Together, Agatha and this mysterious Teen pull together a desperate coven, and set off down, down, down the Road...",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-57",
@@ -851,10 +881,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 91363,
-    "poster_path": "https://image.tmdb.org/t/p/w500/zaqfFDUrSfIljdD0OBxSjcutX8n.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/bbGeKXKoualYRYqvFYiv8fPZK0d.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
-    "overview": "The culminating third season of Marvel Studios' What If...? explores alternate realities."
+    "release_date": "2024-12-22",
+    "overview": "Season 3 follows classic characters as they make unexpected choices that will mutate their worlds into spectacular alternate versions of the MCU.",
+    "seasons": 3,
+    "episodes": 8
   },
   {
     "id": "marvel-58",
@@ -866,10 +898,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 138503,
-    "poster_path": "https://image.tmdb.org/t/p/w500/5mUBVvYq22t5k01Z7z6u9g2K9uA.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/bifTEU63VFt2ugUte9LqNBb1Dno.jpg",
     "is_released": true,
-    "release_date": "2025-01-01",
-    "overview": "An animated series following Peter Parker on his way to becoming Spider-Man in the MCU."
+    "release_date": "2025-01-27",
+    "overview": "Peter Parker is on his way to becoming a hero, but his path to get there is anything but ordinary.",
+    "seasons": 1,
+    "episodes": 10
   },
   {
     "id": "marvel-59",
@@ -883,7 +917,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 822119,
     "poster_path": "https://image.tmdb.org/t/p/w500/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg",
     "is_released": true,
-    "release_date": "2025-02-14",
+    "release_date": "2025-02-12",
     "overview": "Sam Wilson officially takes up the mantle of Captain America and navigates an international crisis."
   },
   {
@@ -896,10 +930,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 202555,
-    "poster_path": "https://image.tmdb.org/t/p/w500/xDUoAsU8lQHOOoRkFiBuarmACDN.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/9lLuhV703HGCbnz6FxnqCwIwzAZ.jpg",
     "is_released": true,
     "release_date": "2025-03-04",
-    "overview": "Matt Murdock and Wilson Fisk try to leave behind their darker alter-egos to serve the people of New York."
+    "overview": "It has been a year since Matt Murdock retired from crime fighting as Daredevil. Wilson Fisk has been elected mayor of New York City after running on an anti-vigilante platform. The Kingpin may force Daredevil to come out of retirement.",
+    "seasons": 1,
+    "episodes": 9
   },
   {
     "id": "marvel-61",
@@ -913,7 +949,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 986056,
     "poster_path": "https://image.tmdb.org/t/p/w500/hqcexYHbiTBfDIdDWxrxPtVndBX.jpg",
     "is_released": true,
-    "release_date": "2025-05-02",
+    "release_date": "2025-04-30",
     "overview": "An irreverent team-up featuring depressed assassin Yelena Belova alongside the MCU’s least anticipated band of misfits."
   },
   {
@@ -926,10 +962,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 114473,
-    "poster_path": "https://image.tmdb.org/t/p/w500/77w0N4C9m4p6fW5v3A9L1zX3u6A.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/zkiB7hiRpCq14tjVr3EhMN3WLjN.jpg",
     "is_released": true,
-    "release_date": "2025-06-24",
-    "overview": "Genius inventor Riri Williams creates the most advanced suit of armor since Iron Man."
+    "release_date": "2019-11-03",
+    "overview": "\"Detective College\", as a derivative of the fifth season of \"Who's the Murderer\", is a star reasoning variety show where selected detective assistants launched by Mango TV. The star guests determine the number of advances by rolling the dice on the checkerboard. When the game is triggered, the corresponding game needs to be completed. The first guest to reach the end becomes the current No.1. The program combines the form of team battles and individual battles to inspire the star guests ’IQ and Contest of logical ability. No. 1 selected in the show will appear on the scene of the fifth season of \"Who's the Murderer\". \"Detective College\" consists of Pu Yixing, Zhou Junwei, Tang Jiuzhou, Qi Sijun, Shi Kai, Guo Wentao, Shao Mingming, etc., and premiered on November 3, 2019.",
+    "seasons": 1,
+    "episodes": 17
   },
   {
     "id": "marvel-63",
@@ -943,7 +981,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 617126,
     "poster_path": "https://image.tmdb.org/t/p/w500/nf5qaSEvyYSNeFH0YhSs5EsBLX9.jpg",
     "is_released": true,
-    "release_date": "2025-07-25",
+    "release_date": "2025-07-23",
     "overview": "Set against the vibrant backdrop of a 1960s-inspired retro-futuristic world, Marvel's First Family balances superhero life and Galactus."
   },
   {
@@ -956,10 +994,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 241257,
-    "poster_path": "https://image.tmdb.org/t/p/w500/w0w2d3P8fA6e5u2T9s7J7e0p6k2.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/mcTIcjRg3arLygBhU0OsdO7THjm.jpg",
     "is_released": true,
-    "release_date": "2025-08-06",
-    "overview": "Throughout Wakandan history, brave warriors have been tasked to retrieve dangerous vibranium artifacts around the globe."
+    "release_date": "2024-05-08",
+    "overview": "A ragtag crew of podcasters sets out to investigate mysterious disappearances from decades earlier in a charming Irish town with dark, dreadful secrets.",
+    "seasons": 1,
+    "episodes": 7
   },
   {
     "id": "marvel-65",
@@ -971,10 +1011,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
     "tmdb_id": 138505,
-    "poster_path": "https://image.tmdb.org/t/p/w500/uYfW8X2qZpL4u5B6W9e5s9q2p3A.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/wofiHMsXxmp0lTafcBrgciSxBVx.jpg",
     "is_released": true,
-    "release_date": "2025-10-03",
-    "overview": "A new generation of heroes must battle an ever-spreading zombie scourge in this animated TV-MA series."
+    "release_date": "2025-09-24",
+    "overview": "After the Avengers are overtaken by a zombie plague, a desperate group of survivors discover the key to bringing an end to the super-powered undead, racing across a dystopian landscape and risking life and limb to save their world.",
+    "seasons": 1,
+    "episodes": 4
   },
   {
     "id": "marvel-66",
@@ -986,10 +1028,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
     "tmdb_id": 204541,
-    "poster_path": "https://image.tmdb.org/t/p/w500/e9s9v2q4f5f8s7w6e5r4t3y2u1o.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/q2sNliRi4j0ncXKUO1x0MldR20A.jpg",
     "is_released": true,
-    "release_date": "2025-12-01",
-    "overview": "Simon Williams is an actor and stuntman who gains superpowers to become superhero Wonder Man."
+    "release_date": "2023-01-15",
+    "overview": "Nanotechnology researcher Wang Miao is taken to the Joint Operations Center by police officer Shi Qiang, who's investigating the mysterious suicide wave among scientists worldwide.  He is recruited to sneak into an organization called the Frontiers of Science to help the investigation. When Wang Miao is contacted by the leader of the organization, Shen Yufei, she introduces him to a sophisticated VR video game called Three-Body, but soon he discovers that it's more than just a game.",
+    "seasons": 1,
+    "episodes": 30
   },
   {
     "id": "marvel-67",
@@ -1001,10 +1045,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
     "tmdb_id": 202555,
-    "poster_path": "https://image.tmdb.org/t/p/w500/xDUoAsU8lQHOOoRkFiBuarmACDN.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/timvsedxh5ce795tsv6EDTZmmXW.jpg",
     "is_released": false,
-    "release_date": "2026-03-01",
-    "overview": "The next chapter in Matt Murdock's crusade across Hell's Kitchen and New York City."
+    "release_date": "2026-03-24",
+    "overview": "Mayor Wilson Fisk crushes New York City underfoot as he hunts down public enemy number one, the Hell's Kitchen vigilante known as Daredevil. But beneath the horned mask, Matt Murdock will try to fight back from the shadows to tear down the Kingpin's corrupt empire and redeem his home. Resist. Rebel. Rebuild.",
+    "seasons": 2,
+    "episodes": 8
   },
   {
     "id": "marvel-68",
@@ -1031,9 +1077,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
     "tmdb_id": 969681,
-    "poster_path": "https://image.tmdb.org/t/p/w500/4q2NNj4S5dG2RLF9CpXsej7yXl.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
     "is_released": false,
-    "release_date": "2026-07-24",
+    "release_date": "2026-07-29",
     "overview": "Peter Parker navigates a fresh chapter as a street-level Spider-Man in New York City."
   },
   {
@@ -1061,9 +1107,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
     "tmdb_id": 1003596,
-    "poster_path": "https://image.tmdb.org/t/p/w500/h5k0d7f4A9s6w5e4r3t2y1u0i9o.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/jzPwsojjFStf5lR5Nm07w2hH56G.jpg",
     "is_released": false,
-    "release_date": "2026-05-01",
+    "release_date": "2026-12-16",
     "overview": "Earth's mightiest heroes clash with Doctor Doom in a universe-altering showdown."
   },
   {
@@ -1106,9 +1152,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
     "tmdb_id": 1003598,
-    "poster_path": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/f0YBuh4hyiAheXhh4JnJWoKi9g5.jpg",
     "is_released": false,
-    "release_date": "2027-05-07",
+    "release_date": "2027-12-15",
     "overview": "The catastrophic culmination of the Multiverse Saga as realities collide on Battleworld."
   },
   {
@@ -1121,9 +1167,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 335983,
-    "poster_path": "https://image.tmdb.org/t/p/w500/2uNW4WbgBHg5576P6KAlVPfgwh1.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-09-28",
     "overview": "Investigative journalist Eddie Brock attempts a comeback following a scandal, but accidentally becomes the host of an alien symbiote."
   },
   {
@@ -1136,9 +1182,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 580489,
-    "poster_path": "https://image.tmdb.org/t/p/w500/1I7uztLcGmK8aE6r0VfA2yG8Uf.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/pzKsRuKLFmYrW5Q0q8E8G78Tcgo.jpg",
     "is_released": true,
-    "release_date": "2021-01-01",
+    "release_date": "2021-09-30",
     "overview": "Eddie Brock struggles to adjust to life as the host of the alien symbiote Venom, while serial killer Cletus Kasady becomes Carnage."
   },
   {
@@ -1151,9 +1197,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 526896,
-    "poster_path": "https://image.tmdb.org/t/p/w500/6JjfSchHsiCc0vmNTivA9b965Ej.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/Av8Z2jZhEm1FLkFzMThzz9hndJF.jpg",
     "is_released": true,
-    "release_date": "2022-01-01",
+    "release_date": "2022-03-30",
     "overview": "Dangerously ill with a rare blood disorder, Dr. Morbius attempts a desperate gamble that unleashes a darkness inside him."
   },
   {
@@ -1166,9 +1212,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 634492,
-    "poster_path": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4xZa35whW4.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
+    "release_date": "2024-02-14",
     "overview": "Cassandra Webb is a New York City paramedic who develops the ability to see the future."
   },
   {
@@ -1181,9 +1227,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 912649,
-    "poster_path": "https://image.tmdb.org/t/p/w500/aosm8Vh9ilBt69SvFDg9RStAcUb.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/vGXptEdgZIhPg3cGlc7e8sNPC2e.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
+    "release_date": "2024-10-22",
     "overview": "Eddie and Venom are on the run. Hunted by both of their worlds and with the net closing in, the duo are forced into a devastating decision."
   },
   {
@@ -1196,9 +1242,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
     "tmdb_id": 558449,
-    "poster_path": "https://image.tmdb.org/t/p/w500/1GvBhIvdBqLh10m1r78wY74Y59T.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg",
     "is_released": true,
-    "release_date": "2024-01-01",
+    "release_date": "2024-11-13",
     "overview": "Kraven's complex relationship with his ruthless father Nikolai Kravinoff starts him down a path of vengeance."
   },
   {
@@ -1213,7 +1259,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 324857,
     "poster_path": "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-12-06",
     "overview": "Teen Miles Morales becomes the new Spider-Man and joins other Spider-Heroes from across parallel universes."
   },
   {
@@ -1228,7 +1274,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 569094,
     "poster_path": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
     "is_released": true,
-    "release_date": "2023-01-01",
+    "release_date": "2023-05-31",
     "overview": "Miles Morales catapults across the Multiverse, where he encounters the Spider-Society and must redefine what it means to be a hero."
   },
   {
@@ -1243,7 +1289,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 911916,
     "poster_path": "https://image.tmdb.org/t/p/w500/9KAe39xqyZnv9J4W3DRGdQqX82h.jpg",
     "is_released": false,
-    "release_date": "2027-01-01",
+    "release_date": "2027-06-17",
     "overview": "The epic conclusion to the Spider-Verse trilogy as Miles Morales battles across dimensions to save the multiverse and his family."
   },
   {
@@ -1256,9 +1302,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Legacy Spider-Man",
     "trakt_id": null,
     "tmdb_id": 557,
-    "poster_path": "https://image.tmdb.org/t/p/w500/gh4c2ubiUzBsNyIQfZkYGlHgC39.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/or6XJBVpcEbIkma0V9zshnbEtx4.jpg",
     "is_released": true,
-    "release_date": "2002-01-01",
+    "release_date": "2002-05-01",
     "overview": "After being bitten by a genetically altered spider, high school student Peter Parker gains superpowers to fight the Green Goblin."
   },
   {
@@ -1271,9 +1317,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Legacy Spider-Man",
     "trakt_id": null,
     "tmdb_id": 558,
-    "poster_path": "https://image.tmdb.org/t/p/w500/olxpyq9kJAZ2NU1iEv96mst5JQf.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/aGuvNAaaZuWXYQQ6N2v7DeuP6mB.jpg",
     "is_released": true,
-    "release_date": "2004-01-01",
+    "release_date": "2004-06-25",
     "overview": "Peter Parker is beset with troubles in his failing personal life as he battles a brilliant scientist named Doctor Octopus."
   },
   {
@@ -1286,9 +1332,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Legacy Spider-Man",
     "trakt_id": null,
     "tmdb_id": 559,
-    "poster_path": "https://image.tmdb.org/t/p/w500/2jLxvdY5qYvdvNf1lK2lC88e44s.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/sJMTTGjtjvrMZ7G0oP9D13wNUum.jpg",
     "is_released": true,
-    "release_date": "2007-01-01",
+    "release_date": "2007-05-01",
     "overview": "The seemingly invincible Spider-Man goes up against an alien symbiote and villains Sandman and Venom."
   },
   {
@@ -1301,9 +1347,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Legacy Spider-Man",
     "trakt_id": null,
     "tmdb_id": 1930,
-    "poster_path": "https://image.tmdb.org/t/p/w500/fSbkkk6gWqQkS8b9r7U3U9m4c2A.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/jexoNYnPd6vVrmygwF6QZmWPFdu.jpg",
     "is_released": true,
-    "release_date": "2012-01-01",
+    "release_date": "2012-06-23",
     "overview": "Peter Parker tries to find out who he is and how he got to be the person he is today while battling the Lizard."
   },
   {
@@ -1316,9 +1362,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Sony's Legacy Spider-Man",
     "trakt_id": null,
     "tmdb_id": 102382,
-    "poster_path": "https://image.tmdb.org/t/p/w500/c3eBqBq48QjV7n0lJ9z5a7n9m5A.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/dGjoPttcbKR5VWg1jQuNFB247KL.jpg",
     "is_released": true,
-    "release_date": "2014-01-01",
+    "release_date": "2014-04-16",
     "overview": "When New York is put under siege by Oscorp, it is up to Spider-Man to save the city he swore to protect as well as the ones he loves."
   },
   {
@@ -1331,9 +1377,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 36657,
-    "poster_path": "https://image.tmdb.org/t/p/w500/bRDAc4GogS9ciRZWh9P7qlTH7ip.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/bRDAc4GogyS9ci3ow7UnInOcriN.jpg",
     "is_released": true,
-    "release_date": "2000-01-01",
+    "release_date": "2000-07-13",
     "overview": "Two mutants come to a private academy for their kind whose resident superhero team must oppose a terrorist organization."
   },
   {
@@ -1346,9 +1392,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 36658,
-    "poster_path": "https://image.tmdb.org/t/p/w500/a3IUp9L2j1p4k3l5m6b7v8c9d0e.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/bst4alFUXCxISwdRUKSMhhkrX1M.jpg",
     "is_released": true,
-    "release_date": "2003-01-01",
+    "release_date": "2003-04-27",
     "overview": "The X-Men band together to find a mutant assassin who has made an attempt on the President's life."
   },
   {
@@ -1361,9 +1407,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 36668,
-    "poster_path": "https://image.tmdb.org/t/p/w500/kh7B91bMl2lZ0mH9WhPfaNUIEQH.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/a2xicU8DpKtRizOHjQLC1JyCSRS.jpg",
     "is_released": true,
-    "release_date": "2006-01-01",
+    "release_date": "2006-05-24",
     "overview": "When a cure is found to treat mutations, lines are drawn among the X-Men and The Brotherhood of Mutants."
   },
   {
@@ -1376,9 +1422,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 2080,
-    "poster_path": "https://image.tmdb.org/t/p/w500/mCRg7l2Wq1v6Jk0lP9m5A4s8d9f.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/yj8LbTju1p7CUJg7US2unSBk33s.jpg",
     "is_released": true,
-    "release_date": "2009-01-01",
+    "release_date": "2009-04-28",
     "overview": "A look at Wolverine's early life, in particular his time with the government squad Team X and the Weapon X program."
   },
   {
@@ -1391,9 +1437,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 49538,
-    "poster_path": "https://image.tmdb.org/t/p/w500/4n254oGf8z244XoZ76GZ8x0HqY6.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/hNEokmUke0dazoBhttFN0o3L7Xv.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-06-01",
     "overview": "In the 1960s, Charles Xavier and Erik Lehnsherr work together to find other mutants to stop the Hellfire Club."
   },
   {
@@ -1406,9 +1452,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 76170,
-    "poster_path": "https://image.tmdb.org/t/p/w500/xW3fL8u0r4t8y2u1o9p7q6w5e4r.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/t2wVAcoRlKvEIVSbiYDb8d0QqqS.jpg",
     "is_released": true,
-    "release_date": "2013-01-01",
+    "release_date": "2013-07-21",
     "overview": "Wolverine faces his ultimate nemesis - and tests of his physical, emotional, and mortal limits - in modern-day Japan."
   },
   {
@@ -1421,9 +1467,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 127585,
-    "poster_path": "https://image.tmdb.org/t/p/w500/tK6T5q0r8y2u1o9p7q6w5e4r3t2.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/tYfijzolzgoMOtegh1Y7j2Enorg.jpg",
     "is_released": true,
-    "release_date": "2014-01-01",
+    "release_date": "2014-05-15",
     "overview": "The X-Men send Wolverine to the past in a desperate effort to change history and prevent an event that results in doom."
   },
   {
@@ -1436,9 +1482,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 293660,
-    "poster_path": "https://image.tmdb.org/t/p/w500/fSRb7vyIP8rQpL0I47P3q5Y6r0s.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/3E53WEZJqP6aM84D8CckXx4pIHw.jpg",
     "is_released": true,
-    "release_date": "2016-01-01",
+    "release_date": "2016-02-09",
     "overview": "A wisecracking mercenary gets experimented on and becomes immortal but ugly, and sets out to track down the man who ruined his looks."
   },
   {
@@ -1451,9 +1497,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 246655,
-    "poster_path": "https://image.tmdb.org/t/p/w500/2mtQwJKCSEHgMZaUNvB3QHx11fJ.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/ikA8UhYdTGpqbatFa93nIf6noSr.jpg",
     "is_released": true,
-    "release_date": "2016-01-01",
+    "release_date": "2016-05-18",
     "overview": "Since the dawn of civilization, he was worshipped as a god. Apocalypse, the first and most powerful mutant, awakens."
   },
   {
@@ -1466,9 +1512,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 263115,
-    "poster_path": "https://image.tmdb.org/t/p/w500/fSQb8qyX4v5r6t7y8u9i0o1p2a3.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",
     "is_released": true,
-    "release_date": "2017-01-01",
+    "release_date": "2017-02-28",
     "overview": "In the near future, a weary Logan cares for an ailing Professor X near the Mexican border until a young mutant arrives."
   },
   {
@@ -1484,7 +1530,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/au5hsZ20QzOVXSOWgx7umAhHC6A.jpg",
     "is_released": true,
     "release_date": "2017-02-08",
-    "overview": "Troubled by unsettling visions, young David Haller begins piecing together his fragmented memories and realizes he may be the most powerful mutant."
+    "overview": "Troubled by unsettling visions, young David Haller begins piecing together his fragmented memories and realizes he may have special powers.",
+    "seasons": 1,
+    "episodes": 8
   },
   {
     "id": "marvel-100-s1",
@@ -1499,7 +1547,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/nYkGYVzn4Df3V5fZS9xYyKZn551.jpg",
     "is_released": true,
     "release_date": "2017-10-02",
-    "overview": "A suburban couple's ordinary lives are rocked by the discovery that their children possess mutant powers, forcing them to join an underground network of mutants."
+    "overview": "A suburban couple's ordinary lives are rocked by the sudden discovery that their children possess mutant powers. Forced to go on the run from a hostile government, the family joins up with an underground network of mutants and must fight to survive.",
+    "seasons": 1,
+    "episodes": 13
   },
   {
     "id": "marvel-99-s2",
@@ -1514,7 +1564,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/wMPFWmM7VLu2AwBzpF3JiWTnTkt.jpg",
     "is_released": true,
     "release_date": "2018-04-03",
-    "overview": "With Farouk on the loose, David and Division 3 form an unlikely alliance to stop a cataclysmic future from unfolding."
+    "overview": "With David and Oliver missing and Farouk on the loose, the team forms an unlikely alliance with their former enemy Clark and his well-funded government is on a new path to attaining infinite and world-ending power.",
+    "seasons": 2,
+    "episodes": 11
   },
   {
     "id": "marvel-100-s2",
@@ -1529,7 +1581,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/bUL8MBcB4OeVA2YkA3q1AMbpJL1.jpg",
     "is_released": true,
     "release_date": "2018-09-25",
-    "overview": "The Mutant Underground and the Inner Circle clash with opposing ideologies over the future of mutantkind amidst rising human-mutant tensions."
+    "overview": "A suburban couple's ordinary lives are rocked by the sudden discovery that their children possess mutant powers. Forced to go on the run from a hostile government, the family joins up with an underground network of mutants and must fight to survive.",
+    "seasons": 2,
+    "episodes": 16
   },
   {
     "id": "marvel-99-s3",
@@ -1544,7 +1598,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/4THIqrWWYdsxy6zkfzzYvWnXR6Z.jpg",
     "is_released": true,
     "release_date": "2019-06-24",
-    "overview": "David establishes a utopian commune with a time-traveling mutant named Switch in an attempt to alter his past and save himself."
+    "overview": "As Farouk and Syd embark on a search, David gains a following, teams up with a time traveler named Switch and prepares to wage war.",
+    "seasons": 3,
+    "episodes": 8
   },
   {
     "id": "marvel-101",
@@ -1556,9 +1612,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 383498,
-    "poster_path": "https://image.tmdb.org/t/p/w500/to0spRl1CMDvyUbvdIO320Q6RkG.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/to0spRl1CMDvyUbOnbb4fTk3VAd.jpg",
     "is_released": true,
-    "release_date": "2018-01-01",
+    "release_date": "2018-05-15",
     "overview": "Wisecracking mercenary Deadpool battles the time-traveling cybernetic soldier Cable to protect a mutant boy."
   },
   {
@@ -1571,9 +1627,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 320288,
-    "poster_path": "https://image.tmdb.org/t/p/w500/cCTjpXZqGtFfgxKa04CJ91GwBt.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/cCTJPelKGLhALq3r51A9uMonxKj.jpg",
     "is_released": true,
-    "release_date": "2019-01-01",
+    "release_date": "2019-06-05",
     "overview": "During a rescue mission in space, Jean Grey is hit by a cosmic force that transforms her into the Dark Phoenix."
   },
   {
@@ -1586,9 +1642,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox X-Men Universe",
     "trakt_id": null,
     "tmdb_id": 340102,
-    "poster_path": "https://image.tmdb.org/t/p/w500/xrIaa7m7pL2v0c1m6b7v8c9d0e.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/xiDGcXJTvu1lazFRYip6g1eLt9c.jpg",
     "is_released": true,
-    "release_date": "2020-01-01",
+    "release_date": "2020-04-02",
     "overview": "Five young mutants, just discovering their abilities while held in a secret facility against their will, fight to escape."
   },
   {
@@ -1601,9 +1657,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox Fantastic Four & Daredevil",
     "trakt_id": null,
     "tmdb_id": 9480,
-    "poster_path": "https://image.tmdb.org/t/p/w500/4zT4v8q9p7o2i3u5y6r1t8e9w0q.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/oCDBwSkntYamuw8VJIxMRCtDBmi.jpg",
     "is_released": true,
-    "release_date": "2003-01-01",
+    "release_date": "2003-02-14",
     "overview": "A man blinded by toxic waste which also enhanced his other senses becomes a crime-fighting hero."
   },
   {
@@ -1616,9 +1672,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox Fantastic Four & Daredevil",
     "trakt_id": null,
     "tmdb_id": 9353,
-    "poster_path": "https://image.tmdb.org/t/p/w500/5k7T4v8q9p7o2i3u5y6r1t8e9w0.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/kh7B91bMl2lZ0mH9WhPfaNUIEQH.jpg",
     "is_released": true,
-    "release_date": "2005-01-01",
+    "release_date": "2006-06-16",
     "overview": "Elektra the warrior survives her near-death experience, becomes an assassin-for-hire, and tries to protect a father and daughter."
   },
   {
@@ -1633,7 +1689,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 9738,
     "poster_path": "https://image.tmdb.org/t/p/w500/4YMcYEFS8sFuW3soP1HVmgR3cSm.jpg",
     "is_released": true,
-    "release_date": "2005-01-01",
+    "release_date": "2005-06-29",
     "overview": "Four scientists gain extraordinary superhuman powers after being exposed to cosmic radiation."
   },
   {
@@ -1648,7 +1704,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 1979,
     "poster_path": "https://image.tmdb.org/t/p/w500/9wRfzTcMyyzkQxVDqBHv8RwuZOv.jpg",
     "is_released": true,
-    "release_date": "2007-01-01",
+    "release_date": "2007-06-13",
     "overview": "The Fantastic Four encounter the mysterious Silver Surfer and face the cosmic planet-devouring threat of Galactus."
   },
   {
@@ -1661,9 +1717,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Fox Fantastic Four & Daredevil",
     "trakt_id": null,
     "tmdb_id": 166424,
-    "poster_path": "https://image.tmdb.org/t/p/w500/7Yv7k8w9e5r4t3y2u1o9p7q6w5e.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/cDroz5qSlP8xZ6tOpeYoPkBvKyL.jpg",
     "is_released": true,
-    "release_date": "2015-01-01",
+    "release_date": "2015-08-05",
     "overview": "Four young outsiders teleport to an alternate and dangerous universe which alters their physical form in shocking ways."
   },
   {
@@ -1679,7 +1735,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/1CaKyPcZvzzMSwbNFJObxNsxTkK.jpg",
     "is_released": true,
     "release_date": "2013-09-24",
-    "overview": "Phil Coulson puts together a small team of S.H.I.E.L.D. agents to handle strange new cases across the globe."
+    "overview": "Season one begins where the “Marvel's The Avengers” left off. It's just after the battle of New York, and now that the existence of superheroes and aliens has become public knowledge, the world is trying to come to grips with this new reality. Agent Phil Coulson is back in action and now has his eye on a mysterious group called The Rising Tide. In order to track this unseen, unknown enemy, he has assembled a small, highly select group of Agents from the worldwide law-enforcement organization known as S.H.I.E.L.D.",
+    "seasons": 1,
+    "episodes": 22
   },
   {
     "id": "marvel-tv-110",
@@ -1694,7 +1752,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/p8Qy60OIf0OaJ29KPw6ld51MSP7.jpg",
     "is_released": true,
     "release_date": "2014-09-23",
-    "overview": "Following the collapse of S.H.I.E.L.D., Director Coulson and his team rebuild while facing the emergence of Inhumans."
+    "overview": "In the second season, Coulson and his team look to restore trust from the government and public following S.H.I.E.L.D.'s collapse. ",
+    "seasons": 2,
+    "episodes": 22
   },
   {
     "id": "marvel-tv-111",
@@ -1709,7 +1769,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/gqyjmfFOrKY8iouNTXWj9KW7cC5.jpg",
     "is_released": true,
     "release_date": "2015-01-06",
-    "overview": "In 1946, Peggy Carter balances administrative work with secret missions for Howard Stark after WWII."
+    "overview": "Years before Agent Phil Coulson and his S.H.I.E.L.D. team swore to protect those who cannot protect themselves from threats they cannot conceive, there was Agent Peggy Carter, who pledged the same oath but lived in a different time, when women weren't recognized as being as smart or as tough as their male counterparts. But no one should ever underestimate Peggy.",
+    "seasons": 1,
+    "episodes": 8
   },
   {
     "id": "marvel-tv-112",
@@ -1724,7 +1786,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/zFmJQzl6bFrdpHhDkxXmboyykqD.jpg",
     "is_released": true,
     "release_date": "2015-04-10",
-    "overview": "Blind lawyer Matt Murdock fights injustice by night in Hell's Kitchen as Daredevil against crime lord Wilson Fisk."
+    "overview": "Blinded as a young boy, Matt Murdock fights injustice by day as a lawyer and by night as the superhero Daredevil in Hell's Kitchen, New York City.",
+    "seasons": 1,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-113",
@@ -1739,7 +1803,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/y0cxxcvCk9lEG4DEorTz5GxC9sj.jpg",
     "is_released": true,
     "release_date": "2015-09-29",
-    "overview": "Director Coulson searches the globe for Secret Warriors as ancient Inhuman threat Hive arises."
+    "overview": "Many months after their war with a rogue group of Inhumans, the team is still reeling. Coulson is again trying to put the pieces of his once revered organization back together while also dealing with the loss of his hand. His confidante and second in command, Agent Melinda May, has yet to return from an impromptu vacation with ex-husband Andrew; deadly superspy Agent Bobbi Morse is recovering from her traumatic torture at the hands of Grant Ward; Fitz is obsessed with discovering the truth behind the mysterious disappearance of Simmons; and all are on high-alert for the next move from Ward and Hydra.",
+    "seasons": 3,
+    "episodes": 22
   },
   {
     "id": "marvel-tv-114",
@@ -1754,7 +1820,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/9wwfowgVJDouHQdUsIcNhgbIUlG.jpg",
     "is_released": true,
     "release_date": "2015-11-20",
-    "overview": "Traumatized private eye Jessica Jones must confront her mind-controlling abuser Kilgrave."
+    "overview": "Haunted by a traumatic past, Jessica Jones uses her gifts as a private eye to find her tormentor before he can harm anyone else in Hell's Kitchen.",
+    "seasons": 1,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-115",
@@ -1769,7 +1837,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/h3yPRRiWZk6HrFD2oo3xqpLt6bc.jpg",
     "is_released": true,
     "release_date": "2016-01-19",
-    "overview": "Peggy Carter moves to Hollywood to investigate mysterious Zero Matter and Hollywood villain Whitney Frost."
+    "overview": "Dedicated to the fight against new Atomic Age threats in the wake of World War II, Peggy must now journey from New York City to Los Angeles and she's about to find out that the bright lights of the post-war Hollywood mask a more sinister threat to everyone she is sworn to protect.",
+    "seasons": 2,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-116",
@@ -1784,7 +1854,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/opHoslNCxkgoCaGhfO66fvCSH83.jpg",
     "is_released": true,
     "release_date": "2016-03-18",
-    "overview": "Daredevil clashes with lethal vigilante Frank Castle (The Punisher) and mystic ninja clan The Hand."
+    "overview": "Dark forces are tearing Hell's Kitchen apart once again, but this time Daredevil may have to choose between the city and his friends.",
+    "seasons": 2,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-117",
@@ -1799,7 +1871,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/mgyMzTTIFVdKoejD0gKIyaCgWOP.jpg",
     "is_released": true,
     "release_date": "2016-09-20",
-    "overview": "Ghost Rider Robbie Reyes arrives, the Darkhold awakens, and the team enters the Framework simulation."
+    "overview": "Vengeance runs rampant this season as Coulson is a mere agent again, and Daisy has gone rogue after being under Hive's control. How will S.H.I.E.L.D. deal with the arrival of The Ghost Rider?",
+    "seasons": 4,
+    "episodes": 22
   },
   {
     "id": "marvel-tv-118",
@@ -1813,8 +1887,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 67070,
     "poster_path": "https://image.tmdb.org/t/p/w500/qI85n9DBgRv6ghhJuzHOCaKXk3v.jpg",
     "is_released": true,
-    "release_date": "2016-09-30",
-    "overview": "Bulletproof hero Luke Cage defends Harlem from corrupt nightclub mogul Cottonmouth and Diamondback."
+    "release_date": "2016-07-21",
+    "overview": "A bittersweet portrait into the mind of a dry-witted, sexual, angry, porn-watching, grief-riddled woman, trying to make sense of the world. As she hurls herself headlong at modern living, Fleabag is thrown roughly up against the walls of contemporary London, with all its frenetic energy, late nights, and bright lights, in this very modern mix of fatalism and hedonism, sustaining a merry-go-round of broken dreamers. By turns hilarious and heartbreaking, this is the thoroughly disarming confessional of a woman so totally detached, she’s utterly lost, and ultimately wondering what the hell she ought to be doing in life. Much like the rest of us.",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-tv-119",
@@ -1829,7 +1905,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/usGfoL4RfX15f1sQcX3Sgw4YRf4.jpg",
     "is_released": true,
     "release_date": "2017-03-17",
-    "overview": "Danny Rand returns to New York after 15 years with the power of the Iron Fist to reclaim his legacy."
+    "overview": "Fifteen years after being presumed dead in a plane crash, Danny Rand mysteriously returns to New York City determined to reclaim his birthright and family company. However, when a long-destined enemy rises in New York, this living weapon is forced to choose between his family’s legacy and his duties as the Iron Fist.",
+    "seasons": 1,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-120",
@@ -1841,10 +1919,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
     "tmdb_id": 62285,
-    "poster_path": "https://image.tmdb.org/t/p/w500/4COAMPA6LPkPBd1xdm9paN4LCD8.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/49XzINhH4LFsgz7cx6TOPcHUJUL.jpg",
     "is_released": true,
     "release_date": "2017-08-18",
-    "overview": "Daredevil, Jessica Jones, Luke Cage, and Iron Fist unite to protect NYC from The Hand."
+    "overview": "Daredevil, Jessica Jones, Luke Cage, and Iron Fist unite to protect NYC from The Hand.",
+    "seasons": 1,
+    "episodes": 8
   },
   {
     "id": "marvel-tv-121",
@@ -1859,7 +1939,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/doCIoaV9ffAJbK3TW2AsGp4ytOQ.jpg",
     "is_released": true,
     "release_date": "2017-09-29",
-    "overview": "The Inhuman Royal Family is splintered by a military coup in Attilan and escapes to Hawaii."
+    "overview": "After the Royal Family of Inhumans is splintered by a military coup, they barely escape to Hawaii where their surprising interactions with the lush world and humanity around them may prove to not only save them, but Earth itself.",
+    "seasons": 1,
+    "episodes": 8
   },
   {
     "id": "marvel-tv-122",
@@ -1874,7 +1956,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/dOkJ6TJKQjsz2XwXyp2VYpkeE5g.jpg",
     "is_released": true,
     "release_date": "2017-11-17",
-    "overview": "Frank Castle uncovers a high-level military conspiracy running deeper than New York's criminal underworld."
+    "overview": "A former Marine out to punish the criminals responsible for his family's murder finds himself ensnared in a military conspiracy.",
+    "seasons": 1,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-123",
@@ -1889,7 +1973,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/hMsaGkDyCM3Y3EWcdYK5Uu8qEok.jpg",
     "is_released": true,
     "release_date": "2017-11-21",
-    "overview": "Six teenagers discover their parents are secretly members of a supervillain organization named Pride."
+    "overview": "Every teenager thinks their parents are evil. What if you found out they actually were? Six diverse teenagers who can barely stand each other must unite against a common foe – their parents.",
+    "seasons": 1,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-124",
@@ -1904,7 +1990,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/zndNDiqH0SvIlFHURYCWY060qE8.jpg",
     "is_released": true,
     "release_date": "2017-12-01",
-    "overview": "Coulson and the team are transported to a dystopian space station in the shattered future."
+    "overview": "Agent Coulson and the team escaped LMD Aida’s Framework and awakened in the real world. Little did they know that Aida was now fully human – and with multiple Inhuman abilities – with the dangerous notion that, with Fitz by her side, she could change the world. After defeating her with the aid of Ghost Rider, the team went out for a celebration but were interrupted by a mysterious man who rendered them frozen. The next thing we see is Coulson onboard a ship … in space. Coulson will discover that some, but not all, of his S.H.I.E.L.D. colleagues were taken with him and placed onboard the ship. As they come in contact with some of the vessel’s inhabitants, it becomes abundantly clear that something has gone terribly awry, and the team will need to figure out their role and delve deeper into this nightmarish mystery to try to right what has gone incredibly wrong.",
+    "seasons": 5,
+    "episodes": 22
   },
   {
     "id": "marvel-tv-125",
@@ -1919,7 +2007,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/tKirVNmDmwYjqehjPpyjr1n3U2F.jpg",
     "is_released": true,
     "release_date": "2018-03-08",
-    "overview": "Jessica Jones investigates IGH, the secretive biotech organization responsible for giving her powers."
+    "overview": "Drowning in anger, Jessica Jones is forced to reckon with her past, her powers and her newfound fame as she dishes out her own messy form of justice. Finally ready to face her past, Jessica hunts down the source of her powers and uncovers a link to a shadowy killer who's terrorizing the city.",
+    "seasons": 2,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-126",
@@ -1934,7 +2024,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/nluzawv8wEo0AeECpnLo3wO2YLZ.jpg",
     "is_released": true,
     "release_date": "2018-06-07",
-    "overview": "Tandy Bowen and Tyrone Johnson discover they have acquired superpowers that are mysteriously linked."
+    "overview": "Two teenagers from very different backgrounds awaken to newly acquired superpowers which mysteriously link them to one another.",
+    "seasons": 1,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-127",
@@ -1948,8 +2040,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 67070,
     "poster_path": "https://image.tmdb.org/t/p/w500/o7ytmKNlOIcCyWXLdtDSRXi5Ruc.jpg",
     "is_released": true,
-    "release_date": "2018-06-22",
-    "overview": "Luke faces Bushmaster and Mariah Dillard as he struggles with the burden of Harlem's hero."
+    "release_date": "2019-03-04",
+    "overview": "Picking up one year after the end of the first series, while Fleabag appears to be more at ease with herself and her newly bustling café, her family seems to be whirling into further turmoil around her. Having not spoken to her sister since we last left her, Fleabag reconnects with Claire at their father’s engagement party, which turns out to be far from a celebration. There, she meets a Catholic priest who turns her life upside down… Series 2 is an exploration into everything that makes us human: love, religion, hope and heartbreak.",
+    "seasons": 2,
+    "episodes": 6
   },
   {
     "id": "marvel-tv-128",
@@ -1964,7 +2058,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/vXYvfCWvz5W0rErCpNIq09urhzW.jpg",
     "is_released": true,
     "release_date": "2018-09-07",
-    "overview": "Danny Rand steps up to protect Chinatown alongside Colleen Wing and Misty Knight against Davos."
+    "overview": "As a gang war brews in New York's Chinatown, Danny and Colleen strive to protect the innocent while battling fearsome enemies both old and new.",
+    "seasons": 2,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-129",
@@ -1979,7 +2075,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/zH6sgePlr1XX0jSZypbfQmr70Lf.jpg",
     "is_released": true,
     "release_date": "2018-10-19",
-    "overview": "A broken Matt Murdock re-emerges to stop a newly released Wilson Fisk and FBI assassin Bullseye."
+    "overview": "Missing for months, Matt Murdock reemerges a broken man, putting into question his future as both vigilante Daredevil and lawyer Matthew Murdock. But when his archenemy Wilson Fisk is released from prison, Matt must choose between hiding from the world, or embracing his destiny as a hero.",
+    "seasons": 3,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-130",
@@ -1994,7 +2092,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/r2e50wFzTsMgsSVLAyIB8uX1EGu.jpg",
     "is_released": true,
     "release_date": "2018-12-21",
-    "overview": "The kids must survive on their own in the Hostel while planning how to stop their parents' excavation."
+    "overview": "The Runaways have left their homes (and evil parents) behind and now have to learn to live on their own. As they scavenge for food, search for shelter, and take care of one another, our kids begin to realize that, for better or worse, they’re stuck with each other. And it’s up to them to take down PRIDE once and for all. But someone sent a mysterious message to Jonah… Is there a mole in the Runaways? Meanwhile PRIDE is focused on finding their children, and Jonah has his own dangerous plan in mind.",
+    "seasons": 2,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-131",
@@ -2009,7 +2109,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/agNYq5XZnGfmYetUMyyM2RdPY70.jpg",
     "is_released": true,
     "release_date": "2019-01-18",
-    "overview": "Frank Castle protects a young runaway from fundamentalist hitman John Pilgrim and scarred Billy Russo."
+    "overview": "Frank strives to protect a teenager caught in a sinister conspiracy while doing whatever it takes -- and then some -- to end Russo once and for all.",
+    "seasons": 2,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-132",
@@ -2024,7 +2126,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/pYnRJuBPEqZO1o4fcxBTgmKNHfy.jpg",
     "is_released": true,
     "release_date": "2019-04-04",
-    "overview": "Tyrone and Tandy take their vigilante crusade into New Orleans against human trafficking rings."
+    "overview": "Season two turns the heat up on our young heroes as Tyrone and Tandy try to find their place as more active heroes in this world. As they learn and grow emotionally, so will their skills. With enhanced powers and a decision to make about the type of heroes they want to be, they make the choice to run into the danger, head first. They tackle a heartless vigilante and uncover an evil that’s been preying on the young women of the city, as the show takes on more serious topics like gang violence and human trafficking.",
+    "seasons": 2,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-133",
@@ -2039,7 +2143,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/QU0NjcvDonZLKhjRuxRv6AVo5l.jpg",
     "is_released": true,
     "release_date": "2019-05-10",
-    "overview": "The team searches deep space for Fitz while an alien doppelgänger of Coulson named Sarge arrives on Earth."
+    "overview": "Last season, the team leaped forward in time to a dystopian future they soon realized must be prevented. While facing multiple timelines and new enemies from faraway planets, they found family, friends, teammates and the courage to pull off their biggest challenge yet. Their next challenge? Coming to grips with the knowledge that bending the laws of space and time may have saved the planet, but it couldn’t save Fitz or Coulson.",
+    "seasons": 6,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-134",
@@ -2054,7 +2160,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/dOPx3bj3x6eXYXQJUUIHXvWRSSB.jpg",
     "is_released": true,
     "release_date": "2019-06-14",
-    "overview": "Jessica and Trish Walker confront psychopathic serial killer Gregory Salinger, testing their sisterhood."
+    "overview": "Jessica matches wits with a calculating serial killer, and a newly powered Trish goes to extremes to stamp out evil.",
+    "seasons": 3,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-135",
@@ -2069,7 +2177,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/m83skvEvoFQoo1szIMpFQ6kbCe6.jpg",
     "is_released": true,
     "release_date": "2019-12-13",
-    "overview": "The Runaways face dark sorceress Morgan le Fay and team up with Cloak & Dagger in the Dark Dimension."
+    "overview": "The Runaways frantically search for their captured friends Chase, Gert and Karolina. The kids go head to head with an unstoppable enemy who has targeted Leslie - or more accurately, the child she's carrying. Nico draws them all into a dark realm where its ruler Morgan le Fay, is much more nefarious than anyone the kids have yet to face.",
+    "seasons": 3,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-136",
@@ -2084,7 +2194,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/qM95u55G8xVyfgoSZ2qTlY3MDl6.jpg",
     "is_released": true,
     "release_date": "2020-05-27",
-    "overview": "The S.H.I.E.L.D. team time travels across the 20th century to prevent alien Chronicoms from erasing history."
+    "overview": "Coulson and the Agents of S.H.I.E.L.D. are thrust backward in time and stranded in 1931 New York City. With the all-new Zephyr set to time-jump at any moment, the team must hurry to find out exactly what happened. If they fail, it would mean disaster for the past, present and future of the world.",
+    "seasons": 7,
+    "episodes": 13
   },
   {
     "id": "marvel-tv-137",
@@ -2098,8 +2210,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 89456,
     "poster_path": "https://image.tmdb.org/t/p/w500/dBzcVyuWQeQgS2xaMFila9Wk3xE.jpg",
     "is_released": true,
-    "release_date": "2020-10-16",
-    "overview": "Daimon and Ana Helstrom track down the worst of humanity using their unique occult abilities."
+    "release_date": "2019-10-08",
+    "overview": "A caveman forms a bond with a dinosaur as they struggle to survive in a hostile world.",
+    "seasons": 1,
+    "episodes": 10
   },
   {
     "id": "marvel-tv-138",
@@ -2113,8 +2227,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 86831,
     "poster_path": "https://image.tmdb.org/t/p/w500/rlrRI2b6RvM9I9xOBTKqcTaehkE.jpg",
     "is_released": true,
-    "release_date": "2021-05-21",
-    "overview": "Megalomanic supervillain M.O.D.O.K. balances running his bankrupt evil organization A.I.M. and family life."
+    "release_date": "2019-03-15",
+    "overview": "Terrifying creatures, wicked surprises and dark comedy converge in this NSFW anthology of animated stories presented by Tim Miller and David Fincher.",
+    "seasons": 1,
+    "episodes": 18
   },
   {
     "id": "marvel-tv-139",
@@ -2128,8 +2244,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 125910,
     "poster_path": "https://image.tmdb.org/t/p/w500/s14pvZaymWeBjhJBUwaC0RKzvZz.jpg",
     "is_released": true,
-    "release_date": "2021-11-17",
-    "overview": "A wronged Japanese snow monkey goes on a revenge quest through Tokyo with the ghost of an American assassin."
+    "release_date": "2021-07-01",
+    "overview": "After a video of Prince Wilhelm of Sweden fighting at a party is posted online, he is given a script for an apology speech and learns that his parents have enrolled him at Hillerska Boarding School, a prestigious boarding school in the country.",
+    "seasons": 1,
+    "episodes": 6
   },
   {
     "id": "marvel-tv-140",
@@ -2143,8 +2261,10 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 125910,
     "poster_path": "https://image.tmdb.org/t/p/w500/fAS1b6UKKhLrK9hNybbD0s3ZRE2.jpg",
     "is_released": true,
-    "release_date": "2024-07-15",
-    "overview": "Monkey and Bryce move to New York City trying to escape their violent past while facing new supernatural threats."
+    "release_date": "2022-11-01",
+    "overview": "A winter break has passed and Prince Wilhelm and the rest of his classmates are back at Hillerska. When Wilhelm tries to take revenge on August, and win back Simon's trust, he creates problems that threaten the entire monarchy.",
+    "seasons": 2,
+    "episodes": 6
   },
   {
     "id": "marvel-141",
@@ -2156,9 +2276,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 36647,
-    "poster_path": "https://image.tmdb.org/t/p/w500/oVQ4Fv7a7n9m5A4s8d9f0g1h2j3.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/oWT70TvbsmQaqyphCZpsnQR7R32.jpg",
     "is_released": true,
-    "release_date": "1998-01-01",
+    "release_date": "1998-08-21",
     "overview": "A half-vampire, half-mortal man-turned-protector of the human race battles evil vampires."
   },
   {
@@ -2171,9 +2291,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 36586,
-    "poster_path": "https://image.tmdb.org/t/p/w500/p8Qy60OIf0OaJ29KPw6ld51MSP7.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/yDHwo3eWcMiy5LnnEnlGV9iLu9k.jpg",
     "is_released": true,
-    "release_date": "2002-01-01",
+    "release_date": "2002-03-22",
     "overview": "Blade forms an uneasy alliance with the vampire council to combat the Reapers."
   },
   {
@@ -2186,9 +2306,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 1927,
-    "poster_path": "https://image.tmdb.org/t/p/w500/4zT4v8q9p7o2i3u5y6r1t8e9w0q.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/UllIft2jLSBaay3zQyMV4GNdfy.jpg",
     "is_released": true,
-    "release_date": "2003-01-01",
+    "release_date": "2003-06-19",
     "overview": "Bruce Banner, a genetics researcher with a tragic past, suffers an accident that causes him to transform into a raging green monster."
   },
   {
@@ -2201,9 +2321,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 7220,
-    "poster_path": "https://image.tmdb.org/t/p/w500/5k7T4v8q9p7o2i3u5y6r1t8e9w0.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/7rmA1HwYp2GKM85BL0cVwCaosGr.jpg",
     "is_released": true,
-    "release_date": "2004-01-01",
+    "release_date": "2004-04-15",
     "overview": "An undercover FBI agent becomes a vengeful vigilante after his wife and son are murdered by a ruthless criminal."
   },
   {
@@ -2216,9 +2336,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 36588,
-    "poster_path": "https://image.tmdb.org/t/p/w500/7Yv7k8w9e5r4t3y2u1o9p7q6w5e.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/eMH0bxn3GCpqn5igOhBZMkAsLQP.jpg",
     "is_released": true,
-    "release_date": "2004-01-01",
+    "release_date": "2009-01-17",
     "overview": "Blade joins forces with the Nightstalkers to take down Dracula himself."
   },
   {
@@ -2231,9 +2351,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 24254,
-    "poster_path": "https://image.tmdb.org/t/p/w500/1I7uztLcGmK8aE6r0VfA2yG8Uf.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/3i6wviquq8F8hTVAGdMOXBwmtGX.jpg",
     "is_released": true,
-    "release_date": "2005-01-01",
+    "release_date": "1989-08-16",
     "overview": "Agents of an oil tycoon disappear in a swamp; the new sheriff investigates and finds a swamp creature."
   },
   {
@@ -2246,10 +2366,12 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 2424,
-    "poster_path": "https://image.tmdb.org/t/p/w500/2mtQwJKCSEHgMZaUNvB3QHx11fJ.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/aphrMB7w0O2WDIGFWQsMcLyW17S.jpg",
     "is_released": true,
-    "release_date": "2006-01-01",
-    "overview": "Blade continues his war against the vampires in Detroit with the help of Krista Starr."
+    "release_date": "2006-01-02",
+    "overview": "Blade continues his war against the vampires in Detroit with the help of Krista Starr.",
+    "seasons": 2,
+    "episodes": 104
   },
   {
     "id": "marvel-148",
@@ -2261,9 +2383,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 1250,
-    "poster_path": "https://image.tmdb.org/t/p/w500/to0spRl1CMDvyUbvdIO320Q6RkG.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/4quwR1VwZouD0YF9AaD72kQAjxH.jpg",
     "is_released": true,
-    "release_date": "2007-01-01",
+    "release_date": "2007-01-15",
     "overview": "Stunt motorcyclist Johnny Blaze gives up his soul to become a hell-blazing vigilante."
   },
   {
@@ -2276,9 +2398,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 13056,
-    "poster_path": "https://image.tmdb.org/t/p/w500/cCTjpXZqGtFfgxKa04CJ91GwBt.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/oOvKJgYUIpfswGHAdW6159bPbvM.jpg",
     "is_released": true,
-    "release_date": "2008-01-01",
+    "release_date": "2008-12-05",
     "overview": "Frank Castle wages a one-man war on the mob and battles disfigured mob boss Jigsaw."
   },
   {
@@ -2291,9 +2413,9 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
     "tmdb_id": 71676,
-    "poster_path": "https://image.tmdb.org/t/p/w500/xrIaa7m7pL2v0c1m6b7v8c9d0e.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/w500/xEoBT6lYfQNpSpTm8gJMTrQytiw.jpg",
     "is_released": true,
-    "release_date": "2011-01-01",
+    "release_date": "2011-12-10",
     "overview": "Johnny Blaze is hiding out in Eastern Europe when he is called upon to stop the devil from taking over his son."
   }
 ];

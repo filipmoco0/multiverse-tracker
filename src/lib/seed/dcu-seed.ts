@@ -549,7 +549,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/pF6vrER1XYF4hrtGytMVysoiGR8.jpg",
     "is_released": true,
     "release_date": "2015-09-12",
-    "overview": "Vixen (Season 1)",
+    "overview": "A live-action sitcom about two 12-year-old girls who start a multi-million-dollar gaming company and take on rap superstar Double G as a business partner.",
     "seasons": 1,
     "episodes": 21
   },
@@ -685,7 +685,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/9OWXHslRJgue3r3BjzRzQB8m91b.jpg",
     "is_released": true,
     "release_date": "2016-09-18",
-    "overview": "Vixen (Season 2)",
+    "overview": "A live-action sitcom about two 12-year-old girls who start a multi-million-dollar gaming company and take on rap superstar Double G as a business partner.",
     "seasons": 2,
     "episodes": 24
   },
@@ -885,7 +885,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/pNDfftsiCLLUZxy7dUbGW4daRjH.jpg",
     "is_released": true,
     "release_date": "2018-01-03",
-    "overview": "Freedom Fighters: The Ray (Season 1)",
+    "overview": "Explore the high-pressure experiences of police officers, paramedics and firefighters who are thrust into the most frightening, shocking and heart-stopping situations. These emergency responders must try to balance saving those who are at their most vulnerable with solving the problems in their own lives.",
     "seasons": 1,
     "episodes": 10
   },
@@ -947,7 +947,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/o8gfGyvvU1YhCC0RMVktzDbsph0.jpg",
     "is_released": true,
     "release_date": "2018-09-23",
-    "overview": "Freedom Fighters: The Ray (Season 2)",
+    "overview": "Explore the high-pressure experiences of police officers, paramedics and firefighters who are thrust into the most frightening, shocking and heart-stopping situations. These emergency responders must try to balance saving those who are at their most vulnerable with solving the problems in their own lives.",
     "seasons": 2,
     "episodes": 18
   },
@@ -1027,7 +1027,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/7imkRYpmM7IVCLIiOZZARKLlkSL.jpg",
     "is_released": false,
     "release_date": "2018-10-21",
-    "overview": "Waller (Season 1)",
+    "overview": "In the new SBS6 program Scammers on the internet, Kees van der Spek helps victims who have been scammed for large sums digitally. Kees travels at home and abroad to track down the internet scammers that cannot be found at that time. Will Kees succeed in finding out who is the online vendor who collects money but never delivers anything? And who is behind the counterfeit bank emails that many Dutch people receive?",
     "seasons": 1,
     "episodes": 4
   },
@@ -1175,7 +1175,7 @@ export const DCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/reY4gJiMSNoL2THKJcPJk1E2KTq.jpg",
     "is_released": true,
     "release_date": "2019-10-06",
-    "overview": "Batwoman (Season 1)",
+    "overview": "Kate Kane, armed with a passion for social justice and a flair for speaking her mind, soars onto the streets of Gotham as Batwoman, an out lesbian and highly trained street fighter primed to snuff out the failing city's criminal resurgence. But don't call her a hero yet. In a city desperate for a savior, Kate must overcome her own demons before embracing the call to be Gotham's symbol of hope",
     "seasons": 1,
     "episodes": 20
   },
