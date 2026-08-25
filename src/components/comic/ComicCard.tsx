@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, Info, Calendar } from 'lucide-react';
 import { clsx } from 'clsx';
 import { FranchiseMedia, OrderMode } from '@/lib/types';
+import { extractSeasonRange } from '@/lib/utils/season';
 import { ComicBadge } from './ComicBadge';
 import { ComicPoster } from './ComicPoster';
 import { MediaModal } from './MediaModal';
@@ -13,7 +14,13 @@ interface ComicCardProps {
   media: FranchiseMedia;
   isWatched: boolean;
   orderMode: OrderMode;
-  onToggleWatched: (mediaId: string, tmdbId?: number | null, traktId?: number | null, mediaType?: FranchiseMedia['media_type']) => void;
+  onToggleWatched: (
+    mediaId: string,
+    tmdbId?: number | null,
+    traktId?: number | null,
+    mediaType?: FranchiseMedia['media_type'],
+    seasonNumber?: number | number[] | null
+  ) => void;
 }
 
 export const ComicCard: React.FC<ComicCardProps> = ({
@@ -110,7 +117,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
           {/* Bottom Card Watched Toggle Bar */}
           <div className="pt-2 border-t-2 border-black/60 flex items-center justify-between gap-2">
             <button
-              onClick={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type)}
+              onClick={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, extractSeasonRange(media.title))}
               className={clsx(
                 'flex-1 py-1.5 px-3 border-2 border-black flex items-center justify-center gap-1.5 font-display text-xs sm:text-sm font-bold uppercase transition select-none cursor-pointer',
                 isWatched
@@ -140,7 +147,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         isWatched={isWatched}
-        onToggleWatched={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type)}
+        onToggleWatched={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, extractSeasonRange(media.title))}
       />
     </>
   );

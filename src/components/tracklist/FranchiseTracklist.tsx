@@ -147,10 +147,11 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     mediaId: string,
     tmdbId?: number | null,
     traktId?: number | null,
-    mediaType?: FranchiseMedia['media_type']
+    mediaType?: FranchiseMedia['media_type'],
+    seasonNumber?: number | number[] | null
   ) => {
     const isCurrentlyWatched = Boolean(watchedIds[mediaId]);
-    toggleWatched(mediaId, tmdbId, traktId, mediaType);
+    toggleWatched(mediaId, tmdbId, traktId, mediaType, seasonNumber);
 
     if (!isCurrentlyWatched && enableConfetti) {
       // Check if this action completes its phase
