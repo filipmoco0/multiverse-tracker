@@ -1,8 +1,7 @@
 import { useByokStore } from '../store/useByokStore';
+import { TRAKT_CLIENT_ID } from './config';
 
 export const TRAKT_API_URL = 'https://api.trakt.tv';
-// Public Client ID for the Multiverse Tracker Trakt app
-const DEFAULT_TRAKT_KEY = 'iI5LzoT280cpy0dZ1XDBxakffw4QlPIt8Skq-wczuMM';
 
 export function getEffectiveTraktClientId(): string {
   if (typeof window !== 'undefined') {
@@ -11,7 +10,6 @@ export function getEffectiveTraktClientId(): string {
     if (byokKey) return byokKey;
 
     // Then try the client_id stored alongside the OAuth token
-    // This ensures the Client ID always matches the app that issued the token
     try {
       const raw = localStorage.getItem('multiverse_tracker_trakt_user_v1');
       if (raw) {
@@ -20,7 +18,7 @@ export function getEffectiveTraktClientId(): string {
       }
     } catch {}
   }
-  return process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
+  return TRAKT_CLIENT_ID;
 }
 
 export async function fetchTraktWatchedItems(token?: string | null, username?: string | null) {
@@ -60,6 +58,11 @@ export async function syncTraktHistory(
     seasonNumber?: number | number[] | null;
   }
 ) {
+  // If item has no TMDB or Trakt ID (e.g. unreleased/unannounced project), skip gracefully
+  if (!item.tmdbId && !item.traktId) {
+    return { skipped: true };
+  }
+
   const clientId = getEffectiveTraktClientId();
 
   const res = await fetch('/api/trakt/history', {

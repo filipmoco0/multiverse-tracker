@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const DEFAULT_TRAKT_KEY = 'iI5LzoT280cpy0dZ1XDBxakffw4QlPIt8Skq-wczuMM';
+import { TRAKT_CLIENT_ID, TRAKT_USER_AGENT } from '@/lib/trakt/config';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -12,11 +11,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Username or Token is required' }, { status: 400 });
   }
 
-  const clientId = customClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
+  const clientId = customClientId || TRAKT_CLIENT_ID;
 
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'User-Agent': TRAKT_USER_AGENT,
       'trakt-api-version': '2',
       'trakt-api-key': clientId,
     };

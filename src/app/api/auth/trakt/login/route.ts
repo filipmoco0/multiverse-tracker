@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const DEFAULT_TRAKT_KEY = 'iI5LzoT280cpy0dZ1XDBxakffw4QlPIt8Skq-wczuMM';
+import { TRAKT_CLIENT_ID, TRAKT_CLIENT_SECRET } from '@/lib/trakt/config';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const paramClientId = searchParams.get('client_id');
   const paramClientSecret = searchParams.get('client_secret');
 
-  const clientId = paramClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
-  const clientSecret = paramClientSecret || process.env.TRAKT_CLIENT_SECRET;
+  const clientId = paramClientId || TRAKT_CLIENT_ID;
+  const clientSecret = paramClientSecret || TRAKT_CLIENT_SECRET;
 
   // Use request origin so it works on both Vercel URL and production domain.
   // Both must be registered as redirect URIs in the Trakt app settings.

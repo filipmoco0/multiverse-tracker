@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { TRAKT_CLIENT_ID, TRAKT_CLIENT_SECRET } from '@/lib/trakt/config';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -14,8 +15,8 @@ export async function GET(request: NextRequest) {
   const cookieId = request.cookies.get('trakt_byok_id')?.value;
   const cookieSecret = request.cookies.get('trakt_byok_secret')?.value;
 
-  const clientId = cookieId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
-  const clientSecret = cookieSecret || process.env.TRAKT_CLIENT_SECRET || '';
+  const clientId = cookieId || TRAKT_CLIENT_ID;
+  const clientSecret = cookieSecret || TRAKT_CLIENT_SECRET;
   // Must match what was sent in the login step — use same origin
   const origin = request.nextUrl.origin;
   const redirectUri = `${origin}/api/auth/trakt/callback`;
