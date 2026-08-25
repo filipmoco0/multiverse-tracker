@@ -135,21 +135,6 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Buttons (Settings & Admin) */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {/* Quick Trakt Sync Trigger (If Trakt is connected) */}
-            {traktUser && (
-              <button
-                onClick={syncWithTrakt}
-                disabled={isSyncing}
-                className="flex items-center gap-1 px-2 py-1 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border-2 border-rose-600 shadow-[2px_2px_0px_0px_#000000] text-xs font-display transition cursor-pointer"
-                title={`Trakt Connected: @${traktUser.username}. Click to sync.`}
-              >
-                <RefreshCw className={clsx('w-3.5 h-3.5', isSyncing && 'animate-spin')} />
-                <span className="hidden md:inline font-sans font-semibold">
-                  {isSyncing ? 'Syncing...' : `@${traktUser.username}`}
-                </span>
-              </button>
-            )}
-
             {/* Unified Settings & Account Button */}
             <button
               onClick={() => openSettings('account')}

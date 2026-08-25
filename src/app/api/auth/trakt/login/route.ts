@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const DEFAULT_TRAKT_KEY = '5a6ddbfaea8f5a6fa58dfc924bc01c23f66085a539bc2b5c00e66c6b4129b8c0';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const paramClientId = searchParams.get('client_id');
   const paramClientSecret = searchParams.get('client_secret');
 
-  const clientId = paramClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID;
+  const clientId = paramClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
   const clientSecret = paramClientSecret || process.env.TRAKT_CLIENT_SECRET;
-
-  if (!clientId) {
-    const url = new URL('/', request.url);
-    url.searchParams.set('error', 'trakt_not_configured');
-    return NextResponse.redirect(url);
-  }
 
   const origin = request.nextUrl.origin;
   const redirectUri = `${origin}/api/auth/trakt/callback`;

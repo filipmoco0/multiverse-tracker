@@ -56,6 +56,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     watchedIds,
     traktUser,
     setTraktUser,
+    setAuthMode,
     syncWithTrakt,
     isSyncing,
     exportWatchlistJson,
@@ -78,6 +79,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
 
   // Local state for Trakt Quick Connect Tab
   const [traktUsernameInput, setTraktUsernameInput] = useState('');
+  const [isTraktQuickLoading, setIsTraktQuickLoading] = useState(false);
 
   // Status feedback message
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -219,16 +221,53 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   // Trakt Handlers
   const handleTraktOAuthLogin = () => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    window.location.href = `/api/auth/trakt/login?redirect_uri=${encodeURIComponent(origin + '/api/auth/trakt/callback')}`;
+    const byok = useByokStore.getState();
+    let url = `/api/auth/trakt/login?redirect_uri=${encodeURIComponent(origin + '/api/auth/trakt/callback')}`;
+    if (byok.traktClientId) {
+      url += `&client_id=${encodeURIComponent(byok.traktClientId)}`;
+    }
+    if (byok.traktClientSecret) {
+      url += `&client_secret=${encodeURIComponent(byok.traktClientSecret)}`;
+    }
+    window.location.href = url;
+  };
+
+  const handleTraktQuickConnect = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!traktUsernameInput.trim()) {
+      setStatusMsg({ text: 'Please enter your Trakt.tv username.', type: 'error' });
+      return;
+    }
+    const cleanUsername = traktUsernameInput.trim().replace('@', '');
+    setIsTraktQuickLoading(true);
+    setStatusMsg({ text: `Connecting to @${cleanUsername}...`, type: 'success' });
+
+    try {
+      const userObj = {
+        username: cleanUsername,
+        name: cleanUsername,
+        access_token: `token_user_${cleanUsername}`,
+        expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
+      };
+      setTraktUser(userObj);
+      setAuthMode('trakt');
+      await syncWithTrakt();
+      setStatusMsg({ text: `Connected and synced history for @${cleanUsername}!`, type: 'success' });
+    } catch (err: any) {
+      setStatusMsg({ text: 'Failed to sync with Trakt: ' + err.message, type: 'error' });
+    } finally {
+      setIsTraktQuickLoading(false);
+    }
   };
 
   const handleTraktDisconnect = () => {
     setTraktUser(null);
+    setTraktUsernameInput('');
     if (typeof window !== 'undefined') {
       localStorage.removeItem('multiverse_tracker_trakt_user_v1');
     }
     syncUserProfileToCloud({ trakt_username: null, trakt_token: null });
-    setStatusMsg({ text: 'Trakt account disconnected.', type: 'success' });
+    setStatusMsg({ text: 'Trakt account disconnected successfully.', type: 'success' });
   };
 
   // Data Export/Import Handlers
@@ -527,12 +566,16 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                   </div>
                 ) : (
                   <div className="space-y-4">
+                    {/* Method A: 1-Click OAuth */}
                     <div className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
-                      <h4 className="font-display font-black text-sm uppercase text-amber-400">
-                        1-Click Trakt OAuth 2.0 (Recommended)
-                      </h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-display font-black text-sm uppercase text-amber-400">
+                          1-Click Trakt OAuth 2.0 (Recommended)
+                        </h4>
+                        <ComicBadge variant="marvel" size="sm">2-Way</ComicBadge>
+                      </div>
                       <p className="text-xs text-zinc-400 font-sans">
-                        Authorizes direct 2-way synchronization with Trakt.tv so your progress is saved to both platforms.
+                        Authorizes direct two-way synchronization with your Trakt.tv account.
                       </p>
                       <ComicButton
                         onClick={handleTraktOAuthLogin}
@@ -544,6 +587,36 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         Authorize on Trakt.tv
                       </ComicButton>
                     </div>
+
+                    {/* Method B: Quick Username Connect */}
+                    <form onSubmit={handleTraktQuickConnect} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-display font-black text-sm uppercase text-cyan-400">
+                          Or Connect by Username (Fast Public Sync)
+                        </h4>
+                        <ComicBadge variant="cyan" size="sm">Quick</ComicBadge>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans">
+                        Enter your public Trakt username to import watched movies without OAuth:
+                      </p>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={traktUsernameInput}
+                          onChange={(e) => setTraktUsernameInput(e.target.value)}
+                          placeholder="e.g. filipmoco"
+                          className="flex-1 bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-400"
+                        />
+                        <ComicButton
+                          type="submit"
+                          disabled={isTraktQuickLoading}
+                          variant="cyan"
+                          size="sm"
+                        >
+                          {isTraktQuickLoading ? 'Syncing...' : 'Connect'}
+                        </ComicButton>
+                      </div>
+                    </form>
 
                     <div className="text-center pt-1">
                       <Link
