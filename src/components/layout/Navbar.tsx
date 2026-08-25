@@ -128,7 +128,7 @@ export const Navbar: React.FC = () => {
               )}
               title="Trakt.tv & TMDB Setup Guide"
             >
-              <BookOpen className="w-3.5 h-3.5 skew-x-6 text-amber-400" />
+              <BookOpen className={clsx('w-3.5 h-3.5 skew-x-6', pathname?.startsWith('/guide') ? 'text-black' : 'text-amber-400')} />
               <span className="inline-block skew-x-6">Guide</span>
             </Link>
           </nav>
