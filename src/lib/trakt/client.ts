@@ -15,54 +15,27 @@ export function getEffectiveTraktClientId(): string {
 
 export async function fetchTraktWatchedItems(token?: string | null, username?: string | null) {
   const clientId = getEffectiveTraktClientId();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'User-Agent': BROWSER_USER_AGENT,
-    'trakt-api-version': '2',
-    'trakt-api-key': clientId,
-    Accept: 'application/json',
-  };
-
-  if (token && !token.startsWith('token_user_')) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   try {
-    let moviesEndpoint = `${TRAKT_API_URL}/sync/watched/movies`;
-    let showsEndpoint = `${TRAKT_API_URL}/sync/watched/shows`;
-
-    // If no real token, use public user watched endpoints
-    if (!token || token.startsWith('token_user_')) {
-      if (username) {
-        if (typeof window !== 'undefined') {
-          try {
-            const res = await fetch(`/api/trakt/sync?username=${encodeURIComponent(username)}`);
-            if (res.ok) {
-              const data = await res.json();
-              return { movies: data.movies || [], shows: data.shows || [] };
-            }
-          } catch (e) {
-            console.warn('Server proxy sync fallback:', e);
-          }
-        }
-        moviesEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/movies`;
-        showsEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/shows`;
-      } else {
-        return { movies: [], shows: [] };
-      }
+    const params = new URLSearchParams();
+    if (token && !token.startsWith('token_user_')) {
+      params.set('token', token);
+    }
+    if (username) {
+      params.set('username', username);
+    }
+    if (clientId) {
+      params.set('client_id', clientId);
     }
 
-    const [moviesRes, showsRes] = await Promise.all([
-      fetch(moviesEndpoint, { headers }),
-      fetch(showsEndpoint, { headers }),
-    ]);
-
-    const movies = moviesRes.ok ? await moviesRes.json() : [];
-    const shows = showsRes.ok ? await showsRes.json() : [];
-
-    return { movies, shows };
+    const res = await fetch(`/api/trakt/sync?${params.toString()}`);
+    if (res.ok) {
+      const data = await res.json();
+      return { movies: data.movies || [], shows: data.shows || [] };
+    }
+    return { movies: [], shows: [] };
   } catch (err) {
-    console.error('Failed to fetch Trakt watched history:', err);
+    console.error('Failed to fetch Trakt watched history via server proxy:', err);
     return { movies: [], shows: [] };
   }
 }
@@ -78,46 +51,30 @@ export async function syncTraktHistory(
   }
 ) {
   const clientId = getEffectiveTraktClientId();
-  const endpoint = action === 'add' ? '/sync/history' : '/sync/history/remove';
 
-  const bodyData: Record<string, unknown[]> = {};
-  const idObject: Record<string, number> = {};
-  if (item.traktId) idObject.trakt = item.traktId;
-  if (item.tmdbId) idObject.tmdb = item.tmdbId;
+  try {
+    const res = await fetch('/api/trakt/history', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token,
+        action,
+        item,
+        clientId,
+      }),
+    });
 
-  if (item.mediaType === 'movie' || item.mediaType === 'special') {
-    bodyData.movies = [{ ids: idObject }];
-  } else {
-    if (item.seasonNumber) {
-      const seasonsArr = Array.isArray(item.seasonNumber) ? item.seasonNumber : [item.seasonNumber];
-      bodyData.shows = [
-        {
-          ids: idObject,
-          seasons: seasonsArr.map((num) => ({ number: num })),
-        },
-      ];
-    } else {
-      bodyData.shows = [{ ids: idObject }];
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn(`Trakt history proxy error (${res.status}):`, errText);
+      return false;
     }
+
+    return true;
+  } catch (err) {
+    console.error('Failed to post Trakt history via proxy:', err);
+    return false;
   }
-
-  const res = await fetch(`${TRAKT_API_URL}${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': BROWSER_USER_AGENT,
-      'trakt-api-version': '2',
-      'trakt-api-key': clientId,
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(bodyData),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.warn(`Trakt history sync warning (${res.status}):`, errText);
-  }
-
-  return res.ok;
 }

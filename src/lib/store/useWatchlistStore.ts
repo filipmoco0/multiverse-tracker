@@ -231,22 +231,42 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
         }
       });
 
+      const cleanShowTitle = (t: string) => {
+        return (t || '')
+          .toLowerCase()
+          .replace(/^marvels\s+/i, '')
+          .replace(/^the\s+/i, '')
+          .replace(/\s*\(season\s*\d+.*\)/i, '')
+          .replace(/\s*\(seasons\s*\d+.*\)/i, '')
+          .replace(/[^a-z0-9]/g, '');
+      };
+
+      const cleanMovieTitle = (t: string) => {
+        return (t || '')
+          .toLowerCase()
+          .replace(/^marvels\s+/i, '')
+          .replace(/^the\s+/i, '')
+          .replace(/[^a-z0-9]/g, '');
+      };
+
       // Match Watched Movies
       (movies || []).forEach((m: any) => {
         const movie = m.movie || m;
         const tmdbId = movie.ids?.tmdb ? Number(movie.ids.tmdb) : null;
         const traktId = movie.ids?.trakt ? Number(movie.ids.trakt) : null;
-        const cleanTitle = movie.title ? String(movie.title).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+        const traktTitleClean = cleanMovieTitle(movie.title);
 
-        if (tmdbId && tmdbMap.has(tmdbId)) {
-          tmdbMap.get(tmdbId)?.forEach((id) => { mergedWatched[id] = true; });
-        }
-        if (traktId && traktMap.has(traktId)) {
-          traktMap.get(traktId)?.forEach((id) => { mergedWatched[id] = true; });
-        }
-        if (cleanTitle && titleMap.has(cleanTitle)) {
-          titleMap.get(cleanTitle)?.forEach((id) => { mergedWatched[id] = true; });
-        }
+        allMedia.forEach((item) => {
+          if (item.media_type === 'movie' || item.media_type === 'special') {
+            if (tmdbId && Number(item.tmdb_id) === tmdbId) {
+              mergedWatched[item.id] = true;
+            } else if (traktId && Number(item.trakt_id) === traktId) {
+              mergedWatched[item.id] = true;
+            } else if (traktTitleClean && cleanMovieTitle(item.title) === traktTitleClean) {
+              mergedWatched[item.id] = true;
+            }
+          }
+        });
       });
 
       // Match Watched Shows with per-season precision
@@ -254,22 +274,15 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
         const show = s.show || s;
         const tmdbId = show.ids?.tmdb ? Number(show.ids.tmdb) : null;
         const traktId = show.ids?.trakt ? Number(show.ids.trakt) : null;
-        const cleanTitle = show.title ? String(show.title).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+        const traktShowClean = cleanShowTitle(show.title);
 
         // Extract seasons watched for this show from Trakt
         const watchedSeasonSet = new Set<number>();
         if (Array.isArray(s.seasons)) {
           s.seasons.forEach((seasonObj: any) => {
-            if (typeof seasonObj.number === 'number') {
-              if (
-                (seasonObj.episodes && seasonObj.episodes.length > 0) ||
-                seasonObj.completed ||
-                (seasonObj.plays && seasonObj.plays > 0)
-              ) {
-                watchedSeasonSet.add(seasonObj.number);
-              } else {
-                watchedSeasonSet.add(seasonObj.number);
-              }
+            const num = Number(seasonObj.number);
+            if (!isNaN(num) && num > 0) {
+              watchedSeasonSet.add(num);
             }
           });
         }
@@ -277,10 +290,17 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
         // Find candidate items in allMedia
         const candidateItems = allMedia.filter((item) => {
           if (item.media_type !== 'show') return false;
-          if (tmdbId && item.tmdb_id === tmdbId) return true;
-          if (traktId && item.trakt_id === traktId) return true;
-          const itemClean = item.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (cleanTitle && (itemClean.includes(cleanTitle) || cleanTitle.includes(itemClean))) return true;
+          if (tmdbId && Number(item.tmdb_id) === tmdbId) return true;
+          if (traktId && Number(item.trakt_id) === traktId) return true;
+          const itemClean = cleanShowTitle(item.title);
+          if (
+            traktShowClean &&
+            (itemClean === traktShowClean ||
+              itemClean.includes(traktShowClean) ||
+              traktShowClean.includes(itemClean))
+          ) {
+            return true;
+          }
           return false;
         });
 
