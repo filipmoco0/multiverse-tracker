@@ -34,6 +34,17 @@ export async function fetchTraktWatchedItems(token?: string | null, username?: s
     // If no real token, use public user watched endpoints
     if (!token || token.startsWith('token_user_')) {
       if (username) {
+        if (typeof window !== 'undefined') {
+          try {
+            const res = await fetch(`/api/trakt/sync?username=${encodeURIComponent(username)}`);
+            if (res.ok) {
+              const data = await res.json();
+              return { movies: data.movies || [], shows: data.shows || [] };
+            }
+          } catch (e) {
+            console.warn('Server proxy sync fallback:', e);
+          }
+        }
         moviesEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/movies`;
         showsEndpoint = `${TRAKT_API_URL}/users/${encodeURIComponent(username)}/watched/shows`;
       } else {
