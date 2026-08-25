@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Marvel Cinematic Universe (MCU) Watchlist & Timeline | Multiverse Tracker',
+  title: 'Marvel MCU',
   description: 'Track all MCU Phases 1 to 6, Disney+ series, and Special Presentations in release and chronological orders.',
 };
 

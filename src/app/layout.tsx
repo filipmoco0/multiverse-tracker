@@ -12,13 +12,16 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://multiversetracker.com'),
-  title: 'Multiverse Tracker | MCU & DCU Watchlist & Progress Tracker',
+  title: {
+    default: 'Multiverse Tracker',
+    template: '%s | Multiverse Tracker',
+  },
   description: 'Curated progress tracker for Marvel Cinematic Universe & DC Universe in release and chronological orders. Sync with Trakt.tv or track as Guest.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Multiverse',
+    title: 'Multiverse Tracker',
   },
   icons: {
     icon: [
