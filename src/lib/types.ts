@@ -24,33 +24,19 @@ export type OrderMode = 'release' | 'chronological';
 export type TypeFilter = 'all' | 'movie' | 'show' | 'special';
 export type StatusFilter = 'all' | 'watched' | 'unwatched';
 
-export interface TraktUser {
-  username: string;
-  name?: string;
-  avatar?: string;
-  access_token: string;
-  refresh_token?: string;
-  expires_at?: number;
-  client_id?: string;
-}
-
 export interface WatchlistState {
-  // Mapping of media id (or tmdb/trakt id string) -> boolean (watched)
+  // Mapping of media id -> boolean (watched)
   watchedIds: Record<string, boolean>;
   // Auth state
-  authMode: 'guest' | 'trakt' | 'supabase';
-  traktUser: TraktUser | null;
+  authMode: 'guest' | 'supabase';
   supabaseUser: { id: string; email: string } | null;
-  isSyncing: boolean;
   lastSyncedAt: number | null;
   
   // Actions
   toggleWatched: (mediaId: string, tmdbId?: number | null, traktId?: number | null, mediaType?: MediaType, seasonNumber?: number | number[] | null) => Promise<void>;
   markPhaseWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
   markAllWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
-  setAuthMode: (mode: 'guest' | 'trakt' | 'supabase') => void;
-  setTraktUser: (user: TraktUser | null) => void;
-  syncWithTrakt: () => Promise<void>;
+  setAuthMode: (mode: 'guest' | 'supabase') => void;
   exportWatchlistJson: () => string;
   importWatchlistJson: (jsonString: string) => boolean;
   resetProgress: (universe?: Universe) => void;

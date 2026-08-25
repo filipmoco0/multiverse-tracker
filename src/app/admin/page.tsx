@@ -169,7 +169,7 @@ export default function AdminDashboardPage() {
       if (tmdbApiKey) headers['x-tmdb-api-key'] = tmdbApiKey;
 
       const typeParam = searchScope !== 'all' ? `&type=${searchScope}` : '';
-      const res = await fetch(`/api/trakt/search?q=${encodeURIComponent(searchQuery)}${typeParam}`, { headers });
+      const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(searchQuery)}${typeParam}`, { headers });
       const data = await res.json();
       setSearchResults(data.results || []);
     } catch (e) {

@@ -13,7 +13,7 @@ import { createClient } from '@/lib/supabase/client';
 function LandingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setAuthMode, traktUser } = useWatchlistStore();
+  const { setAuthMode } = useWatchlistStore();
 
   const [isEntering, setIsEntering] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -21,7 +21,7 @@ function LandingContent() {
   const errorParam = searchParams.get('error');
   const reasonParam = searchParams.get('reason');
 
-  // ONLY auto-redirect to Gate (/select) if user has an ACTIVE signed-in account (Supabase or Trakt)
+  // ONLY auto-redirect to Gate (/select) if user has an ACTIVE signed-in account (Supabase)
   useEffect(() => {
     const supabase = createClient();
     if (supabase) {
@@ -31,14 +31,7 @@ function LandingContent() {
         }
       });
     }
-
-    if (typeof window !== 'undefined') {
-      const storedTrakt = localStorage.getItem('multiverse_tracker_trakt_user_v1');
-      if (storedTrakt && traktUser) {
-        router.replace('/select');
-      }
-    }
-  }, [router, traktUser]);
+  }, [router]);
 
   const handleGuestEntry = () => {
     setAuthMode('guest');
@@ -110,7 +103,7 @@ function LandingContent() {
             </div>
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-rose-400">
               <Sparkles className="w-4 h-4 mx-auto mb-1 text-white" />
-              Trakt & BYOK
+              TMDB Artwork
             </div>
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-emerald-400">
               <ShieldCheck className="w-4 h-4 mx-auto mb-1 text-white" />

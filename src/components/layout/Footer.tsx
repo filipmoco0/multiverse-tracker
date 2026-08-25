@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
             </span>
           </div>
           <p className="text-xs text-zinc-500 max-w-md font-sans">
-            Curated progress tracker for the Marvel Cinematic Universe and DC Universe. Synced via Trakt.tv and local cache.
+            Curated progress tracker for the Marvel Cinematic Universe and DC Universe. Instant local storage and free cloud sync.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export const Footer: React.FC = () => {
         {/* Disclaimer */}
         <div className="text-center md:text-right text-[11px] text-zinc-600 space-y-1">
           <p>Not affiliated with Marvel Studios, Disney, DC Studios, or Warner Bros. Discovery.</p>
-          <p>Movie metadata powered by Trakt & TMDB.</p>
+          <p>Movie metadata and artwork powered by The Movie Database (TMDB).</p>
         </div>
       </div>
     </footer>

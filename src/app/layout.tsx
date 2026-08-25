@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: 'Multiverse Tracker',
     template: '%s | Multiverse Tracker',
   },
-  description: 'Curated progress tracker for Marvel Cinematic Universe & DC Universe in release and chronological orders. Sync with Trakt.tv or track as Guest.',
+  description: 'Curated progress tracker for Marvel Cinematic Universe & DC Universe in release and chronological orders. Instant local tracking and cross-device cloud sync.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

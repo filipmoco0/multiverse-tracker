@@ -13,7 +13,6 @@ import { loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { traktUser, isSyncing, syncWithTrakt } = useWatchlistStore();
   const { isCustomTmdbActive } = useByokStore();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -150,7 +149,7 @@ export const Navbar: React.FC = () => {
               <span className="font-bold uppercase tracking-wider hidden md:inline">
                 {currentAuthUser ? currentAuthUser.email?.split('@')[0] : 'Settings'}
               </span>
-              {(currentAuthUser || traktUser || isCustomTmdbActive) && (
+              {(currentAuthUser || isCustomTmdbActive) && (
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" title="Cloud Active" />
               )}
             </button>

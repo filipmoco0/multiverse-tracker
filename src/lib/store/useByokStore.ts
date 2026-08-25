@@ -4,12 +4,8 @@ import { syncUserProfileToCloud } from '../supabase/user-profile';
 
 interface ByokState {
   tmdbApiKey: string;
-  traktClientId: string;
-  traktClientSecret: string;
   isCustomTmdbActive: boolean;
-  isCustomTraktActive: boolean;
   setTmdbApiKey: (key: string) => void;
-  setTraktCredentials: (clientId: string, clientSecret?: string) => void;
   clearKeys: () => void;
 }
 
@@ -41,10 +37,7 @@ export const useByokStore = create<ByokState>()(
   persist(
     (set) => ({
       tmdbApiKey: '',
-      traktClientId: '',
-      traktClientSecret: '',
       isCustomTmdbActive: false,
-      isCustomTraktActive: false,
 
       setTmdbApiKey: (key: string) => {
         const trimmed = key.trim();
@@ -55,23 +48,10 @@ export const useByokStore = create<ByokState>()(
         syncUserProfileToCloud({ tmdb_api_key: trimmed || null });
       },
 
-      setTraktCredentials: (clientId: string, clientSecret: string = '') => {
-        const trimmedId = clientId.trim();
-        const trimmedSecret = clientSecret.trim();
-        set({
-          traktClientId: trimmedId,
-          traktClientSecret: trimmedSecret,
-          isCustomTraktActive: Boolean(trimmedId),
-        });
-      },
-
       clearKeys: () => {
         set({
           tmdbApiKey: '',
-          traktClientId: '',
-          traktClientSecret: '',
           isCustomTmdbActive: false,
-          isCustomTraktActive: false,
         });
         syncUserProfileToCloud({ tmdb_api_key: null });
       },

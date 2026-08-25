@@ -32,13 +32,13 @@ import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useByokStore } from '@/lib/store/useByokStore';
-import { useSettingsStore, AppSettings } from '@/lib/store/useSettingsStore';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { createClient } from '@/lib/supabase/client';
 import { syncUserProfileToCloud, loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
 import { triggerComicConfetti } from '../comic/ConfettiCelebration';
 import { clsx } from 'clsx';
 
-export type SettingsTab = 'account' | 'trakt' | 'features' | 'byok' | 'data' | 'donate';
+export type SettingsTab = 'account' | 'features' | 'byok' | 'data' | 'donate';
 
 interface UnifiedSettingsModalProps {
   isOpen: boolean;
@@ -56,17 +56,12 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   // Stores
   const {
     watchedIds,
-    traktUser,
-    setTraktUser,
-    setAuthMode,
-    syncWithTrakt,
-    isSyncing,
     exportWatchlistJson,
     importWatchlistJson,
     resetProgress,
   } = useWatchlistStore();
 
-  const { tmdbApiKey, setTmdbApiKey, traktClientId, traktClientSecret, setTraktCredentials, clearKeys } = useByokStore();
+  const { tmdbApiKey, setTmdbApiKey, clearKeys } = useByokStore();
   const settings = useSettingsStore();
 
   // Local state for Account Tab
@@ -76,14 +71,8 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   const [authPassword, setAuthPassword] = useState('');
   const [isSignUpMode, setIsSignUpMode] = useState(false);
 
-  // Local state for BYOK & Trakt Credentials
+  // Local state for TMDB Key
   const [inputTmdbKey, setInputTmdbKey] = useState('');
-  const [inputTraktClientId, setInputTraktClientId] = useState('');
-  const [inputTraktClientSecret, setInputTraktClientSecret] = useState('');
-
-  // Local state for Trakt Quick Connect Tab
-  const [traktUsernameInput, setTraktUsernameInput] = useState('');
-  const [isTraktQuickLoading, setIsTraktQuickLoading] = useState(false);
 
   // Status feedback message
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -110,8 +99,6 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
 
     const byok = useByokStore.getState();
     setInputTmdbKey(byok.tmdbApiKey || '');
-    setInputTraktClientId(byok.traktClientId || '');
-    setInputTraktClientSecret(byok.traktClientSecret || '');
   }, [isOpen]);
 
   // Clear feedback after 4 seconds
@@ -184,12 +171,11 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
       setCurrentUser(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem('multiverse_tracker_auth_mode_v1');
-        localStorage.removeItem('multiverse_tracker_trakt_user_v1');
         localStorage.removeItem('multiverse_tracker_watched_v1');
         localStorage.removeItem('multiverse_byok_keys_storage');
       }
       clearKeys();
-      useWatchlistStore.setState({ authMode: 'guest', traktUser: null, supabaseUser: null, watchedIds: {} });
+      useWatchlistStore.setState({ authMode: 'guest', supabaseUser: null, watchedIds: {} });
       setStatusMsg({ text: 'Signed out and cleared device cache.', type: 'success' });
       setTimeout(() => {
         onClose();
@@ -209,7 +195,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
       if (currentUser?.id) {
         await loadUserProfileFromCloud(currentUser.id);
       }
-      setStatusMsg({ text: 'Watchlist, Trakt & BYOK keys synced with cloud!', type: 'success' });
+      setStatusMsg({ text: 'Watchlist synced with cloud account!', type: 'success' });
     } catch (err: any) {
       setStatusMsg({ text: 'Sync failed: ' + err.message, type: 'error' });
     } finally {
@@ -221,58 +207,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   const handleSaveByok = (e: React.FormEvent) => {
     e.preventDefault();
     setTmdbApiKey(inputTmdbKey.trim());
-    setTraktCredentials(inputTraktClientId.trim(), inputTraktClientSecret.trim());
     syncUserProfileToCloud({
       tmdb_api_key: inputTmdbKey.trim() || null,
-      trakt_client_id: inputTraktClientId.trim() || null,
-      trakt_client_secret: inputTraktClientSecret.trim() || null,
     });
-    setStatusMsg({ text: 'API keys saved to device and cloud!', type: 'success' });
-  };
-
-  // Trakt Handlers
-  const handleTraktOAuthLogin = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    // Uses server-side NEXT_PUBLIC_TRAKT_CLIENT_ID env var — no user input needed
-    window.location.href = '/api/auth/trakt/login';
-  };
-
-  const handleTraktQuickConnect = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!traktUsernameInput.trim()) {
-      setStatusMsg({ text: 'Please enter your Trakt.tv username.', type: 'error' });
-      return;
-    }
-    const cleanUsername = traktUsernameInput.trim().replace('@', '');
-    setIsTraktQuickLoading(true);
-    setStatusMsg({ text: `Connecting to @${cleanUsername}...`, type: 'success' });
-
-    try {
-      const userObj = {
-        username: cleanUsername,
-        name: cleanUsername,
-        access_token: `token_user_${cleanUsername}`,
-        expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
-      };
-      setTraktUser(userObj);
-      setAuthMode('trakt');
-      await syncWithTrakt();
-      setStatusMsg({ text: `Connected and synced history for @${cleanUsername}!`, type: 'success' });
-    } catch (err: any) {
-      setStatusMsg({ text: 'Failed to sync with Trakt: ' + err.message, type: 'error' });
-    } finally {
-      setIsTraktQuickLoading(false);
-    }
-  };
-
-  const handleTraktDisconnect = () => {
-    setTraktUser(null);
-    setTraktUsernameInput('');
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('multiverse_tracker_trakt_user_v1');
-    }
-    syncUserProfileToCloud({ trakt_username: null, trakt_token: null });
-    setStatusMsg({ text: 'Trakt account disconnected successfully.', type: 'success' });
+    setStatusMsg({ text: 'TMDB API key saved to device and cloud!', type: 'success' });
   };
 
   // Data Export/Import Handlers
@@ -313,9 +251,8 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
 
   const tabs: { id: SettingsTab; label: string; icon: any }[] = [
     { id: 'account', label: 'Cloud Account', icon: User },
-    { id: 'trakt', label: 'Trakt.tv', icon: Zap },
     { id: 'features', label: 'Features & UI', icon: Sliders },
-    { id: 'byok', label: 'API Keys', icon: Key },
+    { id: 'byok', label: 'TMDB Key', icon: Key },
     { id: 'data', label: 'Data & Backup', icon: Database },
     { id: 'donate', label: '⚡ Support Dev', icon: Coffee },
   ];
@@ -351,7 +288,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                   Settings & Preferences
                 </h3>
                 <p className="text-xs text-zinc-400 font-sans">
-                  Manage cloud account, Trakt sync, and UI features
+                  Manage cloud account, UI customization, and data backup
                 </p>
               </div>
             </div>
@@ -428,14 +365,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       <div className="font-display font-black text-lg text-amber-400">
                         {currentUser.email}
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs font-sans pt-2 border-t border-zinc-800">
+                      <div className="text-xs font-sans pt-2 border-t border-zinc-800">
                         <div>
-                          <span className="text-zinc-500 block">Watched Titles:</span>
+                          <span className="text-zinc-500 block">Watched Titles Synced:</span>
                           <strong className="text-white">{totalWatchedCount} titles</strong>
-                        </div>
-                        <div>
-                          <span className="text-zinc-500 block">Trakt Linked:</span>
-                          <strong className="text-white">{traktUser ? `@${traktUser.username}` : 'None'}</strong>
                         </div>
                       </div>
                     </div>
@@ -449,7 +382,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         className="flex-1"
                         leftIcon={<Cloud className="w-4 h-4" />}
                       >
-                        Sync With Cloud
+                        {isAuthLoading ? 'Syncing...' : 'Sync Cloud Watchlist'}
                       </ComicButton>
                       <ComicButton
                         onClick={handleSignOut}
@@ -463,202 +396,75 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleAuthSubmit} className="space-y-4">
-                    <div className="text-xs text-zinc-300 font-sans leading-relaxed">
-                      Sign in or create a free cloud account to synchronize your watched progress, Trakt token, and personal API keys across all your devices.
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          value={authEmail}
-                          onChange={(e) => setAuthEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          required
-                          className="w-full bg-zinc-950 border-2 border-black px-3.5 py-2.5 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          value={authPassword}
-                          onChange={(e) => setAuthPassword(e.target.value)}
-                          placeholder="••••••••"
-                          required
-                          minLength={6}
-                          className="w-full bg-zinc-950 border-2 border-black px-3.5 py-2.5 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
-                        />
-                      </div>
-                    </div>
-
-                    <ComicButton
-                      type="submit"
-                      disabled={isAuthLoading}
-                      variant="gold"
-                      size="md"
-                      className="w-full"
-                    >
-                      {isAuthLoading ? 'Processing...' : isSignUpMode ? 'Create Cloud Account' : 'Sign In'}
-                    </ComicButton>
-
-                    <div className="text-center pt-2">
-                      <button
-                        type="button"
-                        onClick={() => setIsSignUpMode(!isSignUpMode)}
-                        className="text-xs font-display uppercase text-zinc-400 hover:text-amber-400 underline transition cursor-pointer"
-                      >
-                        {isSignUpMode ? 'Already have an account? Sign In' : 'Need an account? Create Free Account'}
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            )}
-
-            {/* TAB 2: TRAKT.TV */}
-            {activeTab === 'trakt' && (
-              <div className="space-y-5">
-                <div className="text-xs text-zinc-300 font-sans leading-relaxed">
-                  Connect your Trakt.tv account to automatically import watched movies and episodes and push 2-way watch status in real time.
-                </div>
-
-                {traktUser ? (
-                  <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-[#E62429] text-white border-2 border-black -skew-x-6 font-black">
-                          <Zap className="w-5 h-5 skew-x-6" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400 block">
-                            Connected Account
-                          </span>
-                          <h4 className="font-display font-black text-lg text-rose-400">
-                            @{traktUser.username}
-                          </h4>
-                        </div>
-                      </div>
-                      {traktUser.access_token && !traktUser.access_token.startsWith('token_user_') ? (
-                        <ComicBadge variant="green" size="sm">
-                          2-Way Sync Active
-                        </ComicBadge>
-                      ) : (
-                        <ComicBadge variant="cyan" size="sm">
-                          Read-Only Import
-                        </ComicBadge>
-                      )}
-                    </div>
-
-                    <div className="text-xs text-zinc-400 font-sans leading-relaxed">
-                      {traktUser.access_token && !traktUser.access_token.startsWith('token_user_') ? (
-                        <span className="text-emerald-400 font-medium">
-                          ✓ Full 2-Way Sync is active! Marking items as watched here immediately updates your Trakt.tv history.
-                        </span>
-                      ) : (
-                        <span className="text-zinc-300">
-                          ℹ️ You are connected via <strong>Username Quick Import</strong>. You can pull your history below. To automatically push watch history to Trakt when clicking cards, authorize with <strong>Method 1 (OAuth 2.0)</strong>.
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex gap-3 pt-2">
-                      <ComicButton
-                        onClick={async () => {
-                          try {
-                            await syncWithTrakt();
-                            setStatusMsg({ text: 'Watch history successfully synced from Trakt!', type: 'success' });
-                          } catch (err: any) {
-                            setStatusMsg({ text: err.message || 'Failed to sync with Trakt', type: 'error' });
-                          }
-                        }}
-                        disabled={isSyncing}
-                        variant="gold"
-                        size="sm"
-                        className="flex-1"
-                      >
-                        {isSyncing ? 'Syncing...' : 'Sync History Now'}
-                      </ComicButton>
-                      <ComicButton
-                        onClick={handleTraktDisconnect}
-                        variant="danger"
-                        size="sm"
-                      >
-                        Disconnect
-                      </ComicButton>
-                    </div>
-                  </div>
-                ) : (
                   <div className="space-y-4">
-                    {/* Primary OAuth Connect */}
-                    <div className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
+                    <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-amber-400">
-                          Connect Trakt.tv Account
+                          {isSignUpMode ? 'Create Cloud Account' : 'Sign In with Cloud Account'}
                         </h4>
-                        <ComicBadge variant="green" size="sm">2-Way Sync</ComicBadge>
+                        <ComicBadge variant="cyan" size="sm">Free Cross-Device Sync</ComicBadge>
                       </div>
 
                       <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                        Connect your Trakt.tv account to enable full 2-way sync. Marking items as watched here will instantly update your Trakt history — and vice versa.
+                        Sign in to automatically sync your Marvel and DC watch progress across all your phones, laptops, and tablets in real time.
                       </p>
 
-                      <ComicButton
-                        onClick={handleTraktOAuthLogin}
-                        variant="danger"
-                        size="md"
-                        className="w-full bg-[#E62429]"
-                        leftIcon={<Zap className="w-5 h-5 text-amber-300" />}
-                      >
-                        Connect with Trakt.tv
-                      </ComicButton>
-                    </div>
+                      <form onSubmit={handleAuthSubmit} className="space-y-3">
+                        <div>
+                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            value={authEmail}
+                            onChange={(e) => setAuthEmail(e.target.value)}
+                            placeholder="your.email@example.com"
+                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
 
-                    {/* Quick Username Import */}
-                    <form onSubmit={handleTraktQuickConnect} className="p-4 bg-zinc-950 border-2 border-black shadow-[3px_3px_0px_0px_#000000] space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-display font-black text-sm uppercase text-cyan-400">
-                          Or Quick Import by Username
-                        </h4>
-                        <ComicBadge variant="cyan" size="sm">Read-Only</ComicBadge>
-                      </div>
-                      <p className="text-xs text-zinc-400 font-sans">
-                        Pulls your existing Trakt history to mark items as watched. Does <strong>not</strong> push new watches to Trakt.
-                      </p>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={traktUsernameInput}
-                          onChange={(e) => setTraktUsernameInput(e.target.value)}
-                          placeholder="e.g. filipmoco"
-                          className="flex-1 bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-400"
-                        />
-                        <ComicButton
-                          type="submit"
-                          disabled={isTraktQuickLoading}
-                          variant="cyan"
-                          size="sm"
+                        <div>
+                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
+                            Password
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        <div className="flex gap-2 pt-1">
+                          <ComicButton
+                            type="submit"
+                            disabled={isAuthLoading}
+                            variant="gold"
+                            size="md"
+                            className="flex-1"
+                          >
+                            {isAuthLoading ? 'Processing...' : isSignUpMode ? 'Create Account' : 'Sign In'}
+                          </ComicButton>
+                        </div>
+                      </form>
+
+                      <div className="text-center pt-2 border-t border-zinc-800">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsSignUpMode(!isSignUpMode);
+                            setStatusMsg(null);
+                          }}
+                          className="text-xs font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer"
                         >
-                          {isTraktQuickLoading ? 'Syncing...' : 'Import'}
-                        </ComicButton>
+                          {isSignUpMode
+                            ? 'Already have an account? Sign In'
+                            : "Don't have an account? Sign Up Free"}
+                        </button>
                       </div>
-                    </form>
-
-                    <div className="text-center pt-1">
-                      <Link
-                        href="/guide"
-                        onClick={onClose}
-                        className="inline-flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-amber-400 hover:text-amber-300 underline"
-                      >
-                        <BookOpen className="w-3.5 h-3.5" /> Need help? Read the Setup Guide
-                      </Link>
                     </div>
                   </div>
                 )}

@@ -38,7 +38,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isPassportOpen, setIsPassportOpen] = useState(false);
 
-  const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, traktUser } = useWatchlistStore();
+  const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, supabaseUser } = useWatchlistStore();
   const { showMarathonStats, enableConfetti } = useSettingsStore();
 
   const isMCU = universe === 'mcu';
@@ -470,7 +470,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         mediaList={initialMedia}
         watchedIds={watchedIds}
         universe={universe}
-        userName={traktUser?.username}
+        userName={supabaseUser?.email?.split('@')[0]}
       />
     </div>
   );

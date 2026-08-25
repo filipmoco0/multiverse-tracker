@@ -4,11 +4,7 @@ import { useByokStore } from '../store/useByokStore';
 
 export interface UserProfileData {
   watched_ids?: Record<string, boolean>;
-  trakt_username?: string | null;
-  trakt_token?: string | null;
   tmdb_api_key?: string | null;
-  trakt_client_id?: string | null;
-  trakt_client_secret?: string | null;
 }
 
 /**
@@ -24,15 +20,12 @@ export async function syncUserProfileToCloud(data: Partial<UserProfileData> = {}
     if (!user) return;
 
     const currentWatched = useWatchlistStore.getState().watchedIds;
-    const currentTrakt = useWatchlistStore.getState().traktUser;
     const currentByok = useByokStore.getState();
 
     const payload: any = {
       id: user.id,
       email: user.email,
       watched_ids: data.watched_ids !== undefined ? data.watched_ids : currentWatched,
-      trakt_username: data.trakt_username !== undefined ? data.trakt_username : (currentTrakt?.username || null),
-      trakt_token: data.trakt_token !== undefined ? data.trakt_token : (currentTrakt?.access_token || null),
       tmdb_api_key: data.tmdb_api_key !== undefined ? data.tmdb_api_key : (currentByok.tmdbApiKey || null),
       updated_at: new Date().toISOString(),
     };
@@ -77,38 +70,7 @@ export async function loadUserProfileFromCloud(userId: string) {
         useWatchlistStore.setState({ watchedIds: mergedWatched });
       }
 
-      // 2. Hydrate Trakt Account
-      if (data.trakt_username && data.trakt_token) {
-        // Preserve any existing client_id from localStorage (set during OAuth)
-        let existingClientId: string | undefined;
-        try {
-          const raw = localStorage.getItem('multiverse_tracker_trakt_user_v1');
-          if (raw) {
-            const existing = JSON.parse(raw);
-            existingClientId = existing?.client_id;
-          }
-        } catch {}
-
-        const traktUser = {
-          username: data.trakt_username,
-          name: data.trakt_username,
-          access_token: data.trakt_token,
-          expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
-          client_id: existingClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID,
-        };
-        useWatchlistStore.getState().setTraktUser(traktUser);
-      } else if (data.trakt_username) {
-        // Read-only username connect — no real token
-        const traktUser = {
-          username: data.trakt_username,
-          name: data.trakt_username,
-          access_token: `token_user_${data.trakt_username}`,
-          expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
-        };
-        useWatchlistStore.getState().setTraktUser(traktUser);
-      }
-
-      // 3. Hydrate TMDB BYOK Key
+      // 2. Hydrate TMDB BYOK Key
       if (data.tmdb_api_key) {
         useByokStore.getState().setTmdbApiKey(data.tmdb_api_key);
       }

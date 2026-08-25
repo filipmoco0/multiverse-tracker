@@ -17,9 +17,7 @@ interface UserAuthModalProps {
 
 export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose }) => {
   const watchedIds = useWatchlistStore((s) => s.watchedIds);
-  const traktUser = useWatchlistStore((s) => s.traktUser);
   const tmdbApiKey = useByokStore((s) => s.tmdbApiKey);
-  const traktClientId = useByokStore((s) => s.traktClientId);
 
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -106,11 +104,9 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
         setCurrentUser(data.user);
         setStatusMsg({ text: 'Account created! Initializing cloud sync...', type: 'success' });
 
-        // Save current local progress and keys to the new account
+        // Save current local progress to the new account
         await syncUserProfileToCloud({
           watched_ids: watchedIds,
-          trakt_username: traktUser?.username || null,
-          trakt_token: traktUser?.access_token || null,
           tmdb_api_key: tmdbApiKey || null,
         });
 
@@ -132,7 +128,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
       if (currentUser?.id) {
         await loadUserProfileFromCloud(currentUser.id);
       }
-      setStatusMsg({ text: 'Watchlist, Trakt & BYOK keys synced with cloud!', type: 'success' });
+      setStatusMsg({ text: 'Watchlist synced with cloud!', type: 'success' });
     } catch (err: any) {
       setStatusMsg({ text: 'Sync failed: ' + err.message, type: 'error' });
     } finally {
@@ -150,13 +146,12 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
       setCurrentUser(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem('multiverse_tracker_auth_mode_v1');
-        localStorage.removeItem('multiverse_tracker_trakt_user_v1');
         localStorage.removeItem('multiverse_tracker_watched_v1');
         localStorage.removeItem('multiverse_byok_keys_storage');
       }
       useByokStore.getState().clearKeys();
-      useWatchlistStore.setState({ authMode: 'guest', traktUser: null, supabaseUser: null, watchedIds: {} });
-      setStatusMsg({ text: 'Signed out of cloud account and cleared device keys.', type: 'success' });
+      useWatchlistStore.setState({ authMode: 'guest', supabaseUser: null, watchedIds: {} });
+      setStatusMsg({ text: 'Signed out of cloud account and cleared cache.', type: 'success' });
       setTimeout(() => {
         onClose();
         window.location.href = '/';
@@ -238,16 +233,8 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
                     <strong className="text-white">{Object.keys(watchedIds).length} titles</strong>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>Connected Trakt:</span>
-                    <strong className="text-amber-400">{traktUser ? `@${traktUser.username}` : 'None'}</strong>
-                  </div>
-                  <div className="flex items-center justify-between">
                     <span>BYOK TMDB Key:</span>
-                    <strong className="text-cyan-400">{tmdbApiKey ? 'Configured' : 'None'}</strong>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>BYOK Trakt App:</span>
-                    <strong className="text-marvel-crimson">{traktClientId ? 'Configured' : 'None'}</strong>
+                    <strong className="text-cyan-400">{tmdbApiKey ? 'Configured' : 'Built-in Key'}</strong>
                   </div>
                 </div>
               </div>
