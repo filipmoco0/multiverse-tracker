@@ -35,13 +35,21 @@ export async function getFranchiseMedia(universe: 'mcu' | 'dcu'): Promise<Franch
       .order('release_order', { ascending: true });
 
     if (error || !data || data.length === 0) {
-      console.warn('Using curated seed fallback for', universe, error?.message);
       return seed;
     }
 
-    return data as FranchiseMedia[];
+    // Merge Supabase entries while guaranteeing master canonical chronological order from seed
+    return seed.map((seedItem) => {
+      const dbItem = data.find((d: any) => d.id === seedItem.id);
+      if (!dbItem) return seedItem;
+      return {
+        ...seedItem,
+        poster_path: dbItem.poster_path || seedItem.poster_path,
+        is_released: dbItem.is_released !== undefined ? dbItem.is_released : seedItem.is_released,
+        chronological_order: seedItem.chronological_order,
+      };
+    });
   } catch (err) {
-    console.warn('Supabase fetch error, using seed data:', err);
     return seed;
   }
 }

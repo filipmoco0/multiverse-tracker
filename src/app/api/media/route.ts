@@ -41,7 +41,17 @@ export async function GET(request: NextRequest) {
         .order('release_order', { ascending: true });
 
       if (!error && data && data.length > 0) {
-        return NextResponse.json({ media: data, source: 'supabase' });
+        const merged = fallbackSeed.map((seedItem) => {
+          const dbItem = data.find((d: any) => d.id === seedItem.id);
+          if (!dbItem) return seedItem;
+          return {
+            ...seedItem,
+            poster_path: dbItem.poster_path || seedItem.poster_path,
+            is_released: dbItem.is_released !== undefined ? dbItem.is_released : seedItem.is_released,
+            chronological_order: seedItem.chronological_order,
+          };
+        });
+        return NextResponse.json({ media: merged, source: 'supabase' });
       } else if (error) {
         console.warn('Supabase select warning:', error.message);
       }
