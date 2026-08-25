@@ -355,7 +355,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               <div className="pt-3 border-t-2 border-black flex items-center justify-between text-[10px] text-zinc-400 font-mono">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>multiverse-tracker.vercel.app</span>
+                  <span>multiversetracker.com</span>
                 </div>
                 <span className="tracking-widest uppercase font-bold text-zinc-500">
                   |||||| ||| ||||||| ||

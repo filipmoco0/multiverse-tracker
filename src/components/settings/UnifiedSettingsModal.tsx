@@ -653,7 +653,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                             </button>
                           </div>
                           <code className="text-amber-300 font-mono block break-all text-[10px]">
-                            {typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiverse-tracker.vercel.app/api/auth/trakt/callback'}
+                            {typeof window !== 'undefined' ? `${window.location.origin}/api/auth/trakt/callback` : 'https://multiversetracker.com/api/auth/trakt/callback'}
                           </code>
                         </div>
                       </div>
