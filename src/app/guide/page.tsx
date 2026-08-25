@@ -218,11 +218,11 @@ export default function GuidePage() {
                   </div>
                   <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
                     <strong className="text-white block font-display uppercase">2. Generate Key</strong>
-                    <p className="text-zinc-400">Navigate to profile <strong>Settings $\rightarrow$ API $\rightarrow$ Create Developer Key</strong>.</p>
+                    <p className="text-zinc-400">Navigate to profile <strong>Settings → API → Create Developer Key</strong>.</p>
                   </div>
                   <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
                     <strong className="text-white block font-display uppercase">3. Save Key</strong>
-                    <p className="text-zinc-400">Open our <strong>Settings $\rightarrow$ TMDB Key</strong>, paste your key, and click Save.</p>
+                    <p className="text-zinc-400">Open our <strong>Settings → TMDB Key</strong>, paste your key, and click Save.</p>
                   </div>
                 </div>
 
@@ -424,7 +424,7 @@ export default function GuidePage() {
                   <ComicBadge variant="gold" size="sm">Data Sovereignty</ComicBadge>
                 </div>
                 <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                  You own your data. Open <strong>Settings $\rightarrow$ Data & Backup</strong> anytime to download a portable `.json` backup file or restore your history onto any fresh device.
+                  You own your data. Open <strong>Settings → Data & Backup</strong> anytime to download a portable `.json` backup file or restore your history onto any fresh device.
                 </p>
                 <ComicButton
                   variant="gold"
