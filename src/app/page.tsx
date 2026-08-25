@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Mail, Tv, Film, ArrowRight, ShieldCheck, UserCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import { ComicButton } from '@/components/comic/ComicButton';
 import { ComicBadge } from '@/components/comic/ComicBadge';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { UserAuthModal } from '@/components/auth/UserAuthModal';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { createClient } from '@/lib/supabase/client';
@@ -42,8 +44,9 @@ function LandingContent() {
   };
 
   return (
-    <>
-      <main className="relative min-h-screen bg-[#0a0b10] bg-halftone flex flex-col items-center justify-center p-4 sm:p-8 overflow-hidden">
+    <div className="min-h-screen bg-[#0a0b10] flex flex-col">
+      <Navbar />
+      <main className="relative flex-1 bg-[#0a0b10] bg-halftone flex flex-col items-center justify-center p-4 sm:p-8 overflow-hidden">
         {/* Background Comic Glow Orbs */}
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-marvel-crimson/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -153,13 +156,14 @@ function LandingContent() {
           </div>
         </motion.div>
       </main>
+      <Footer />
 
       {/* Email / Cloud User Auth Modal */}
       <UserAuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />
-    </>
+    </div>
   );
 }
 
