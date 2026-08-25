@@ -937,7 +937,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
             {/* TAB 6: SUPPORT DEV & REVOLUT DONATIONS */}
             {activeTab === 'donate' && (
               <div className="space-y-5">
-                <div className="p-4 bg-gradient-to-br from-[#141624] to-[#1f1a3a] border-2 border-black shadow-[4px_4px_0px_0px_#000000] space-y-2 text-center sm:text-left">
+                <div className="p-5 bg-gradient-to-br from-[#141624] to-[#1f1a3a] border-[3px] border-black shadow-[5px_5px_0px_0px_#000000] space-y-4 text-center sm:text-left">
                   <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
                     <ComicBadge variant="gold" size="sm">
                       <span className="flex items-center gap-1 font-bold">
@@ -945,71 +945,34 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         100% Free & Ad-Free
                       </span>
                     </ComicBadge>
-                    <span className="text-[11px] text-zinc-400 font-sans">Powered by Revolut</span>
+                    <span className="text-[11px] text-zinc-400 font-sans">Powered by Revolut.me</span>
                   </div>
 
                   <h3 className="text-xl sm:text-2xl font-display font-black text-amber-400 uppercase tracking-wide">
                     Buy the Dev a Coffee ☕
                   </h3>
 
-                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                    Multiverse Tracker has zero ads and is maintained as a passion project for Marvel and DC fans. If this tracker helps you organize your movie marathons, tossing a tip fuels hosting costs and caffeine for future features!
+                  <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
+                    Multiverse Tracker has zero ads and is maintained as an independent passion project for Marvel and DC fans. If this tracker helps you organize your movie marathons, consider tossing a tip via Revolut to fuel server costs and caffeine for future updates!
                   </p>
-                </div>
-
-                {/* Preset Quick Tiers */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <a
-                    href="https://revolut.me/fmoslavac"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-black p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
-                  >
-                    <div className="text-2xl mb-1 group-hover:scale-110 transition">☕</div>
-                    <h4 className="font-display font-black text-sm uppercase text-amber-400">€2 Espresso</h4>
-                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Quick energy boost</p>
-                  </a>
 
                   <a
                     href="https://revolut.me/fmoslavac"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-amber-400 p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
+                    className="block pt-2"
                   >
-                    <div className="text-2xl mb-1 group-hover:scale-110 transition">🍿</div>
-                    <h4 className="font-display font-black text-sm uppercase text-amber-400">€5 Popcorn & Soda</h4>
-                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Movie marathon fuel</p>
-                  </a>
-
-                  <a
-                    href="https://revolut.me/fmoslavac"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-black p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
-                  >
-                    <div className="text-2xl mb-1 group-hover:scale-110 transition">🦸‍♂️</div>
-                    <h4 className="font-display font-black text-sm uppercase text-cyan-400">€10 Superhero</h4>
-                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Multiverse Legend</p>
+                    <ComicButton
+                      variant="gold"
+                      size="lg"
+                      className="w-full text-sm font-black"
+                      leftIcon={<Coffee className="w-5 h-5 text-black" />}
+                      rightIcon={<ExternalLink className="w-4 h-4 text-black" />}
+                    >
+                      Donate via Revolut.me (Apple Pay / Google Pay / Card)
+                    </ComicButton>
                   </a>
                 </div>
-
-                {/* Primary Revolut Link Button */}
-                <a
-                  href="https://revolut.me/fmoslavac"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <ComicButton
-                    variant="gold"
-                    size="lg"
-                    className="w-full text-sm font-black"
-                    leftIcon={<Coffee className="w-5 h-5 text-black" />}
-                    rightIcon={<ExternalLink className="w-4 h-4 text-black" />}
-                  >
-                    Open Revolut.me/fmoslavac (Apple Pay / Card)
-                  </ComicButton>
-                </a>
               </div>
             )}
           </div>
