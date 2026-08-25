@@ -78,11 +78,31 @@ export async function loadUserProfileFromCloud(userId: string) {
       }
 
       // 2. Hydrate Trakt Account
-      if (data.trakt_username) {
+      if (data.trakt_username && data.trakt_token) {
+        // Preserve any existing client_id from localStorage (set during OAuth)
+        let existingClientId: string | undefined;
+        try {
+          const raw = localStorage.getItem('multiverse_tracker_trakt_user_v1');
+          if (raw) {
+            const existing = JSON.parse(raw);
+            existingClientId = existing?.client_id;
+          }
+        } catch {}
+
         const traktUser = {
           username: data.trakt_username,
           name: data.trakt_username,
-          access_token: data.trakt_token || `token_user_${data.trakt_username}`,
+          access_token: data.trakt_token,
+          expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
+          client_id: existingClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID,
+        };
+        useWatchlistStore.getState().setTraktUser(traktUser);
+      } else if (data.trakt_username) {
+        // Read-only username connect — no real token
+        const traktUser = {
+          username: data.trakt_username,
+          name: data.trakt_username,
+          access_token: `token_user_${data.trakt_username}`,
           expires_at: Date.now() + 90 * 24 * 60 * 60 * 1000,
         };
         useWatchlistStore.getState().setTraktUser(traktUser);
