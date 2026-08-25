@@ -58,9 +58,13 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   // Branch Categories for DC
   const dcuBranches = [
     { id: 'all', label: 'All DC Multiverse' },
-    { id: 'chapter_1', label: 'Chapter 1: Gods & Monsters', match: (p: string) => p.includes('Chapter 1') },
+    { id: 'chapter_1', label: 'DCU (Chapter 1: Gods & Monsters)', match: (p: string) => p.includes('Chapter 1') },
     { id: 'dceu', label: 'DCEU Era (Snyderverse)', match: (p: string) => p.includes('DCEU') },
-    { id: 'elseworlds', label: 'DC Elseworlds (Batman, Joker)', match: (p: string) => p.includes('Elseworlds') },
+    { id: 'arrowverse', label: 'The Arrowverse (CW)', match: (p: string) => p.includes('Arrowverse') },
+    { id: 'dcau', label: 'DCAU (Timmverse Animated)', match: (p: string) => p.includes('DCAU') },
+    { id: 'dcamu', label: 'DC Animated Movie Universe (New 52)', match: (p: string) => p.includes('DC Animated Movie Universe') },
+    { id: 'tomorrowverse', label: 'The Tomorrowverse', match: (p: string) => p.includes('Tomorrowverse') },
+    { id: 'elseworlds', label: 'Elseworlds (Reeves, Joker, Nolan, Burton, Donner, Games)', match: (p: string) => p.includes('Reeves') || p.includes('Joker') || p.includes('Dark Knight') || p.includes('Burton') || p.includes('Donnerverse') || p.includes('Smallville') || p.includes('Young Justice') || p.includes('Arkham') || p.includes('Injustice') || p.includes('Elseworlds') },
   ];
 
   const branches = isMCU ? marvelBranches : dcuBranches;
