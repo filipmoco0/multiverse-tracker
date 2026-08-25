@@ -88,23 +88,30 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     // Cloud sync to Supabase user profile
     syncUserProfileToCloud({ watched_ids: updatedWatched });
 
-    // Sync with Trakt if authenticated with a real token
-    if (authMode === 'trakt' && traktUser?.access_token && !traktUser.access_token.startsWith('token_user_')) {
+    // Sync with Trakt if authenticated with a real OAuth token
+    if (traktUser?.access_token && !traktUser.access_token.startsWith('token_user_')) {
       try {
+        const allMedia = [...MCU_SEED_DATA, ...DCU_SEED_DATA];
+        const target = allMedia.find((m) => m.id === mediaId);
+        const effectiveTmdbId = tmdbId ?? target?.tmdb_id;
+        const effectiveTraktId = traktId ?? target?.trakt_id;
+        const effectiveMediaType = mediaType || target?.media_type || 'movie';
+
         let effectiveSeasons = seasonNumber;
-        if (effectiveSeasons === undefined && mediaType === 'show') {
-          const allMedia = [...MCU_SEED_DATA, ...DCU_SEED_DATA];
-          const target = allMedia.find((m) => m.id === mediaId);
-          if (target) {
-            const parsed = extractSeasonRange(target.title);
-            if (parsed.length > 0) effectiveSeasons = parsed;
-          }
+        if ((!effectiveSeasons || (Array.isArray(effectiveSeasons) && effectiveSeasons.length === 0)) && effectiveMediaType === 'show' && target) {
+          const parsed = extractSeasonRange(target.title);
+          if (parsed.length > 0) effectiveSeasons = parsed;
         }
 
         await syncTraktHistory(
           traktUser.access_token,
           nextState ? 'add' : 'remove',
-          { tmdbId, traktId, mediaType, seasonNumber: effectiveSeasons }
+          {
+            tmdbId: effectiveTmdbId,
+            traktId: effectiveTraktId,
+            mediaType: effectiveMediaType,
+            seasonNumber: effectiveSeasons,
+          }
         );
       } catch (err) {
         console.error('Failed to sync toggle with Trakt:', err);
@@ -202,7 +209,10 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     set({ isSyncing: true });
 
     try {
-      const { movies, shows } = await fetchTraktWatchedItems(traktUser.access_token, traktUser.username);
+      const { movies, shows, error } = await fetchTraktWatchedItems(traktUser.access_token, traktUser.username);
+      if (error) {
+        throw new Error(error);
+      }
       const { watchedIds } = get();
       const mergedWatched = { ...watchedIds };
 

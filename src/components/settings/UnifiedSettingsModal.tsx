@@ -570,7 +570,14 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
 
                     <div className="flex gap-3 pt-2">
                       <ComicButton
-                        onClick={() => syncWithTrakt()}
+                        onClick={async () => {
+                          try {
+                            await syncWithTrakt();
+                            setStatusMsg({ text: 'Watch history successfully synced from Trakt!', type: 'success' });
+                          } catch (err: any) {
+                            setStatusMsg({ text: err.message || 'Failed to sync with Trakt', type: 'error' });
+                          }
+                        }}
                         disabled={isSyncing}
                         variant="gold"
                         size="sm"

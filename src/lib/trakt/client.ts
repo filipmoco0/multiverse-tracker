@@ -29,14 +29,14 @@ export async function fetchTraktWatchedItems(token?: string | null, username?: s
     }
 
     const res = await fetch(`/api/trakt/sync?${params.toString()}`);
+    const data = await res.json().catch(() => ({}));
     if (res.ok) {
-      const data = await res.json();
       return { movies: data.movies || [], shows: data.shows || [] };
     }
-    return { movies: [], shows: [] };
-  } catch (err) {
+    return { movies: [], shows: [], error: data.error || `Sync failed (${res.status})` };
+  } catch (err: any) {
     console.error('Failed to fetch Trakt watched history via server proxy:', err);
-    return { movies: [], shows: [] };
+    return { movies: [], shows: [], error: err.message };
   }
 }
 

@@ -20,8 +20,12 @@ export async function POST(request: NextRequest) {
     const endpoint = action === 'add' ? '/sync/history' : '/sync/history/remove';
 
     const idObject: Record<string, number> = {};
-    if (item.traktId) idObject.trakt = Number(item.traktId);
-    if (item.tmdbId) idObject.tmdb = Number(item.tmdbId);
+    if (item.traktId && !isNaN(Number(item.traktId))) idObject.trakt = Number(item.traktId);
+    if (item.tmdbId && !isNaN(Number(item.tmdbId))) idObject.tmdb = Number(item.tmdbId);
+
+    if (Object.keys(idObject).length === 0) {
+      return NextResponse.json({ error: 'No valid TMDB or Trakt ID provided for media item' }, { status: 400 });
+    }
 
     const bodyData: Record<string, unknown[]> = {};
 
