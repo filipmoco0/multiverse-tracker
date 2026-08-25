@@ -28,7 +28,9 @@ import {
   Key,
   Eye,
   RefreshCw,
-  ExternalLink
+  ExternalLink,
+  Crown,
+  Copy,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -37,6 +39,11 @@ export default function AdminDashboardPage() {
   const [adminEmailInput, setAdminEmailInput] = useState('');
   const [adminPassInput, setAdminPassInput] = useState('');
   const [authError, setAuthError] = useState('');
+
+  // VIP Supporter Code Generator State
+  const [vipCodes, setVipCodes] = useState<any[]>([]);
+  const [isGeneratingVip, setIsGeneratingVip] = useState(false);
+  const [copiedVipCode, setCopiedVipCode] = useState<string | null>(null);
 
   // Selected universe tab
   const [selectedUniverse, setSelectedUniverse] = useState<Universe>('mcu');
@@ -116,15 +123,46 @@ export default function AdminDashboardPage() {
     loadMedia(selectedUniverse);
   }, [selectedUniverse]);
 
-  // Check persisted admin session
+  // Check persisted admin session and load VIP codes
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('multiverse_admin_auth');
       if (stored === 'true') {
         setIsAdminAuthenticated(true);
+        fetchVipCodes();
       }
     }
   }, []);
+
+  const fetchVipCodes = async () => {
+    try {
+      const res = await fetch('/api/admin/vip-codes');
+      const data = await res.json();
+      setVipCodes(data.codes || []);
+    } catch (e) {
+      console.error('Error fetching VIP codes:', e);
+    }
+  };
+
+  const handleGenerateVipCodes = async (count: number = 5) => {
+    setIsGeneratingVip(true);
+    try {
+      const res = await fetch('/api/admin/vip-codes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatusMsg({ text: `Generated ${count} new VIP codes!`, type: 'success' });
+        await fetchVipCodes();
+      }
+    } catch (e: any) {
+      setStatusMsg({ text: 'Failed to generate codes: ' + e.message, type: 'error' });
+    } finally {
+      setIsGeneratingVip(false);
+    }
+  };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -944,6 +982,120 @@ export default function AdminDashboardPage() {
               </tbody>
             </table>
           </div>
+        </section>
+
+        {/* 🎟️ VIP Supporter Codes Generator Section */}
+        <section className="bg-[#141624] border-[4px] border-black shadow-[6px_6px_0px_0px_#000000] p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-zinc-800 pb-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <ComicBadge variant="gold" size="sm">
+                  <span className="flex items-center gap-1 font-black text-black">
+                    <Crown className="w-3.5 h-3.5 fill-black" />
+                    REVOLUT SUPPORTER PASSES
+                  </span>
+                </ComicBadge>
+                <ComicBadge variant="white" size="sm">
+                  {vipCodes.filter((c) => !c.is_used).length} Unused Codes
+                </ComicBadge>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-display font-black uppercase text-white tracking-wide">
+                Single-Use VIP Supporter Code Generator
+              </h2>
+              <p className="text-xs text-zinc-400 font-sans">
+                Generate unique 1-time promo codes to send to donors who tipped you on Revolut.me.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <ComicButton
+                onClick={() => handleGenerateVipCodes(5)}
+                disabled={isGeneratingVip}
+                variant="gold"
+                size="sm"
+                leftIcon={<Plus className="w-4 h-4 text-black" />}
+              >
+                {isGeneratingVip ? 'Generating...' : 'Generate 5 New Codes'}
+              </ComicButton>
+              <ComicButton
+                onClick={fetchVipCodes}
+                variant="dark"
+                size="sm"
+                leftIcon={<RefreshCw className="w-3.5 h-3.5 text-zinc-300" />}
+              >
+                Refresh
+              </ComicButton>
+            </div>
+          </div>
+
+          {/* Codes List */}
+          {vipCodes.length === 0 ? (
+            <div className="p-8 text-center bg-zinc-950 border-2 border-black space-y-2">
+              <p className="text-sm font-display uppercase text-zinc-400">No VIP codes generated yet.</p>
+              <ComicButton
+                onClick={() => handleGenerateVipCodes(5)}
+                disabled={isGeneratingVip}
+                variant="gold"
+                size="sm"
+              >
+                Generate First 5 VIP Codes
+              </ComicButton>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {vipCodes.map((codeItem) => (
+                <div
+                  key={codeItem.id || codeItem.code}
+                  className={clsx(
+                    'p-3.5 border-2 border-black flex items-center justify-between gap-2 shadow-[2px_2px_0px_0px_#000000]',
+                    codeItem.is_used
+                      ? 'bg-zinc-950/60 opacity-60 border-zinc-800'
+                      : 'bg-zinc-950 border-amber-400/80'
+                  )}
+                >
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className={clsx(
+                        'font-mono font-bold text-sm tracking-wider',
+                        codeItem.is_used ? 'line-through text-zinc-500' : 'text-amber-300'
+                      )}>
+                        {codeItem.code}
+                      </span>
+                      {codeItem.is_used ? (
+                        <span className="text-[9px] uppercase px-1.5 py-0.5 bg-rose-950 text-rose-300 border border-rose-800 font-bold">
+                          USED
+                        </span>
+                      ) : (
+                        <span className="text-[9px] uppercase px-1.5 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">
+                          AVAILABLE
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-zinc-500 font-sans truncate">
+                      {codeItem.is_used
+                        ? `Redeemed by @${codeItem.used_by || 'user'}`
+                        : `Created: ${new Date(codeItem.created_at).toLocaleDateString()}`}
+                    </p>
+                  </div>
+
+                  {!codeItem.is_used && (
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(codeItem.code);
+                        setCopiedVipCode(codeItem.code);
+                        setTimeout(() => setCopiedVipCode(null), 2000);
+                      }}
+                      className="p-1.5 bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-black shadow-[1px_1px_0px_0px_#000000] text-xs font-display flex items-center gap-1 cursor-pointer flex-shrink-0"
+                      title="Copy code to send to Revolut donor"
+                    >
+                      {copiedVipCode === codeItem.code ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedVipCode === codeItem.code ? 'Copied' : 'Copy'}</span>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 
