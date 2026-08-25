@@ -563,9 +563,27 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                           </h4>
                         </div>
                       </div>
-                      <ComicBadge variant="green" size="sm">
-                        2-Way Sync Active
-                      </ComicBadge>
+                      {traktUser.access_token && !traktUser.access_token.startsWith('token_user_') ? (
+                        <ComicBadge variant="green" size="sm">
+                          2-Way Sync Active
+                        </ComicBadge>
+                      ) : (
+                        <ComicBadge variant="cyan" size="sm">
+                          Read-Only Import
+                        </ComicBadge>
+                      )}
+                    </div>
+
+                    <div className="text-xs text-zinc-400 font-sans leading-relaxed">
+                      {traktUser.access_token && !traktUser.access_token.startsWith('token_user_') ? (
+                        <span className="text-emerald-400 font-medium">
+                          ✓ Full 2-Way Sync is active! Marking items as watched here immediately updates your Trakt.tv history.
+                        </span>
+                      ) : (
+                        <span className="text-zinc-300">
+                          ℹ️ You are connected via <strong>Username Quick Import</strong>. You can pull your history below. To automatically push watch history to Trakt when clicking cards, authorize with <strong>Method 1 (OAuth 2.0)</strong>.
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex gap-3 pt-2">
