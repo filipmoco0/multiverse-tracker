@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ComicBadge } from '@/components/comic/ComicBadge';
@@ -29,6 +29,14 @@ import {
   Eye,
   RefreshCw,
   ExternalLink,
+  ArrowUp,
+  ArrowDown,
+  Layers,
+  ListOrdered,
+  Filter,
+  SlidersHorizontal,
+  FolderEdit,
+  ArrowUpDown,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -44,6 +52,10 @@ export default function AdminDashboardPage() {
   // Tracklist state
   const [mediaList, setMediaList] = useState<FranchiseMedia[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Filter & Search Table State
+  const [tableFilterQuery, setTableFilterQuery] = useState('');
+  const [selectedPhaseFilter, setSelectedPhaseFilter] = useState<string>('all');
 
   // Search & Auto-fill State
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,11 +102,21 @@ export default function AdminDashboardPage() {
   const [dbSource, setDbSource] = useState<'supabase' | 'seed'>('seed');
   const [isLoadingMedia, setIsLoadingMedia] = useState(false);
 
+  // Unique phases extracted in sequence
+  const uniquePhases = useMemo(() => {
+    const list: string[] = [];
+    for (const item of mediaList) {
+      const p = item.phase_or_chapter?.trim() || (selectedUniverse === 'mcu' ? 'Phase 1' : 'Chapter 1');
+      if (!list.includes(p)) list.push(p);
+    }
+    return list;
+  }, [mediaList, selectedUniverse]);
+
   // Load media dynamically from live API / Supabase
   const loadMedia = async (universe: Universe) => {
     setIsLoadingMedia(true);
     try {
-      const res = await fetch(`/api/media?universe=${universe}`);
+      const res = await fetch(`/api/media?universe=${universe}&_t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         if (data.media && data.media.length > 0) {
@@ -390,6 +412,176 @@ export default function AdminDashboardPage() {
     URL.revokeObjectURL(url);
   };
 
+  // ----------------------------------------------------
+  // PHASE & ITEM REORDERING HANDLERS
+  // ----------------------------------------------------
+
+  // Move Single Item Up in Table
+  const handleMoveRowUp = async (index: number) => {
+    if (index <= 0) return;
+    const updated = [...mediaList];
+    const item = updated[index];
+    const prevItem = updated[index - 1];
+
+    // Swap positions
+    updated[index] = prevItem;
+    updated[index - 1] = item;
+
+    // Renumber release order sequentially
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Moved "${item.title}" up to #${index}!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 2500);
+  };
+
+  // Move Single Item Down in Table
+  const handleMoveRowDown = async (index: number) => {
+    if (index >= mediaList.length - 1) return;
+    const updated = [...mediaList];
+    const item = updated[index];
+    const nextItem = updated[index + 1];
+
+    // Swap positions
+    updated[index] = nextItem;
+    updated[index + 1] = item;
+
+    // Renumber release order sequentially
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Moved "${item.title}" down to #${index + 2}!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 2500);
+  };
+
+  // Move Entire Phase Up
+  const handleMovePhaseUp = async (phaseName: string) => {
+    const phaseIndex = uniquePhases.indexOf(phaseName);
+    if (phaseIndex <= 0) return;
+    const prevPhase = uniquePhases[phaseIndex - 1];
+
+    const currentPhaseItems = mediaList.filter((m) => m.phase_or_chapter === phaseName);
+    const prevPhaseItems = mediaList.filter((m) => m.phase_or_chapter === prevPhase);
+
+    const updated: FranchiseMedia[] = [];
+    let inserted = false;
+
+    for (const item of mediaList) {
+      if (item.phase_or_chapter === prevPhase) {
+        if (!inserted) {
+          updated.push(...currentPhaseItems);
+          inserted = true;
+        }
+        updated.push(item);
+      } else if (item.phase_or_chapter === phaseName) {
+        continue;
+      } else {
+        updated.push(item);
+      }
+    }
+
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Moved Phase "${phaseName}" ahead of "${prevPhase}"!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  // Move Entire Phase Down
+  const handleMovePhaseDown = async (phaseName: string) => {
+    const phaseIndex = uniquePhases.indexOf(phaseName);
+    if (phaseIndex >= uniquePhases.length - 1) return;
+    const nextPhase = uniquePhases[phaseIndex + 1];
+
+    const currentPhaseItems = mediaList.filter((m) => m.phase_or_chapter === phaseName);
+
+    const updated: FranchiseMedia[] = [];
+    for (const item of mediaList) {
+      if (item.phase_or_chapter === phaseName) {
+        continue;
+      }
+      updated.push(item);
+    }
+
+    const lastNextIdx = updated.findLastIndex((u) => u.phase_or_chapter === nextPhase);
+    if (lastNextIdx !== -1) {
+      updated.splice(lastNextIdx + 1, 0, ...currentPhaseItems);
+    } else {
+      updated.push(...currentPhaseItems);
+    }
+
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Moved Phase "${phaseName}" after "${nextPhase}"!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  // Quick Inline Phase Change for a Single Item
+  const handleQuickPhaseChange = async (itemId: string, newPhase: string) => {
+    if (!newPhase.trim()) return;
+    const updated = mediaList.map((item) =>
+      item.id === itemId ? { ...item, phase_or_chapter: newPhase.trim() } : item
+    );
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Updated phase to "${newPhase.trim()}"!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 2500);
+  };
+
+  // Batch Rename Phase Across All Matching Items
+  const handleRenamePhase = async (oldPhaseName: string) => {
+    const newName = prompt(`Enter new name for phase "${oldPhaseName}":`, oldPhaseName);
+    if (!newName || !newName.trim() || newName.trim() === oldPhaseName) return;
+
+    const count = mediaList.filter((m) => m.phase_or_chapter === oldPhaseName).length;
+    const updated = mediaList.map((item) =>
+      item.phase_or_chapter === oldPhaseName ? { ...item, phase_or_chapter: newName.trim() } : item
+    );
+
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Renamed "${oldPhaseName}" to "${newName.trim()}" across ${count} items!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  // Normalize Release Orders to Strict 1..N
+  const handleNormalizeOrders = async () => {
+    const updated = [...mediaList].sort((a, b) => a.release_order - b.release_order);
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+    setMediaList(updated);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Re-indexed all ${updated.length} entries sequentially (1..${updated.length})!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  // Filtered media list for the live table
+  const filteredMediaList = useMemo(() => {
+    return mediaList.filter((item) => {
+      const matchesPhase = selectedPhaseFilter === 'all' || item.phase_or_chapter === selectedPhaseFilter;
+      const matchesQuery =
+        !tableFilterQuery.trim() ||
+        item.title.toLowerCase().includes(tableFilterQuery.toLowerCase()) ||
+        String(item.tmdb_id || '').includes(tableFilterQuery) ||
+        (item.phase_or_chapter || '').toLowerCase().includes(tableFilterQuery.toLowerCase());
+      return matchesPhase && matchesQuery;
+    });
+  }, [mediaList, selectedPhaseFilter, tableFilterQuery]);
+
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0a0b10] flex flex-col">
@@ -448,174 +640,298 @@ export default function AdminDashboardPage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-[#0a0b10] flex flex-col">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {/* Admin Dashboard Header */}
-        <section className="bg-[#141624] border-[4px] border-black shadow-[6px_6px_0px_0px_#000000] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Top Header & Universe Switcher Bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#141624] border-[3px] border-black p-4 sm:p-6 shadow-[6px_6px_0px_0px_#000000]">
+          <div>
+            <div className="flex items-center gap-2">
               <ComicBadge variant="gold" size="sm">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-4 h-4" /> CURATOR ADMIN MODE
-                </span>
+                CURATOR MODE
               </ComicBadge>
-              <ComicBadge variant="white" size="sm">
-                {mediaList.length} Titles
-              </ComicBadge>
-              {dbSource === 'supabase' ? (
-                <ComicBadge variant="green" size="sm">
-                  ⚡ Cloud Supabase Active
-                </ComicBadge>
-              ) : (
-                <ComicBadge variant="dark" size="sm">
-                  📁 Seed Storage Mode
-                </ComicBadge>
-              )}
+              <span
+                className={clsx(
+                  'text-[10px] font-display font-bold uppercase px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000000]',
+                  dbSource === 'supabase' ? 'bg-emerald-500 text-black' : 'bg-amber-400 text-black'
+                )}
+              >
+                {dbSource === 'supabase' ? 'Cloud Database Connected' : 'Seed Mode'}
+              </span>
             </div>
-            <h1 className="text-3xl font-display font-black uppercase text-white tracking-wider">
-              Tracklist & Poster Curator Dashboard
+            <h1 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wider mt-1">
+              Multiverse Tracklist & Phase Editor
             </h1>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <ComicButton
-              onClick={() => saveToCodebase(mediaList, selectedUniverse)}
-              variant="gold"
-              size="sm"
-              leftIcon={<Save className="w-4 h-4 text-black" />}
+          {/* Universe Tab Buttons & Admin Actions */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => {
+                setSelectedUniverse('mcu');
+                setSelectedPhaseFilter('all');
+                setFormUniverse('mcu');
+                setFormPhase('Phase 5');
+              }}
+              className={clsx(
+                'px-4 py-2 font-display text-sm font-bold uppercase transition border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer',
+                selectedUniverse === 'mcu'
+                  ? 'bg-marvel-crimson text-white shadow-[3px_3px_0px_0px_#000000]'
+                  : 'bg-zinc-900 text-zinc-400 hover:text-white'
+              )}
             >
-              Save All to Codebase
-            </ComicButton>
-            <ComicButton
-              onClick={() => setIsByokModalOpen(true)}
-              variant="dark"
-              size="sm"
-              leftIcon={<Key className="w-4 h-4 text-cyan-400" />}
-            >
-              BYOK Keys
-            </ComicButton>
-            <ComicButton onClick={handleExportSeed} variant="cyan" size="sm" leftIcon={<Download className="w-4 h-4" />}>
-              Export JSON
-            </ComicButton>
-            <ComicButton onClick={handleLogout} variant="danger" size="sm" leftIcon={<Lock className="w-4 h-4" />}>
-              Exit Admin
-            </ComicButton>
-          </div>
-        </section>
+              Marvel MCU ({selectedUniverse === 'mcu' ? mediaList.length : '154'})
+            </button>
 
-        {/* Universe Switcher for Admin */}
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => {
-              setSelectedUniverse('mcu');
-              setFormUniverse('mcu');
-              setFormPhase('Phase 5');
-            }}
-            className={clsx(
-              'px-6 py-2 border-[3px] border-black font-display text-base font-bold uppercase transition select-none cursor-pointer',
-              selectedUniverse === 'mcu'
-                ? 'bg-marvel-crimson text-white shadow-[4px_4px_0px_0px_#000000]'
-                : 'bg-zinc-900 text-zinc-400 hover:text-white shadow-[2px_2px_0px_0px_#000000]'
-            )}
-          >
-            Manage Marvel Multiverse ({MCU_SEED_DATA.length} Entries)
-          </button>
-          <button
-            onClick={() => {
-              setSelectedUniverse('dcu');
-              setFormUniverse('dcu');
-              setFormPhase('Chapter 1: Gods & Monsters');
-            }}
-            className={clsx(
-              'px-6 py-2 border-[3px] border-black font-display text-base font-bold uppercase transition select-none cursor-pointer',
-              selectedUniverse === 'dcu'
-                ? 'bg-[#005792] text-white shadow-[4px_4px_0px_0px_#000000]'
-                : 'bg-zinc-900 text-zinc-400 hover:text-white shadow-[2px_2px_0px_0px_#000000]'
-            )}
-          >
-            Manage DC Universe ({DCU_SEED_DATA.length} Entries)
-          </button>
+            <button
+              onClick={() => {
+                setSelectedUniverse('dcu');
+                setSelectedPhaseFilter('all');
+                setFormUniverse('dcu');
+                setFormPhase('Chapter 1: Gods & Monsters');
+              }}
+              className={clsx(
+                'px-4 py-2 font-display text-sm font-bold uppercase transition border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer',
+                selectedUniverse === 'dcu'
+                  ? 'bg-[#005792] text-white shadow-[3px_3px_0px_0px_#000000]'
+                  : 'bg-zinc-900 text-zinc-400 hover:text-white'
+              )}
+            >
+              DC Universe ({selectedUniverse === 'dcu' ? mediaList.length : '131'})
+            </button>
+
+            <button
+              onClick={() => setIsByokModalOpen(true)}
+              className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-amber-400 border-2 border-black shadow-[2px_2px_0px_0px_#000000] font-display text-xs font-bold uppercase flex items-center gap-1.5 cursor-pointer"
+              title="API Keys (BYOK)"
+            >
+              <Key className="w-3.5 h-3.5" />
+              <span>TMDB Key</span>
+            </button>
+
+            <button
+              onClick={handleExportSeed}
+              className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-2 border-black shadow-[2px_2px_0px_0px_#000000] font-display text-xs font-bold uppercase flex items-center gap-1.5 cursor-pointer"
+              title="Download JSON Seed File"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export Seed</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="px-3 py-2 bg-rose-950 hover:bg-rose-900 text-rose-300 border-2 border-black shadow-[2px_2px_0px_0px_#000000] font-display text-xs font-bold uppercase cursor-pointer"
+            >
+              Exit
+            </button>
+          </div>
         </div>
 
-        {/* Status Message */}
+        {/* Global Status Toast Notification */}
         {statusMsg && (
           <div
             className={clsx(
-              'p-3 border-2 border-black font-display uppercase tracking-wider text-sm flex items-center gap-2 shadow-[3px_3px_0px_0px_#000000]',
+              'p-3.5 border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] text-xs font-sans font-bold flex items-center justify-between animate-in fade-in duration-200',
               statusMsg.type === 'success' ? 'bg-emerald-500 text-black' : 'bg-rose-600 text-white'
             )}
           >
-            <Check className="w-4 h-4" />
-            {statusMsg.text}
+            <span>{statusMsg.text}</span>
+            <button onClick={() => setStatusMsg(null)} className="hover:opacity-75 font-display text-sm cursor-pointer">
+              ✕
+            </button>
           </div>
         )}
 
-        {/* 1. TMDB Query / Exact ID Lookup & Add/Edit Form */}
+        {/* ---------------------------------------------------- */}
+        {/* PHASE CONTROL CENTER & REORDERING SUITE             */}
+        {/* ---------------------------------------------------- */}
+        <section className="bg-[#141624] border-[3px] border-black p-5 shadow-[6px_6px_0px_0px_#000000] space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black pb-3">
+            <div className="flex items-center gap-2">
+              <Layers className="w-5 h-5 text-amber-400" />
+              <h2 className="text-lg sm:text-xl font-display font-black uppercase text-white tracking-wider">
+                Phase & Chapter Control Center ({uniquePhases.length} Active Phases)
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={handleNormalizeOrders}
+                className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000000] font-display text-xs font-bold uppercase flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+                title="Renumber all releases sequentially from 1 to N"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5" />
+                <span>Re-index All Orders (1..{mediaList.length})</span>
+              </button>
+            </div>
+          </div>
+
+          <p className="text-xs text-zinc-400 font-sans">
+            Manage storyline phases below. Use <strong>▲ / ▼</strong> on each phase badge to shift entire storylines and all their titles in the timeline, or click <strong>Rename</strong> to update a phase name across all titles at once.
+          </p>
+
+          {/* Interactive Phase Badges Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 pt-1">
+            {uniquePhases.map((phase, idx) => {
+              const phaseCount = mediaList.filter((m) => m.phase_or_chapter === phase).length;
+              return (
+                <div
+                  key={phase}
+                  className={clsx(
+                    'bg-zinc-950 border-2 border-black p-2.5 shadow-[3px_3px_0px_0px_#000000] flex flex-col justify-between gap-2 transition hover:border-amber-400',
+                    selectedPhaseFilter === phase && 'ring-2 ring-amber-400 bg-[#1e1c14]'
+                  )}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-display font-bold text-xs text-white truncate" title={phase}>
+                      {idx + 1}. {phase}
+                    </span>
+                    <span className="text-[10px] font-sans font-bold bg-zinc-800 text-amber-400 px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000000]">
+                      {phaseCount} titles
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-1 pt-1 border-t border-zinc-800/80">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleMovePhaseUp(phase)}
+                        disabled={idx === 0}
+                        className="p-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-30 text-amber-400 border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                        title="Move entire phase UP"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => handleMovePhaseDown(phase)}
+                        disabled={idx === uniquePhases.length - 1}
+                        className="p-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-30 text-amber-400 border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                        title="Move entire phase DOWN"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleRenamePhase(phase)}
+                        className="px-2 py-0.5 bg-cyan-500 hover:bg-cyan-400 text-black font-display text-[10px] font-bold uppercase border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                        title="Rename this phase for all titles"
+                      >
+                        Rename
+                      </button>
+
+                      <button
+                        onClick={() => setSelectedPhaseFilter(selectedPhaseFilter === phase ? 'all' : phase)}
+                        className={clsx(
+                          'px-2 py-0.5 font-display text-[10px] font-bold uppercase border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer',
+                          selectedPhaseFilter === phase
+                            ? 'bg-amber-400 text-black font-black'
+                            : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                        )}
+                        title="Filter table below to show only this phase"
+                      >
+                        {selectedPhaseFilter === phase ? 'Filtered' : 'Filter'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------- */}
+        {/* ADD / EDIT FORM & TMDB DISCOVERY SUITE              */}
+        {/* ---------------------------------------------------- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Two Lookup Methods (Scoped Search & Exact TMDB ID) */}
-          <div className="space-y-4">
-            {/* Box A: Search by Title */}
-            <div className="bg-[#161824] border-[3px] border-black p-4 shadow-[5px_5px_0px_0px_#000000] space-y-3">
-              <h3 className="text-base font-display font-bold uppercase text-amber-400 flex items-center gap-2 border-b-2 border-black pb-2">
-                <Search className="w-4 h-4" /> 1A. Search by Title
-              </h3>
+          {/* Left Column: TMDB Discovery */}
+          <div className="bg-[#161824] border-[3px] border-black p-5 shadow-[6px_6px_0px_0px_#000000] space-y-4">
+            <div className="border-b-2 border-black pb-2">
+              <h2 className="text-lg font-display font-black uppercase text-white tracking-wider flex items-center gap-2">
+                <Search className="w-4 h-4 text-amber-400" />
+                Auto-Fill TMDB Metadata
+              </h2>
+            </div>
 
-              {/* Scope filter */}
-              <div className="flex gap-1 bg-zinc-950 p-1 border-2 border-black text-xs font-display">
-                <button
-                  onClick={() => setSearchScope('all')}
-                  className={clsx('flex-1 py-1 uppercase', searchScope === 'all' ? 'bg-amber-400 text-black' : 'text-zinc-400')}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => setSearchScope('movie')}
-                  className={clsx('flex-1 py-1 uppercase', searchScope === 'movie' ? 'bg-amber-400 text-black' : 'text-zinc-400')}
-                >
-                  Movies
-                </button>
-                <button
-                  onClick={() => setSearchScope('show')}
-                  className={clsx('flex-1 py-1 uppercase', searchScope === 'show' ? 'bg-amber-400 text-black' : 'text-zinc-400')}
-                >
-                  TV Shows
-                </button>
-              </div>
-
+            <div className="space-y-3">
               <div className="flex gap-2">
                 <input
                   type="text"
+                  placeholder="e.g. Deadpool & Wolverine..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearchApi()}
-                  placeholder="e.g. Spider-Man 2, Daredevil..."
                   className="flex-1 bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
                 />
-                <ComicButton onClick={handleSearchApi} disabled={isSearching} variant="gold" size="sm">
-                  {isSearching ? '...' : 'Search'}
+                <ComicButton
+                  variant="gold"
+                  size="sm"
+                  onClick={handleSearchApi}
+                  disabled={isSearching}
+                >
+                  {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : 'Search'}
                 </ComicButton>
               </div>
 
-              {/* Results Dropdown */}
+              {/* Exact TMDB ID Direct Lookup */}
+              <div className="pt-2 border-t border-zinc-800 space-y-2">
+                <span className="text-[11px] font-display uppercase tracking-wider text-zinc-400 block">
+                  Or Lookup by Exact TMDB ID:
+                </span>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="TMDB ID (e.g. 533535)"
+                    value={lookupTmdbId}
+                    onChange={(e) => setLookupTmdbId(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleDirectTmdbLookup()}
+                    className="flex-1 bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400 font-mono"
+                  />
+                  <select
+                    value={lookupType}
+                    onChange={(e) => setLookupType(e.target.value as MediaType)}
+                    className="bg-zinc-950 border-2 border-black p-1 text-xs text-white font-sans"
+                  >
+                    <option value="movie">Movie</option>
+                    <option value="show">TV Show</option>
+                  </select>
+                  <ComicButton
+                    variant="cyan"
+                    size="sm"
+                    onClick={handleDirectTmdbLookup}
+                    disabled={isLookingUp}
+                  >
+                    {isLookingUp ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : 'Lookup'}
+                  </ComicButton>
+                </div>
+              </div>
+
+              {/* TMDB Search Results List */}
               {searchResults.length > 0 && (
-                <div className="max-h-56 overflow-y-auto space-y-2 border-2 border-black p-2 bg-zinc-950">
-                  {searchResults.map((res, i) => (
+                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                  <span className="text-xs font-display uppercase text-zinc-400">
+                    Matches ({searchResults.length}):
+                  </span>
+                  {searchResults.map((result, i) => (
                     <div
                       key={i}
-                      onClick={() => handleSelectSearchResult(res)}
-                      className="p-2 bg-zinc-900 hover:bg-amber-400 hover:text-black border border-zinc-700 hover:border-black cursor-pointer transition flex items-center gap-3 text-xs"
+                      onClick={() => handleSelectSearchResult(result)}
+                      className="flex items-center gap-3 p-2 bg-zinc-950 hover:bg-zinc-900 border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer transition"
                     >
-                      {res.poster_path && (
-                        <img src={res.poster_path} alt="" className="w-8 h-12 object-cover border border-black" />
+                      {result.poster_path ? (
+                        <img src={result.poster_path} alt="" className="w-8 h-12 object-cover border border-black" />
+                      ) : (
+                        <div className="w-8 h-12 bg-zinc-800 border border-black flex items-center justify-center">
+                          <Film className="w-4 h-4 text-zinc-500" />
+                        </div>
                       )}
-                      <div className="flex-1">
-                        <div className="font-display font-bold text-sm">{res.title}</div>
-                        <div className="text-[10px] opacity-75 font-sans">
-                          {res.media_type?.toUpperCase()} • {res.release_date || 'TBD'} • ID: {res.tmdb_id}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-xs text-white truncate">{result.title}</div>
+                        <div className="text-[10px] text-zinc-400">
+                          {result.release_date || 'TBA'} • {result.media_type}
                         </div>
                       </div>
                     </div>
@@ -623,102 +939,58 @@ export default function AdminDashboardPage() {
                 </div>
               )}
             </div>
-
-            {/* Box B: Exact TMDB ID Lookup */}
-            <div className="bg-[#161824] border-[3px] border-black p-4 shadow-[5px_5px_0px_0px_#000000] space-y-3">
-              <h3 className="text-base font-display font-bold uppercase text-cyan-400 flex items-center gap-2 border-b-2 border-black pb-2">
-                <Key className="w-4 h-4" /> 1B. Direct Exact TMDB ID Lookup
-              </h3>
-              <p className="text-xs text-zinc-400 font-sans">
-                Enter an exact TMDB ID to pull metadata without search ambiguity (e.g. <code>299534</code> for Avengers: Endgame).
-              </p>
-
-              <div className="grid grid-cols-3 gap-2">
-                <select
-                  value={lookupType}
-                  onChange={(e) => setLookupType(e.target.value as MediaType)}
-                  className="bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
-                >
-                  <option value="movie">Movie</option>
-                  <option value="show">TV Show</option>
-                </select>
-                <input
-                  type="text"
-                  value={lookupTmdbId}
-                  onChange={(e) => setLookupTmdbId(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleDirectTmdbLookup()}
-                  placeholder="TMDB ID"
-                  className="col-span-2 bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <ComicButton
-                onClick={handleDirectTmdbLookup}
-                disabled={isLookingUp || !lookupTmdbId.trim()}
-                variant="cyan"
-                size="sm"
-                className="w-full"
-                leftIcon={<Search className="w-3.5 h-3.5" />}
-              >
-                {isLookingUp ? 'Fetching TMDB ID...' : 'Fetch by Exact ID'}
-              </ComicButton>
-            </div>
           </div>
 
-          {/* Right Columns (Span 2): Add / Edit Form with Live Poster Preview */}
-          <div className="lg:col-span-2 bg-[#161824] border-[3px] border-black p-5 shadow-[5px_5px_0px_0px_#000000] space-y-4">
+          {/* Right 2 Columns: Add / Edit Media Form */}
+          <div className="lg:col-span-2 bg-[#161824] border-[3px] border-black p-5 shadow-[6px_6px_0px_0px_#000000] space-y-4">
             <div className="flex items-center justify-between border-b-2 border-black pb-2">
-              <h3 className="text-lg font-display font-bold uppercase text-amber-400 flex items-center gap-2">
-                {editingId ? <Edit3 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                {editingId ? 'Edit Entry & Choose Poster' : '2. Add Curated Entry'}
-              </h3>
+              <h2 className="text-lg font-display font-black uppercase text-white tracking-wider flex items-center gap-2">
+                {editingId ? <Edit3 className="w-4 h-4 text-cyan-400" /> : <Plus className="w-4 h-4 text-amber-400" />}
+                {editingId ? 'Edit Release Details' : 'Add New Title to Tracklist'}
+              </h2>
               {editingId && (
                 <button
                   onClick={resetForm}
-                  className="text-xs font-display text-zinc-400 hover:text-white underline cursor-pointer"
+                  className="text-xs text-zinc-400 hover:text-white underline font-display cursor-pointer"
                 >
                   Cancel Edit
                 </button>
               )}
             </div>
 
-            <form onSubmit={handleSaveMedia} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Poster Live Preview & Picker Button */}
-                <div className="flex flex-col items-center justify-start space-y-2">
-                  <div className="w-32 aspect-[2/3] bg-zinc-950 border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] overflow-hidden relative flex items-center justify-center">
+            <form onSubmit={handleSaveMedia} className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                {/* Poster Preview & Picker Button */}
+                <div className="sm:col-span-1 flex flex-col items-center gap-2">
+                  <div
+                    onClick={handleOpenFormPosterPicker}
+                    className="relative w-28 h-40 bg-zinc-950 border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] flex items-center justify-center overflow-hidden cursor-pointer group"
+                    title="Click to choose poster from gallery"
+                  >
                     {formPosterPath ? (
-                      <img
-                        src={formPosterPath}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
+                      <img src={formPosterPath} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="text-center p-2 text-zinc-500 font-display text-xs">
-                        <ImageIcon className="w-6 h-6 mx-auto mb-1 opacity-50" />
-                        No Poster
+                      <div className="text-center p-2">
+                        <ImageIcon className="w-6 h-6 mx-auto text-zinc-600 mb-1" />
+                        <span className="text-[10px] text-zinc-500 font-display uppercase">No Poster</span>
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-amber-400 transition-opacity p-2 text-center">
+                      <ImageIcon className="w-6 h-6 mb-1" />
+                      <span className="text-[10px] font-display font-bold uppercase">Change Art</span>
+                    </div>
                   </div>
-
-                  <ComicButton
+                  <button
                     type="button"
                     onClick={handleOpenFormPosterPicker}
-                    disabled={!formTmdbId && !formTitle}
-                    variant="cyan"
-                    size="sm"
-                    className="w-full text-center"
-                    leftIcon={<ImageIcon className="w-3.5 h-3.5" />}
+                    className="text-[10px] font-display font-bold uppercase text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    Select Poster Art
-                  </ComicButton>
+                    <ImageIcon className="w-3 h-3" /> Select Poster
+                  </button>
                 </div>
 
-                {/* Form Inputs Grid */}
-                <div className="md:col-span-2 space-y-3">
+                {/* Form Fields */}
+                <div className="sm:col-span-3 space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div className="sm:col-span-2">
                       <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
@@ -729,14 +1001,14 @@ export default function AdminDashboardPage() {
                         required
                         value={formTitle}
                         onChange={(e) => setFormTitle(e.target.value)}
-                        placeholder="e.g. Spider-Man: Beyond the Spider-Verse"
+                        placeholder="Movie or Show title..."
                         className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
                       />
                     </div>
 
                     <div>
                       <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                        Media Type
+                        Type
                       </label>
                       <select
                         value={formMediaType}
@@ -745,7 +1017,7 @@ export default function AdminDashboardPage() {
                       >
                         <option value="movie">Movie</option>
                         <option value="show">TV Show</option>
-                        <option value="special">Special Presentation</option>
+                        <option value="special">Special</option>
                       </select>
                     </div>
                   </div>
@@ -753,29 +1025,21 @@ export default function AdminDashboardPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
                       <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                        Universe
-                      </label>
-                      <select
-                        value={formUniverse}
-                        onChange={(e) => setFormUniverse(e.target.value as Universe)}
-                        className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
-                      >
-                        <option value="mcu">MCU / Marvel</option>
-                        <option value="dcu">DCU / DC</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
                         Phase / Chapter
                       </label>
                       <input
                         type="text"
+                        list="phase-options"
                         value={formPhase}
                         onChange={(e) => setFormPhase(e.target.value)}
                         placeholder="Phase 5 / Fox X-Men"
                         className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
                       />
+                      <datalist id="phase-options">
+                        {uniquePhases.map((p) => (
+                          <option key={p} value={p} />
+                        ))}
+                      </datalist>
                     </div>
 
                     <div>
@@ -798,13 +1062,10 @@ export default function AdminDashboardPage() {
                         type="number"
                         value={formChronoOrder}
                         onChange={(e) => setFormChronoOrder(e.target.value)}
-                        placeholder="optional"
                         className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
                       />
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                       <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
                         TMDB ID
@@ -814,77 +1075,72 @@ export default function AdminDashboardPage() {
                         value={formTmdbId}
                         onChange={(e) => setFormTmdbId(e.target.value)}
                         placeholder="e.g. 569094"
-                        className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                        Release Date
-                      </label>
-                      <input
-                        type="date"
-                        value={formReleaseDate}
-                        onChange={(e) => setFormReleaseDate(e.target.value)}
-                        className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
+                        className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400 font-mono"
                       />
                     </div>
                   </div>
 
-                  {/* Manual Poster Override Text Input */}
-                  <div>
-                    <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                      Poster Image URL (Manual Override)
-                    </label>
-                    <input
-                      type="text"
-                      value={formPosterPath}
-                      onChange={(e) => setFormPosterPath(e.target.value)}
-                      placeholder="https://image.tmdb.org/t/p/w500/... or custom image URL"
-                      className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-cyan-400 font-mono"
-                    />
-                  </div>
+                  <ComicButton variant={editingId ? 'cyan' : 'gold'} size="md" type="submit" leftIcon={<Save className="w-4 h-4" />}>
+                    {editingId ? 'Save Changes' : 'Add to Tracklist'}
+                  </ComicButton>
                 </div>
-              </div>
-
-              {/* Overview */}
-              <div>
-                <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                  Synopsis / Overview
-                </label>
-                <textarea
-                  rows={2}
-                  value={formOverview}
-                  onChange={(e) => setFormOverview(e.target.value)}
-                  placeholder="Plot summary..."
-                  className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400 resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <ComicButton variant={editingId ? 'cyan' : 'gold'} size="md" type="submit" leftIcon={<Save className="w-4 h-4" />}>
-                  {editingId ? 'Save Changes' : 'Add to Tracklist'}
-                </ComicButton>
               </div>
             </form>
           </div>
         </div>
 
-        {/* 2. Live Editable Media Table with Poster Picker Action */}
+        {/* ---------------------------------------------------- */}
+        {/* LIVE EDITABLE MEDIA TABLE WITH REORDER & PHASE TOOLS */}
+        {/* ---------------------------------------------------- */}
         <section className="bg-[#161824] border-[3px] border-black p-5 shadow-[6px_6px_0px_0px_#000000] space-y-4">
-          <div className="flex items-center justify-between border-b-2 border-black pb-3 flex-wrap gap-2">
-            <h3 className="text-xl font-display font-black uppercase text-white tracking-wider">
-              {selectedUniverse.toUpperCase()} Tracklist Live Table ({mediaList.length} Entries)
-            </h3>
-            <span className="text-xs text-zinc-400 font-sans">
-              Click <ImageIcon className="w-3 h-3 inline text-amber-400 mx-1" /> on any row to swap posters from TMDB gallery instantly!
-            </span>
+          <div className="flex items-center justify-between border-b-2 border-black pb-3 flex-wrap gap-3">
+            <div>
+              <h3 className="text-xl font-display font-black uppercase text-white tracking-wider">
+                {selectedUniverse.toUpperCase()} Tracklist Live Table ({filteredMediaList.length} / {mediaList.length} Titles)
+              </h3>
+              <span className="text-xs text-zinc-400 font-sans">
+                Use <strong>▲ / ▼</strong> to reorder release sequence or change phases directly inline!
+              </span>
+            </div>
+
+            {/* Table Search & Phase Filter */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 bg-zinc-950 border-2 border-black px-2.5 py-1">
+                <Search className="w-3.5 h-3.5 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Filter table..."
+                  value={tableFilterQuery}
+                  onChange={(e) => setTableFilterQuery(e.target.value)}
+                  className="bg-transparent text-xs text-white font-sans focus:outline-none w-32 sm:w-48"
+                />
+                {tableFilterQuery && (
+                  <button onClick={() => setTableFilterQuery('')} className="text-zinc-500 hover:text-white text-xs cursor-pointer">
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <select
+                value={selectedPhaseFilter}
+                onChange={(e) => setSelectedPhaseFilter(e.target.value)}
+                className="bg-zinc-950 border-2 border-black px-2 py-1 text-xs text-white font-display uppercase font-bold cursor-pointer"
+              >
+                <option value="all">All Phases ({uniquePhases.length})</option>
+                {uniquePhases.map((phase) => (
+                  <option key={phase} value={phase}>
+                    {phase}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-sans">
               <thead className="bg-zinc-950 font-display uppercase text-zinc-400 border-b-2 border-black">
                 <tr>
+                  <th className="p-2.5">Reorder</th>
                   <th className="p-2.5">Rel #</th>
                   <th className="p-2.5">Chrono #</th>
                   <th className="p-2.5">Poster</th>
@@ -896,61 +1152,97 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
-                {mediaList.map((item) => (
-                  <tr key={item.id} className="hover:bg-zinc-900/60 transition">
-                    <td className="p-2.5 font-display font-bold text-amber-400">#{item.release_order}</td>
-                    <td className="p-2.5 font-display font-bold text-cyan-400">
-                      {item.chronological_order ? `#${item.chronological_order}` : '—'}
-                    </td>
-                    <td className="p-2.5">
-                      <div
-                        onClick={() => handleOpenRowPosterPicker(item)}
-                        className="relative w-8 h-12 bg-zinc-800 border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer group overflow-hidden"
-                        title="Click to select alternative poster"
-                      >
-                        {item.poster_path ? (
-                          <img src={item.poster_path} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <ImageIcon className="w-4 h-4 m-auto text-zinc-600" />
-                        )}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-amber-400">
-                          <ImageIcon className="w-4 h-4" />
+                {filteredMediaList.map((item, idx) => {
+                  const globalIndex = mediaList.findIndex((m) => m.id === item.id);
+                  return (
+                    <tr key={item.id} className="hover:bg-zinc-900/60 transition">
+                      {/* Move Up / Move Down Sequence Buttons */}
+                      <td className="p-2.5 whitespace-nowrap">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleMoveRowUp(globalIndex)}
+                            disabled={globalIndex <= 0}
+                            className="p-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-25 text-amber-400 border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                            title="Move title UP in release order"
+                          >
+                            <ArrowUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleMoveRowDown(globalIndex)}
+                            disabled={globalIndex >= mediaList.length - 1}
+                            className="p-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-25 text-amber-400 border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                            title="Move title DOWN in release order"
+                          >
+                            <ArrowDown className="w-3 h-3" />
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-2.5 font-bold text-white max-w-xs truncate">{item.title}</td>
-                    <td className="p-2.5">
-                      <ComicBadge variant="dark" size="sm">
-                        {item.phase_or_chapter}
-                      </ComicBadge>
-                    </td>
-                    <td className="p-2.5 capitalize">{item.media_type}</td>
-                    <td className="p-2.5 text-zinc-400 font-mono">{item.tmdb_id || '—'}</td>
-                    <td className="p-2.5 text-right space-x-1.5 whitespace-nowrap">
-                      <button
-                        onClick={() => handleOpenRowPosterPicker(item)}
-                        className="p-1.5 bg-amber-400 hover:bg-amber-300 text-black border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
-                        title="Choose Poster Art"
-                      >
-                        <ImageIcon className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleEditItem(item)}
-                        className="p-1.5 bg-cyan-500 hover:bg-cyan-400 text-black border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
-                        title="Edit title"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteItem(item.id, item.title)}
-                        className="p-1.5 bg-rose-600 hover:bg-rose-500 text-white border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
-                        title="Delete title"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+
+                      <td className="p-2.5 font-display font-bold text-amber-400">#{item.release_order}</td>
+                      <td className="p-2.5 font-display font-bold text-cyan-400">
+                        {item.chronological_order ? `#${item.chronological_order}` : '—'}
+                      </td>
+                      <td className="p-2.5">
+                        <div
+                          onClick={() => handleOpenRowPosterPicker(item)}
+                          className="relative w-8 h-12 bg-zinc-800 border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer group overflow-hidden"
+                          title="Click to select alternative poster"
+                        >
+                          {item.poster_path ? (
+                            <img src={item.poster_path} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 m-auto text-zinc-600" />
+                          )}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-amber-400">
+                            <ImageIcon className="w-4 h-4" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-2.5 font-bold text-white max-w-xs truncate">{item.title}</td>
+
+                      {/* Inline Phase Selector */}
+                      <td className="p-2.5">
+                        <select
+                          value={item.phase_or_chapter || ''}
+                          onChange={(e) => handleQuickPhaseChange(item.id, e.target.value)}
+                          className="bg-zinc-950 border border-black px-2 py-1 text-[11px] text-zinc-200 font-display uppercase font-bold focus:outline-none focus:border-amber-400 max-w-[180px] truncate cursor-pointer"
+                        >
+                          {uniquePhases.map((p) => (
+                            <option key={p} value={p}>
+                              {p}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td className="p-2.5 capitalize">{item.media_type}</td>
+                      <td className="p-2.5 text-zinc-400 font-mono">{item.tmdb_id || '—'}</td>
+                      <td className="p-2.5 text-right space-x-1.5 whitespace-nowrap">
+                        <button
+                          onClick={() => handleOpenRowPosterPicker(item)}
+                          className="p-1.5 bg-amber-400 hover:bg-amber-300 text-black border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                          title="Choose Poster Art"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleEditItem(item)}
+                          className="p-1.5 bg-cyan-500 hover:bg-cyan-400 text-black border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                          title="Edit title"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteItem(item.id, item.title)}
+                          className="p-1.5 bg-rose-600 hover:bg-rose-500 text-white border border-black shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
+                          title="Delete title"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
