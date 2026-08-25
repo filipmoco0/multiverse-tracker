@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 
   const clientId = cookieId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || '';
   const clientSecret = cookieSecret || process.env.TRAKT_CLIENT_SECRET || '';
-  const origin = request.nextUrl.origin;
-  const redirectUri = `${origin}/api/auth/trakt/callback`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://multiversetracker.com';
+  const redirectUri = `${siteUrl}/api/auth/trakt/callback`;
 
   // Return a client-side browser page to perform the token exchange directly from the user's home IP (bypassing Cloudflare datacenter IP blocks)
   const html = `

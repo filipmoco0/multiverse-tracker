@@ -10,8 +10,10 @@ export async function GET(request: NextRequest) {
   const clientId = paramClientId || process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID || DEFAULT_TRAKT_KEY;
   const clientSecret = paramClientSecret || process.env.TRAKT_CLIENT_SECRET;
 
-  const origin = request.nextUrl.origin;
-  const redirectUri = `${origin}/api/auth/trakt/callback`;
+  // Always use the canonical production domain so it matches the Trakt app registration.
+  // NEXT_PUBLIC_SITE_URL can be set on Vercel to override if needed.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://multiversetracker.com';
+  const redirectUri = `${siteUrl}/api/auth/trakt/callback`;
 
   const params = new URLSearchParams({
     response_type: 'code',
