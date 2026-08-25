@@ -18,11 +18,13 @@ import {
   Flame,
   CheckCircle2,
   AlertCircle,
+  Crown,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { clsx } from 'clsx';
 
 interface PassportModalProps {
@@ -43,6 +45,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   userName,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const isVipSupporter = useSettingsStore((state) => state.isVipSupporter);
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
@@ -292,6 +295,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                     <ComicBadge variant={rank.badge} size="sm">
                       {rank.title}
                     </ComicBadge>
+                    {isVipSupporter && (
+                      <ComicBadge variant="gold" size="sm">
+                        <span className="flex items-center gap-1 font-black text-black">
+                          <Crown className="w-3.5 h-3.5 text-black fill-black" />
+                          VIP HERO
+                        </span>
+                      </ComicBadge>
+                    )}
                     <span className="text-xs text-zinc-300 font-sans font-medium">
                       {rank.subtitle}
                     </span>

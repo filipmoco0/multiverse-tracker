@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter, SlidersHorizontal } from 'lucide-react';
+import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter, SlidersHorizontal, Coffee, Heart } from 'lucide-react';
 import { FranchiseMedia, OrderMode, TypeFilter, StatusFilter, Universe } from '@/lib/types';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -425,6 +425,41 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
             );
           })
         )}
+      </div>
+
+      {/* Supporter & Tip Banner */}
+      <div className="mt-12 p-6 bg-[#141624] border-[3px] border-black shadow-[6px_6px_0px_0px_#000000] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="space-y-1">
+          <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+            <span className="font-display font-black text-base sm:text-lg uppercase text-amber-400 flex items-center gap-1.5">
+              <Coffee className="w-4 h-4 text-amber-400" /> Enjoying Multiverse Tracker?
+            </span>
+            <ComicBadge variant="gold" size="sm">
+              <span className="flex items-center gap-1 font-bold">
+                <Heart className="w-3 h-3 text-rose-500 fill-rose-500" />
+                100% Free & No Ads
+              </span>
+            </ComicBadge>
+          </div>
+          <p className="text-xs text-zinc-300 font-sans max-w-xl leading-relaxed">
+            Multiverse Tracker is an ad-free passion project for Marvel & DC fans. If this tracker powers your movie marathons, consider buying the dev a coffee on Revolut to fuel future updates!
+          </p>
+        </div>
+
+        <a
+          href="https://revolut.me/fmoslavac"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-shrink-0"
+        >
+          <ComicButton
+            variant="gold"
+            size="md"
+            leftIcon={<Coffee className="w-4 h-4 text-black" />}
+          >
+            Buy a Coffee via Revolut.me
+          </ComicButton>
+        </a>
       </div>
 
       {/* Multiverse Citizen Passport Modal */}

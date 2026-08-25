@@ -25,6 +25,9 @@ import {
   ShieldCheck,
   Zap,
   BookOpen,
+  Coffee,
+  Heart,
+  Crown,
 } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -36,7 +39,7 @@ import { syncUserProfileToCloud, loadUserProfileFromCloud } from '@/lib/supabase
 import { triggerComicConfetti } from '../comic/ConfettiCelebration';
 import { clsx } from 'clsx';
 
-export type SettingsTab = 'account' | 'trakt' | 'features' | 'byok' | 'data';
+export type SettingsTab = 'account' | 'trakt' | 'features' | 'byok' | 'data' | 'donate';
 
 interface UnifiedSettingsModalProps {
   isOpen: boolean;
@@ -332,6 +335,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     { id: 'features', label: 'Features & UI', icon: Sliders },
     { id: 'byok', label: 'API Keys', icon: Key },
     { id: 'data', label: 'Data & Backup', icon: Database },
+    { id: 'donate', label: '⚡ Support Dev', icon: Coffee },
   ];
 
   return (
@@ -927,6 +931,119 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       Reset DC
                     </ComicButton>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 6: SUPPORT DEV & REVOLUT DONATIONS */}
+            {activeTab === 'donate' && (
+              <div className="space-y-5">
+                <div className="p-4 bg-gradient-to-br from-[#141624] to-[#1f1a3a] border-2 border-black shadow-[4px_4px_0px_0px_#000000] space-y-2 text-center sm:text-left">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <ComicBadge variant="gold" size="sm">
+                      <span className="flex items-center gap-1 font-bold">
+                        <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                        100% Free & Ad-Free
+                      </span>
+                    </ComicBadge>
+                    <span className="text-[11px] text-zinc-400 font-sans">Powered by Revolut</span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-display font-black text-amber-400 uppercase tracking-wide">
+                    Buy the Dev a Coffee ☕
+                  </h3>
+
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Multiverse Tracker has zero ads and is maintained as a passion project for Marvel and DC fans. If this tracker helps you organize your movie marathons, tossing a tip fuels hosting costs and caffeine for future features!
+                  </p>
+                </div>
+
+                {/* Preset Quick Tiers */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <a
+                    href="https://revolut.me/fmoslavac"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-black p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
+                  >
+                    <div className="text-2xl mb-1 group-hover:scale-110 transition">☕</div>
+                    <h4 className="font-display font-black text-sm uppercase text-amber-400">€2 Espresso</h4>
+                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Quick energy boost</p>
+                  </a>
+
+                  <a
+                    href="https://revolut.me/fmoslavac"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-amber-400 p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
+                  >
+                    <div className="text-2xl mb-1 group-hover:scale-110 transition">🍿</div>
+                    <h4 className="font-display font-black text-sm uppercase text-amber-400">€5 Popcorn & Soda</h4>
+                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Movie marathon fuel</p>
+                  </a>
+
+                  <a
+                    href="https://revolut.me/fmoslavac"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group bg-zinc-950 hover:bg-zinc-900 border-2 border-black p-3.5 text-center shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer block"
+                  >
+                    <div className="text-2xl mb-1 group-hover:scale-110 transition">🦸‍♂️</div>
+                    <h4 className="font-display font-black text-sm uppercase text-cyan-400">€10 Superhero</h4>
+                    <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Multiverse Legend</p>
+                  </a>
+                </div>
+
+                {/* Primary Revolut Link Button */}
+                <a
+                  href="https://revolut.me/fmoslavac"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <ComicButton
+                    variant="gold"
+                    size="lg"
+                    className="w-full text-sm font-black"
+                    leftIcon={<Coffee className="w-5 h-5 text-black" />}
+                    rightIcon={<ExternalLink className="w-4 h-4 text-black" />}
+                  >
+                    Open Revolut.me/fmoslavac (Apple Pay / Card)
+                  </ComicButton>
+                </a>
+
+                {/* VIP Supporter Toggle */}
+                <div className="p-4 bg-zinc-950 border-2 border-amber-400/60 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 font-display font-black text-xs uppercase text-amber-400">
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      VIP Superhero Supporter Badge
+                    </div>
+                    <p className="text-[11px] text-zinc-400 font-sans">
+                      Donated on Revolut? Activate your golden supporter crown in your Superhero Passport!
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      settings.toggleSetting('isVipSupporter');
+                      if (!settings.isVipSupporter) {
+                        triggerComicConfetti();
+                        setStatusMsg({ text: '👑 Golden VIP Supporter Badge Activated! Thank you!', type: 'success' });
+                      } else {
+                        setStatusMsg({ text: 'VIP badge disabled.', type: 'success' });
+                      }
+                    }}
+                    className={clsx(
+                      'px-3 py-1.5 text-xs font-display font-black uppercase transition border-2 border-black shadow-[2px_2px_0px_0px_#000000] cursor-pointer flex-shrink-0',
+                      settings.isVipSupporter
+                        ? 'bg-amber-400 text-black'
+                        : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300'
+                    )}
+                  >
+                    {settings.isVipSupporter ? '👑 VIP Active' : 'Activate VIP'}
+                  </button>
                 </div>
               </div>
             )}

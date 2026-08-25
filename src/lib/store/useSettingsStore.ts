@@ -6,6 +6,7 @@ export interface AppSettings {
   showTrailersAndStreaming: boolean;
   enableConfetti: boolean;
   greyscaleUnwatched: boolean;
+  isVipSupporter: boolean;
 }
 
 interface SettingsStore extends AppSettings {
@@ -19,6 +20,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   showTrailersAndStreaming: true,
   enableConfetti: true,
   greyscaleUnwatched: true,
+  isVipSupporter: false,
 };
 
 export const useSettingsStore = create<SettingsStore>()(
