@@ -27,7 +27,6 @@ import {
   BookOpen,
   Coffee,
   Heart,
-  Crown,
 } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -85,10 +84,6 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   // Local state for Trakt Quick Connect Tab
   const [traktUsernameInput, setTraktUsernameInput] = useState('');
   const [isTraktQuickLoading, setIsTraktQuickLoading] = useState(false);
-
-  // Local state for VIP code redeem
-  const [vipCodeInput, setVipCodeInput] = useState('');
-  const [isRedeemingVip, setIsRedeemingVip] = useState(false);
 
   // Status feedback message
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -295,41 +290,6 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     }
     syncUserProfileToCloud({ trakt_username: null, trakt_token: null });
     setStatusMsg({ text: 'Trakt account disconnected successfully.', type: 'success' });
-  };
-
-  // VIP Code Redeem Handler
-  const handleRedeemVipCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!vipCodeInput.trim()) {
-      setStatusMsg({ text: 'Please enter a VIP code.', type: 'error' });
-      return;
-    }
-
-    setIsRedeemingVip(true);
-    try {
-      const res = await fetch('/api/vip/redeem', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: vipCodeInput.trim(),
-          username: traktUser?.username || currentUser?.email || 'Hero',
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        settings.setSetting('isVipSupporter', true);
-        triggerComicConfetti();
-        setStatusMsg({ text: data.message || '👑 VIP Supporter unlocked!', type: 'success' });
-        setVipCodeInput('');
-      } else {
-        setStatusMsg({ text: data.error || 'Invalid VIP code.', type: 'error' });
-      }
-    } catch (err: any) {
-      setStatusMsg({ text: 'Network error: ' + err.message, type: 'error' });
-    } finally {
-      setIsRedeemingVip(false);
-    }
   };
 
   // Data Export/Import Handlers
@@ -1050,68 +1010,6 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                     Open Revolut.me/fmoslavac (Apple Pay / Card)
                   </ComicButton>
                 </a>
-
-                {/* VIP Supporter Code Redemption */}
-                {settings.isVipSupporter ? (
-                  <div className="p-4 bg-amber-950/40 border-2 border-amber-400 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-amber-400 text-black border-2 border-black -skew-x-6">
-                        <Crown className="w-5 h-5 skew-x-6 text-black fill-black" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5 font-display font-black text-sm uppercase text-amber-400">
-                          👑 VIP Superhero Hero Active
-                        </div>
-                        <p className="text-[11px] text-zinc-300 font-sans">
-                          Your golden VIP badge is proudly displayed on your Superhero Passport!
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        settings.setSetting('isVipSupporter', false);
-                        setStatusMsg({ text: 'VIP status deactivated.', type: 'success' });
-                      }}
-                      className="px-2.5 py-1 text-[11px] font-display uppercase border border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white"
-                    >
-                      Disable
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleRedeemVipCode} className="p-4 bg-zinc-950 border-2 border-amber-400/60 shadow-[3px_3px_0px_0px_#000000] space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 font-display font-black text-xs uppercase text-amber-400">
-                        <Crown className="w-4 h-4 text-amber-400" />
-                        Redeem VIP Supporter Pass
-                      </div>
-                      <ComicBadge variant="gold" size="sm">Single-Use Code</ComicBadge>
-                    </div>
-
-                    <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                      Donated via Revolut? Enter the 1-time VIP code you received to unlock the permanent golden <strong>VIP HERO</strong> badge in your Superhero Passport:
-                    </p>
-
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={vipCodeInput}
-                        onChange={(e) => setVipCodeInput(e.target.value)}
-                        placeholder="e.g. VIP-8492-MCU"
-                        className="flex-1 bg-zinc-900 border-2 border-black px-3 py-2 text-xs font-mono text-white placeholder:text-zinc-600 uppercase focus:outline-none focus:border-amber-400"
-                      />
-                      <ComicButton
-                        type="submit"
-                        disabled={isRedeemingVip}
-                        variant="gold"
-                        size="sm"
-                      >
-                        {isRedeemingVip ? 'Redeeming...' : 'Unlock VIP 👑'}
-                      </ComicButton>
-                    </div>
-                  </form>
-                )}
               </div>
             )}
           </div>
