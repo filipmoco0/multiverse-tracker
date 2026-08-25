@@ -1,9 +1,8 @@
 import { useByokStore } from '../store/useByokStore';
 
 export const TRAKT_API_URL = 'https://api.trakt.tv';
-const DEFAULT_TRAKT_KEY = '5a6ddbfaea8f5a6fa58dfc924bc01c23f66085a539bc2b5c00e66c6b4129b8c0';
-const BROWSER_USER_AGENT =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MultiverseTracker/1.0';
+// Public Client ID for the Multiverse Tracker Trakt app
+const DEFAULT_TRAKT_KEY = 'iI5LzoT280cpy0dZ1XDBxakffw4QlPIt8Skq-wczuMM';
 
 export function getEffectiveTraktClientId(): string {
   if (typeof window !== 'undefined') {
