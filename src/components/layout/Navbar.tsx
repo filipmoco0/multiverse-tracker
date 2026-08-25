@@ -71,11 +71,11 @@ export const Navbar: React.FC = () => {
               />
               <div className="flex flex-col">
                 <span className="font-display font-black text-base sm:text-xl tracking-wider text-white group-hover:text-amber-400 transition-colors uppercase leading-none">
-                  <span className="hidden xs:inline">Multiverse</span>
-                  <span className="text-amber-400">Tracker</span>
+                  <span className="hidden xs:inline">MULTIVERSE </span>
+                  <span className="text-amber-400">TRACKER</span>
                 </span>
                 <span className="text-[9px] font-sans font-bold text-zinc-400 uppercase tracking-widest hidden md:block">
-                  MCU & DCU Watchlist
+                  Marvel & DC Cinematic Universe
                 </span>
               </div>
             </Link>
