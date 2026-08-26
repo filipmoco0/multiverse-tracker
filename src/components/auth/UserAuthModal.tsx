@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Lock, Mail, Check, AlertCircle, Sparkles, Cloud, RefreshCw, LogOut } from 'lucide-react';
+import { X, Lock, Mail, Check, AlertCircle, Sparkles, Cloud, RefreshCw, LogOut, Shield, KeyRound, ChevronDown, ChevronUp } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
 import { createClient } from '@/lib/supabase/client';
@@ -19,16 +19,25 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
   const watchedIds = useWatchlistStore((s) => s.watchedIds);
   const tmdbApiKey = useByokStore((s) => s.tmdbApiKey);
 
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
+  // Logged-in profile updates
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [newEmailInput, setNewEmailInput] = useState('');
+  const [isSecurityExpanded, setIsSecurityExpanded] = useState(false);
+
   // Check current auth status on open
   useEffect(() => {
     if (isOpen) {
+      setActiveTab('signin');
+      setStatusMsg(null);
+      setNewPasswordInput('');
+      setNewEmailInput('');
       const supabase = createClient();
       if (supabase) {
         supabase.auth.getSession().then(({ data }) => {
@@ -43,6 +52,46 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      setStatusMsg({ text: 'Please enter your email address.', type: 'error' });
+      return;
+    }
+
+    setLoading(true);
+    setStatusMsg(null);
+
+    try {
+      const supabase = createClient();
+      if (!supabase) {
+        setStatusMsg({ text: 'Database client not ready.', type: 'error' });
+        return;
+      }
+
+      const redirectUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/reset-password`
+        : 'https://multiversetracker.com/reset-password';
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        setStatusMsg({ text: error.message, type: 'error' });
+      } else {
+        setStatusMsg({
+          text: 'Password recovery link sent! Please check your email inbox.',
+          type: 'success',
+        });
+      }
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Failed to send reset email', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,6 +165,61 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
       }
     } catch (err: any) {
       setStatusMsg({ text: err.message || 'Failed to sign up', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPasswordInput.length < 6) {
+      setStatusMsg({ text: 'New password must be at least 6 characters.', type: 'error' });
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) return;
+
+    setLoading(true);
+    setStatusMsg(null);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPasswordInput,
+      });
+      if (error) throw error;
+      setNewPasswordInput('');
+      setStatusMsg({ text: 'Password updated successfully!', type: 'success' });
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Failed to update password.', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangeEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmailInput.trim() || !newEmailInput.includes('@')) {
+      setStatusMsg({ text: 'Please enter a valid email address.', type: 'error' });
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) return;
+
+    setLoading(true);
+    setStatusMsg(null);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        email: newEmailInput.trim(),
+      });
+      if (error) throw error;
+      setNewEmailInput('');
+      setStatusMsg({
+        text: 'Confirmation links sent to both email addresses! Please verify to update.',
+        type: 'success',
+      });
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Failed to update email address.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -263,85 +367,227 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
                   Sign Out
                 </ComicButton>
               </div>
+
+              {/* Account Security Management */}
+              <div className="bg-zinc-950 border-2 border-black p-3.5 shadow-[3px_3px_0px_0px_#000000] space-y-3">
+                <div
+                  onClick={() => setIsSecurityExpanded(!isSecurityExpanded)}
+                  className="flex items-center justify-between cursor-pointer select-none"
+                >
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-amber-400" />
+                    <h4 className="font-display font-black text-xs uppercase text-white tracking-wide">
+                      Account Security & Details
+                    </h4>
+                  </div>
+                  <button type="button" className="text-zinc-400 hover:text-white p-0.5">
+                    {isSecurityExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {isSecurityExpanded && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    {/* 1. Change Password */}
+                    <form onSubmit={handleChangePassword} className="space-y-2 bg-[#10121d] p-2.5 border border-zinc-800">
+                      <div className="flex items-center gap-1.5 text-xs font-display uppercase font-bold text-amber-400">
+                        <KeyRound className="w-3.5 h-3.5" />
+                        <span>Change Password</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="password"
+                          required
+                          minLength={6}
+                          value={newPasswordInput}
+                          onChange={(e) => setNewPasswordInput(e.target.value)}
+                          placeholder="New password..."
+                          className="flex-1 bg-zinc-900 border-2 border-black px-2.5 py-1 text-xs font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                        />
+                        <ComicButton
+                          type="submit"
+                          disabled={loading || !newPasswordInput}
+                          variant="gold"
+                          size="sm"
+                        >
+                          {loading ? 'Saving...' : 'Update'}
+                        </ComicButton>
+                      </div>
+                    </form>
+
+                    {/* 2. Change Email */}
+                    <form onSubmit={handleChangeEmail} className="space-y-2 bg-[#10121d] p-2.5 border border-zinc-800">
+                      <div className="flex items-center gap-1.5 text-xs font-display uppercase font-bold text-cyan-400">
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>Change Email Address</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          required
+                          value={newEmailInput}
+                          onChange={(e) => setNewEmailInput(e.target.value)}
+                          placeholder="New email..."
+                          className="flex-1 bg-zinc-900 border-2 border-black px-2.5 py-1 text-xs font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-400"
+                        />
+                        <ComicButton
+                          type="submit"
+                          disabled={loading || !newEmailInput}
+                          variant="cyan"
+                          size="sm"
+                        >
+                          {loading ? 'Sending...' : 'Update'}
+                        </ComicButton>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
-            /* Sign In / Sign Up Tabs */
+            /* Sign In / Sign Up / Forgot Password Tabs */
             <div className="space-y-4">
-              {/* Tab Switcher */}
-              <div className="flex border-2 border-black bg-zinc-950 p-1">
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('signin'); setStatusMsg(null); }}
-                  className={`flex-1 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition ${
-                    activeTab === 'signin' ? 'bg-cyan-400 text-black shadow-[2px_2px_0px_0px_#000000]' : 'text-zinc-400'
-                  }`}
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab('signup'); setStatusMsg(null); }}
-                  className={`flex-1 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition ${
-                    activeTab === 'signup' ? 'bg-amber-400 text-black shadow-[2px_2px_0px_0px_#000000]' : 'text-zinc-400'
-                  }`}
-                >
-                  Create Free Account
-                </button>
-              </div>
-
-              <form onSubmit={activeTab === 'signin' ? handleSignIn : handleSignUp} className="space-y-3.5">
-                <div>
-                  <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                    Email Address
-                  </label>
-                  <div className="relative flex items-center">
-                    <Mail className="w-4 h-4 absolute left-3 text-zinc-400" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="yourname@gmail.com"
-                      className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-9 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
-                    />
+              {activeTab === 'forgot' ? (
+                /* Forgot Password Mode */
+                <div className="space-y-3.5">
+                  <div className="p-3 bg-zinc-950 border-2 border-black space-y-1">
+                    <h4 className="font-display font-black text-sm uppercase text-amber-400">
+                      Reset Your Password
+                    </h4>
+                    <p className="text-xs text-zinc-400 font-sans">
+                      Enter your registered email address and we will send you a password recovery link.
+                    </p>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                    Password
-                  </label>
-                  <div className="relative flex items-center">
-                    <Lock className="w-4 h-4 absolute left-3 text-zinc-400" />
-                    <input
-                      type="password"
-                      required
-                      minLength={6}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-9 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
-                    />
+                  <form onSubmit={handleForgotPassword} className="space-y-3.5">
+                    <div>
+                      <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
+                        Email Address
+                      </label>
+                      <div className="relative flex items-center">
+                        <Mail className="w-4 h-4 absolute left-3 text-zinc-400" />
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="yourname@gmail.com"
+                          className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-9 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
+                        />
+                      </div>
+                    </div>
+
+                    <ComicButton
+                      variant="gold"
+                      size="lg"
+                      className="w-full"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? 'Sending link...' : 'Send Password Reset Link'}
+                    </ComicButton>
+
+                    <div className="text-center pt-2 border-t border-zinc-800">
+                      <button
+                        type="button"
+                        onClick={() => { setActiveTab('signin'); setStatusMsg(null); }}
+                        className="text-xs font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer"
+                      >
+                        ← Back to Sign In
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                /* Normal Sign In / Sign Up Mode */
+                <>
+                  {/* Tab Switcher */}
+                  <div className="flex border-2 border-black bg-zinc-950 p-1">
+                    <button
+                      type="button"
+                      onClick={() => { setActiveTab('signin'); setStatusMsg(null); }}
+                      className={`flex-1 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition ${
+                        activeTab === 'signin' ? 'bg-cyan-400 text-black shadow-[2px_2px_0px_0px_#000000]' : 'text-zinc-400'
+                      }`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setActiveTab('signup'); setStatusMsg(null); }}
+                      className={`flex-1 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition ${
+                        activeTab === 'signup' ? 'bg-amber-400 text-black shadow-[2px_2px_0px_0px_#000000]' : 'text-zinc-400'
+                      }`}
+                    >
+                      Create Free Account
+                    </button>
                   </div>
-                </div>
 
-                <div className="pt-2">
-                  <ComicButton
-                    variant={activeTab === 'signin' ? 'cyan' : 'gold'}
-                    size="lg"
-                    className="w-full"
-                    type="submit"
-                    disabled={loading}
-                    leftIcon={loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-black" />}
-                  >
-                    {loading
-                      ? 'Processing...'
-                      : activeTab === 'signin'
-                      ? 'Sign In & Restore Watchlist'
-                      : 'Create Account & Sync'}
-                  </ComicButton>
-                </div>
-              </form>
+                  <form onSubmit={activeTab === 'signin' ? handleSignIn : handleSignUp} className="space-y-3.5">
+                    <div>
+                      <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
+                        Email Address
+                      </label>
+                      <div className="relative flex items-center">
+                        <Mail className="w-4 h-4 absolute left-3 text-zinc-400" />
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="yourname@gmail.com"
+                          className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-9 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-display uppercase tracking-wider text-zinc-400">
+                          Password
+                        </label>
+                        {activeTab === 'signin' && (
+                          <button
+                            type="button"
+                            onClick={() => { setActiveTab('forgot'); setStatusMsg(null); }}
+                            className="text-[11px] font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer"
+                          >
+                            Forgot password?
+                          </button>
+                        )}
+                      </div>
+                      <div className="relative flex items-center">
+                        <Lock className="w-4 h-4 absolute left-3 text-zinc-400" />
+                        <input
+                          type="password"
+                          required
+                          minLength={6}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full bg-zinc-950 border-2 border-black p-2.5 pl-9 text-xs text-white font-sans focus:outline-none focus:border-cyan-400"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <ComicButton
+                        variant={activeTab === 'signin' ? 'cyan' : 'gold'}
+                        size="lg"
+                        className="w-full"
+                        type="submit"
+                        disabled={loading}
+                        leftIcon={loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-black" />}
+                      >
+                        {loading
+                          ? 'Processing...'
+                          : activeTab === 'signin'
+                          ? 'Sign In & Restore Watchlist'
+                          : 'Create Account & Sync'}
+                      </ComicButton>
+                    </div>
+                  </form>
+                </>
+              )}
             </div>
           )}
         </motion.div>
