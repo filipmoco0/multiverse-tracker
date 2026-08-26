@@ -11,7 +11,7 @@ interface OrderToggleProps {
   universe?: 'mcu' | 'dcu';
 }
 
-export const OrderToggle: React.FC<OrderToggleProps> = ({
+export const OrderToggle: React.FC<OrderToggleProps> = React.memo(({
   orderMode,
   onChange,
   universe = 'mcu',
@@ -50,4 +50,7 @@ export const OrderToggle: React.FC<OrderToggleProps> = ({
       </button>
     </div>
   );
-};
+});
+
+OrderToggle.displayName = 'OrderToggle';
+

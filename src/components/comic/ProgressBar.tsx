@@ -14,7 +14,7 @@ interface ProgressBarProps {
   showCount?: boolean;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({
+export const ProgressBar: React.FC<ProgressBarProps> = React.memo(({
   total,
   watched,
   label,
@@ -83,4 +83,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ProgressBar.displayName = 'ProgressBar';
+

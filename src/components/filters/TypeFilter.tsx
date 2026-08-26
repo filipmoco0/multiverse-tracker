@@ -11,21 +11,21 @@ interface TypeFilterTabsProps {
   universe?: 'mcu' | 'dcu';
 }
 
-export const TypeFilterTabs: React.FC<TypeFilterTabsProps> = ({
+const TABS: { type: TypeFilter; label: string; icon: React.ReactNode }[] = [
+  { type: 'all', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
+  { type: 'movie', label: 'Movies', icon: <Film className="w-3.5 h-3.5" /> },
+  { type: 'show', label: 'TV Shows', icon: <Tv className="w-3.5 h-3.5" /> },
+  { type: 'special', label: 'Specials', icon: <Sparkles className="w-3.5 h-3.5" /> },
+];
+
+export const TypeFilterTabs: React.FC<TypeFilterTabsProps> = React.memo(({
   currentType,
   onChange,
   universe = 'mcu',
 }) => {
-  const tabs: { type: TypeFilter; label: string; icon: React.ReactNode }[] = [
-    { type: 'all', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
-    { type: 'movie', label: 'Movies', icon: <Film className="w-3.5 h-3.5" /> },
-    { type: 'show', label: 'TV Shows', icon: <Tv className="w-3.5 h-3.5" /> },
-    { type: 'special', label: 'Specials', icon: <Sparkles className="w-3.5 h-3.5" /> },
-  ];
-
   return (
     <div className="flex flex-wrap gap-1.5 p-1 bg-zinc-950 border-[3px] border-black shadow-[4px_4px_0px_0px_#000000]">
-      {tabs.map((tab) => {
+      {TABS.map((tab) => {
         const isActive = currentType === tab.type;
         return (
           <button
@@ -47,4 +47,7 @@ export const TypeFilterTabs: React.FC<TypeFilterTabsProps> = ({
       })}
     </div>
   );
-};
+});
+
+TypeFilterTabs.displayName = 'TypeFilterTabs';
+

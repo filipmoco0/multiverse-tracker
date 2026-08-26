@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Clock,
@@ -21,7 +21,7 @@ interface MarathonStatsWidgetProps {
   universe: Universe;
 }
 
-export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
+export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = React.memo(({
   mediaList,
   watchedIds,
   universe,
@@ -29,21 +29,21 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
   const [isExpanded, setIsExpanded] = useState(true);
   const isMCU = universe === 'mcu';
 
-  // 1. Counts breakdown
-  const movies = mediaList.filter((m) => m.media_type === 'movie');
-  const shows = mediaList.filter((m) => m.media_type === 'show');
-  const specials = mediaList.filter((m) => m.media_type === 'special');
+  // 1. Counts breakdown (memoized)
+  const movies = useMemo(() => mediaList.filter((m) => m.media_type === 'movie'), [mediaList]);
+  const shows = useMemo(() => mediaList.filter((m) => m.media_type === 'show'), [mediaList]);
+  const specials = useMemo(() => mediaList.filter((m) => m.media_type === 'special'), [mediaList]);
 
-  const watchedMovies = movies.filter((m) => Boolean(watchedIds[m.id])).length;
-  const watchedShows = shows.filter((m) => Boolean(watchedIds[m.id])).length;
-  const watchedSpecials = specials.filter((m) => Boolean(watchedIds[m.id])).length;
+  const watchedMovies = useMemo(() => movies.filter((m) => Boolean(watchedIds[m.id])).length, [movies, watchedIds]);
+  const watchedShows = useMemo(() => shows.filter((m) => Boolean(watchedIds[m.id])).length, [shows, watchedIds]);
+  const watchedSpecials = useMemo(() => specials.filter((m) => Boolean(watchedIds[m.id])).length, [specials, watchedIds]);
 
   const totalTitles = mediaList.length;
-  const totalWatched = mediaList.filter((m) => Boolean(watchedIds[m.id])).length;
+  const totalWatched = useMemo(() => mediaList.filter((m) => Boolean(watchedIds[m.id])).length, [mediaList, watchedIds]);
   const overallPercentage = totalTitles > 0 ? Math.round((totalWatched / totalTitles) * 100) : 0;
 
-  // 2. Runtime calculation (in minutes)
-  const calculateTotalMinutes = () => {
+  // 2. Runtime calculation (memoized)
+  const watchedMinutes = useMemo(() => {
     let totalMinutes = 0;
     mediaList.forEach((item) => {
       if (watchedIds[item.id]) {
@@ -58,15 +58,14 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
       }
     });
     return totalMinutes;
-  };
+  }, [mediaList, watchedIds]);
 
-  const watchedMinutes = calculateTotalMinutes();
   const watchedHours = Math.floor(watchedMinutes / 60);
   const remainingMinutes = watchedMinutes % 60;
   const watchedDays = (watchedHours / 24).toFixed(1);
 
-  // 3. Superhero Rank System
-  const getSuperheroRank = () => {
+  // 3. Superhero Rank System (memoized)
+  const currentRank = useMemo(() => {
     if (isMCU) {
       if (overallPercentage === 0) return { title: 'Civilian', subtitle: 'Daily Bugle Reader', icon: '👤', color: 'text-zinc-400', badge: 'white' as const };
       if (overallPercentage <= 15) return { title: 'S.H.I.E.L.D. Recruit', subtitle: 'Level 1 Clearance', icon: '🛡️', color: 'text-cyan-400', badge: 'cyan' as const };
@@ -84,9 +83,7 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
       if (overallPercentage < 100) return { title: 'Speed Force Champion', subtitle: 'Crisis Survivor', icon: '🌀', color: 'text-cyan-300', badge: 'cyan' as const };
       return { title: 'Prime Earth Legend', subtitle: '100% DC Universe Master', icon: '👑', color: 'text-amber-300', badge: 'gold' as const };
     }
-  };
-
-  const currentRank = getSuperheroRank();
+  }, [isMCU, overallPercentage]);
 
   return (
     <div className="bg-[#141624] border-[4px] border-black shadow-[8px_8px_0px_0px_#000000] overflow-hidden text-white">
@@ -259,4 +256,7 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = ({
       </AnimatePresence>
     </div>
   );
-};
+});
+
+MarathonStatsWidget.displayName = 'MarathonStatsWidget';
+

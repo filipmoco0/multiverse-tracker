@@ -10,19 +10,19 @@ interface StatusFilterTabsProps {
   onChange: (status: StatusFilter) => void;
 }
 
-export const StatusFilterTabs: React.FC<StatusFilterTabsProps> = ({
+const STATUS_TABS: { status: StatusFilter; label: string; icon: React.ReactNode }[] = [
+  { status: 'all', label: 'All Media', icon: <Eye className="w-3.5 h-3.5" /> },
+  { status: 'watched', label: 'Watched', icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> },
+  { status: 'unwatched', label: 'Unwatched', icon: <Circle className="w-3.5 h-3.5 text-amber-400" /> },
+];
+
+export const StatusFilterTabs: React.FC<StatusFilterTabsProps> = React.memo(({
   currentStatus,
   onChange,
 }) => {
-  const tabs: { status: StatusFilter; label: string; icon: React.ReactNode }[] = [
-    { status: 'all', label: 'All Media', icon: <Eye className="w-3.5 h-3.5" /> },
-    { status: 'watched', label: 'Watched', icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> },
-    { status: 'unwatched', label: 'Unwatched', icon: <Circle className="w-3.5 h-3.5 text-amber-400" /> },
-  ];
-
   return (
     <div className="flex flex-wrap gap-1.5 p-1 bg-zinc-950 border-[3px] border-black shadow-[4px_4px_0px_0px_#000000]">
-      {tabs.map((tab) => {
+      {STATUS_TABS.map((tab) => {
         const isActive = currentStatus === tab.status;
         return (
           <button
@@ -42,4 +42,7 @@ export const StatusFilterTabs: React.FC<StatusFilterTabsProps> = ({
       })}
     </div>
   );
-};
+});
+
+StatusFilterTabs.displayName = 'StatusFilterTabs';
+
