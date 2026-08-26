@@ -639,13 +639,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 50,
     "phase_or_chapter": "Phase 4",
     "trakt_id": null,
-    "tmdb_id": 114478,
-    "poster_path": "https://image.tmdb.org/t/p/w500/iVSuIqEiLzOd8rnEsYehqzfvPOq.jpg",
+    "tmdb_id": 232125,
+    "poster_path": "https://image.tmdb.org/t/p/w500/3QfQYECgu6DX5UUWCBvv1Fl0BAJ.jpg",
     "is_released": true,
     "release_date": "2021-09-22",
-    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses.",
-    "seasons": 1,
-    "episodes": 9
+    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses."
   },
   {
     "id": "marvel-43",
@@ -765,13 +763,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 52,
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
-    "tmdb_id": 114478,
-    "poster_path": "https://image.tmdb.org/t/p/w500/1H7BPccgrk6v94608TuXS8F4rJv.jpg",
+    "tmdb_id": 232125,
+    "poster_path": "https://image.tmdb.org/t/p/w500/lYwFSsP4KsoRhOLhJvBFp3GEGEm.jpg",
     "is_released": true,
     "release_date": "2023-05-04",
-    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses.",
-    "seasons": 2,
-    "episodes": 9
+    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses."
   },
   {
     "id": "marvel-51",
@@ -978,13 +974,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 140,
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
-    "tmdb_id": 114473,
-    "poster_path": "https://image.tmdb.org/t/p/w500/zkiB7hiRpCq14tjVr3EhMN3WLjN.jpg",
+    "tmdb_id": 114471,
+    "poster_path": "https://image.tmdb.org/t/p/w500/dOh6MJpdlQhYpLBhzhNQeYGKTZ5.jpg",
     "is_released": true,
     "release_date": "2019-11-03",
-    "overview": "\"Detective College\", as a derivative of the fifth season of \"Who's the Murderer\", is a star reasoning variety show where selected detective assistants launched by Mango TV. The star guests determine the number of advances by rolling the dice on the checkerboard. When the game is triggered, the corresponding game needs to be completed. The first guest to reach the end becomes the current No.1. The program combines the form of team battles and individual battles to inspire the star guests ’IQ and Contest of logical ability. No. 1 selected in the show will appear on the scene of the fifth season of \"Who's the Murderer\". \"Detective College\" consists of Pu Yixing, Zhou Junwei, Tang Jiuzhou, Qi Sijun, Shi Kai, Guo Wentao, Shao Mingming, etc., and premiered on November 3, 2019.",
-    "seasons": 1,
-    "episodes": 17
+    "overview": "\"Detective College\", as a derivative of the fifth season of \"Who's the Murderer\", is a star reasoning variety show where selected detective assistants launched by Mango TV. The star guests determine the number of advances by rolling the dice on the checkerboard. When the game is triggered, the corresponding game needs to be completed. The first guest to reach the end becomes the current No.1. The program combines the form of team battles and individual battles to inspire the star guests ’IQ and Contest of logical ability. No. 1 selected in the show will appear on the scene of the fifth season of \"Who's the Murderer\". \"Detective College\" consists of Pu Yixing, Zhou Junwei, Tang Jiuzhou, Qi Sijun, Shi Kai, Guo Wentao, Shao Mingming, etc., and premiered on November 3, 2019."
   },
   {
     "id": "marvel-63",
@@ -1010,13 +1004,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 142,
     "phase_or_chapter": "Phase 5",
     "trakt_id": null,
-    "tmdb_id": 241257,
-    "poster_path": "https://image.tmdb.org/t/p/w500/mcTIcjRg3arLygBhU0OsdO7THjm.jpg",
+    "tmdb_id": 241388,
+    "poster_path": "https://image.tmdb.org/t/p/w500/bG23nZW96LxmWkJjsagRZI9hF6t.jpg",
     "is_released": true,
     "release_date": "2024-05-08",
-    "overview": "A ragtag crew of podcasters sets out to investigate mysterious disappearances from decades earlier in a charming Irish town with dark, dreadful secrets.",
-    "seasons": 1,
-    "episodes": 7
+    "overview": "A ragtag crew of podcasters sets out to investigate mysterious disappearances from decades earlier in a charming Irish town with dark, dreadful secrets."
   },
   {
     "id": "marvel-65",
@@ -1044,13 +1036,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 144,
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
-    "tmdb_id": 204541,
-    "poster_path": "https://image.tmdb.org/t/p/w500/q2sNliRi4j0ncXKUO1x0MldR20A.jpg",
+    "tmdb_id": 198178,
+    "poster_path": "https://image.tmdb.org/t/p/w500/o2obeixL5uePdveNyv3oYVaoAC3.jpg",
     "is_released": true,
     "release_date": "2023-01-15",
-    "overview": "Nanotechnology researcher Wang Miao is taken to the Joint Operations Center by police officer Shi Qiang, who's investigating the mysterious suicide wave among scientists worldwide.  He is recruited to sneak into an organization called the Frontiers of Science to help the investigation. When Wang Miao is contacted by the leader of the organization, Shen Yufei, she introduces him to a sophisticated VR video game called Three-Body, but soon he discovers that it's more than just a game.",
-    "seasons": 1,
-    "episodes": 30
+    "overview": "Nanotechnology researcher Wang Miao is taken to the Joint Operations Center by police officer Shi Qiang, who's investigating the mysterious suicide wave among scientists worldwide.  He is recruited to sneak into an organization called the Frontiers of Science to help the investigation. When Wang Miao is contacted by the leader of the organization, Shen Yufei, she introduces him to a sophisticated VR video game called Three-Body, but soon he discovers that it's more than just a game."
   },
   {
     "id": "marvel-67",
@@ -1108,8 +1098,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 149,
     "phase_or_chapter": "Phase 6 & Beyond",
     "trakt_id": null,
-    "tmdb_id": null,
-    "poster_path": "https://image.tmdb.org/t/p/w500/ijWWwINc8h71NQ8j1LTJMFSj5wr.jpg",
+    "tmdb_id": 213375,
+    "poster_path": "https://image.tmdb.org/t/p/w500/xK27l5uwaVyZSlENWnmLlWwDQNS.jpg",
     "is_released": false,
     "release_date": "2026-09-01",
     "overview": "White Vision embarks on a journey of self-discovery to regain his memories and humanity."
@@ -1258,8 +1248,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 129,
     "phase_or_chapter": "Sony's Spider-Man Universe (SSU)",
     "trakt_id": null,
-    "tmdb_id": 558449,
-    "poster_path": "https://image.tmdb.org/t/p/w500/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg",
+    "tmdb_id": 539972,
+    "poster_path": "https://image.tmdb.org/t/p/w500/1GvBhRxY6MELDfxFrete6BNhBB5.jpg",
     "is_released": true,
     "release_date": "2024-11-13",
     "overview": "Kraven's complex relationship with his ruthless father Nikolai Kravinoff starts him down a path of vengeance."
@@ -1688,8 +1678,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 23,
     "phase_or_chapter": "Fox Fantastic Four & Daredevil",
     "trakt_id": null,
-    "tmdb_id": 9353,
-    "poster_path": "https://image.tmdb.org/t/p/w500/kh7B91bMl2lZ0mH9WhPfaNUIEQH.jpg",
+    "tmdb_id": 9947,
+    "poster_path": "https://image.tmdb.org/t/p/w500/gC6s6NKHneSrOKyQZnUMb443RKU.jpg",
     "is_released": true,
     "release_date": "2006-06-16",
     "overview": "Elektra the warrior survives her near-death experience, becomes an assassin-for-hire, and tries to protect a father and daughter."
@@ -1769,7 +1759,7 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "poster_path": "https://image.tmdb.org/t/p/w500/p8Qy60OIf0OaJ29KPw6ld51MSP7.jpg",
     "is_released": true,
     "release_date": "2014-09-23",
-    "overview": "In the second season, Coulson and his team look to restore trust from the government and public following S.H.I.E.L.D.'s collapse. ",
+    "overview": "In the second season, Coulson and his team look to restore trust from the government and public following S.H.I.E.L.D.'s collapse.",
     "seasons": 2,
     "episodes": 22
   },
@@ -1901,13 +1891,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 60,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 67070,
-    "poster_path": "https://image.tmdb.org/t/p/w500/qI85n9DBgRv6ghhJuzHOCaKXk3v.jpg",
+    "tmdb_id": 62126,
+    "poster_path": "https://image.tmdb.org/t/p/w500/yzM1hMB3PUJqbISX0f421b3xOjB.jpg",
     "is_released": true,
     "release_date": "2016-07-21",
-    "overview": "A bittersweet portrait into the mind of a dry-witted, sexual, angry, porn-watching, grief-riddled woman, trying to make sense of the world. As she hurls herself headlong at modern living, Fleabag is thrown roughly up against the walls of contemporary London, with all its frenetic energy, late nights, and bright lights, in this very modern mix of fatalism and hedonism, sustaining a merry-go-round of broken dreamers. By turns hilarious and heartbreaking, this is the thoroughly disarming confessional of a woman so totally detached, she’s utterly lost, and ultimately wondering what the hell she ought to be doing in life. Much like the rest of us.",
-    "seasons": 1,
-    "episodes": 6
+    "overview": "A bittersweet portrait into the mind of a dry-witted, sexual, angry, porn-watching, grief-riddled woman, trying to make sense of the world. As she hurls herself headlong at modern living, Fleabag is thrown roughly up against the walls of contemporary London, with all its frenetic energy, late nights, and bright lights, in this very modern mix of fatalism and hedonism, sustaining a merry-go-round of broken dreamers. By turns hilarious and heartbreaking, this is the thoroughly disarming confessional of a woman so totally detached, she’s utterly lost, and ultimately wondering what the hell she ought to be doing in life. Much like the rest of us."
   },
   {
     "id": "marvel-tv-119",
@@ -2054,13 +2042,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 78,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 67070,
-    "poster_path": "https://image.tmdb.org/t/p/w500/o7ytmKNlOIcCyWXLdtDSRXi5Ruc.jpg",
+    "tmdb_id": 62126,
+    "poster_path": "https://image.tmdb.org/t/p/w500/6R62oGGufhsf6DiMknCi047N0b7.jpg",
     "is_released": true,
     "release_date": "2019-03-04",
-    "overview": "Picking up one year after the end of the first series, while Fleabag appears to be more at ease with herself and her newly bustling café, her family seems to be whirling into further turmoil around her. Having not spoken to her sister since we last left her, Fleabag reconnects with Claire at their father’s engagement party, which turns out to be far from a celebration. There, she meets a Catholic priest who turns her life upside down… Series 2 is an exploration into everything that makes us human: love, religion, hope and heartbreak.",
-    "seasons": 2,
-    "episodes": 6
+    "overview": "Picking up one year after the end of the first series, while Fleabag appears to be more at ease with herself and her newly bustling café, her family seems to be whirling into further turmoil around her. Having not spoken to her sister since we last left her, Fleabag reconnects with Claire at their father’s engagement party, which turns out to be far from a celebration. There, she meets a Catholic priest who turns her life upside down… Series 2 is an exploration into everything that makes us human: love, religion, hope and heartbreak."
   },
   {
     "id": "marvel-tv-128",
@@ -2224,13 +2210,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 98,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 89456,
-    "poster_path": "https://image.tmdb.org/t/p/w500/dBzcVyuWQeQgS2xaMFila9Wk3xE.jpg",
+    "tmdb_id": 88987,
+    "poster_path": "https://image.tmdb.org/t/p/w500/5QmcKsepYpO9XYsWNLwsiULoaAu.jpg",
     "is_released": true,
     "release_date": "2019-10-08",
-    "overview": "A caveman forms a bond with a dinosaur as they struggle to survive in a hostile world.",
-    "seasons": 1,
-    "episodes": 10
+    "overview": "A caveman forms a bond with a dinosaur as they struggle to survive in a hostile world."
   },
   {
     "id": "marvel-tv-138",
@@ -2241,13 +2225,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 133,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 86831,
-    "poster_path": "https://image.tmdb.org/t/p/w500/rlrRI2b6RvM9I9xOBTKqcTaehkE.jpg",
+    "tmdb_id": 111312,
+    "poster_path": "https://image.tmdb.org/t/p/w500/2kXRzRjQZs9kAIm3K9MkQgsZR9C.jpg",
     "is_released": true,
     "release_date": "2019-03-15",
-    "overview": "Terrifying creatures, wicked surprises and dark comedy converge in this NSFW anthology of animated stories presented by Tim Miller and David Fincher.",
-    "seasons": 1,
-    "episodes": 18
+    "overview": "Terrifying creatures, wicked surprises and dark comedy converge in this NSFW anthology of animated stories presented by Tim Miller and David Fincher."
   },
   {
     "id": "marvel-tv-139",
@@ -2258,13 +2240,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 134,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 125910,
-    "poster_path": "https://image.tmdb.org/t/p/w500/s14pvZaymWeBjhJBUwaC0RKzvZz.jpg",
+    "tmdb_id": 133903,
+    "poster_path": "https://image.tmdb.org/t/p/w500/1aK7hApRSDUv8xxDQXyQil7qBjN.jpg",
     "is_released": true,
     "release_date": "2021-07-01",
-    "overview": "After a video of Prince Wilhelm of Sweden fighting at a party is posted online, he is given a script for an apology speech and learns that his parents have enrolled him at Hillerska Boarding School, a prestigious boarding school in the country.",
-    "seasons": 1,
-    "episodes": 6
+    "overview": "After a video of Prince Wilhelm of Sweden fighting at a party is posted online, he is given a script for an apology speech and learns that his parents have enrolled him at Hillerska Boarding School, a prestigious boarding school in the country."
   },
   {
     "id": "marvel-tv-140",
@@ -2275,13 +2255,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 135,
     "phase_or_chapter": "Marvel Television & Defenders Saga",
     "trakt_id": null,
-    "tmdb_id": 125910,
-    "poster_path": "https://image.tmdb.org/t/p/w500/fAS1b6UKKhLrK9hNybbD0s3ZRE2.jpg",
+    "tmdb_id": 133903,
+    "poster_path": "https://image.tmdb.org/t/p/w500/slf1cSDiFBeMp8gKUqxjwyWtd1p.jpg",
     "is_released": true,
     "release_date": "2022-11-01",
-    "overview": "A winter break has passed and Prince Wilhelm and the rest of his classmates are back at Hillerska. When Wilhelm tries to take revenge on August, and win back Simon's trust, he creates problems that threaten the entire monarchy.",
-    "seasons": 2,
-    "episodes": 6
+    "overview": "A winter break has passed and Prince Wilhelm and the rest of his classmates are back at Hillerska. When Wilhelm tries to take revenge on August, and win back Simon's trust, he creates problems that threaten the entire monarchy."
   },
   {
     "id": "marvel-141",

@@ -45,8 +45,10 @@ export const useWatchlistStore = create<WatchlistState>((set, get) => ({
     const nextState = !isCurrentlyWatched;
 
     // Optimistic local update for this specific media item
-    const updatedWatched = { ...watchedIds, [mediaId]: nextState };
-    if (!nextState) {
+    const updatedWatched = { ...watchedIds };
+    if (nextState) {
+      updatedWatched[mediaId] = true;
+    } else {
       delete updatedWatched[mediaId];
     }
 
