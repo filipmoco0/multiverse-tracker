@@ -293,7 +293,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -309,19 +309,19 @@ export const PassportModal: React.FC<PassportModalProps> = ({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-xl bg-[#141624] border-[4px] border-black shadow-[10px_10px_0px_0px_#000000] z-10 overflow-hidden text-white flex flex-col my-8 max-h-[90vh]"
+          className="relative w-full max-w-xl bg-[#141624] border-[3px] sm:border-[4px] border-black shadow-[6px_6px_0px_0px_#000000] sm:shadow-[10px_10px_0px_0px_#000000] z-10 overflow-hidden text-white flex flex-col my-auto max-h-[94vh]"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-5 bg-zinc-950 border-b-[3px] border-black">
+          <div className="flex items-center justify-between p-3.5 sm:p-5 bg-zinc-950 border-b-[3px] border-black">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-amber-400 text-black border-2 border-black -skew-x-6 font-black">
-                <Sparkles className="w-5 h-5 skew-x-6" />
+              <div className="p-1.5 sm:p-2 bg-amber-400 text-black border-2 border-black -skew-x-6 font-black">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 skew-x-6" />
               </div>
               <div>
-                <h3 className="font-display font-black text-lg sm:text-xl uppercase tracking-wider text-white">
+                <h3 className="font-display font-black text-base sm:text-xl uppercase tracking-wider text-white">
                   Multiverse Citizen Passport
                 </h3>
-                <p className="text-xs text-zinc-400 font-sans">
+                <p className="text-[11px] sm:text-xs text-zinc-400 font-sans">
                   Share your superhero mastery with friends
                 </p>
               </div>
@@ -331,34 +331,34 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               onClick={onClose}
               className="p-1.5 bg-rose-600 hover:bg-rose-500 text-white border-2 border-black shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition cursor-pointer"
             >
-              <X className="w-5 h-5 font-bold" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5 font-bold" />
             </button>
           </div>
 
           {/* Feedback banner */}
           {shareFeedback && (
-            <div className="p-3 bg-emerald-950 border-b-2 border-black text-xs font-sans text-emerald-300 flex items-center gap-2">
+            <div className="p-2.5 sm:p-3 bg-emerald-950 border-b-2 border-black text-xs font-sans text-emerald-300 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-400" />
               <span>{shareFeedback}</span>
             </div>
           )}
 
           {/* Body with Scroll */}
-          <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
+          <div className="p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 flex-1">
             {/* The Actual Passport Card that gets captured */}
             <div
               ref={cardRef}
               className={clsx(
-                'relative bg-[#10121d] border-[4px] border-black p-5 sm:p-6 shadow-[6px_6px_0px_0px_#000000] overflow-hidden text-white space-y-5',
+                'relative bg-[#10121d] border-[3px] sm:border-[4px] border-black p-4 sm:p-6 shadow-[4px_4px_0px_0px_#000000] sm:shadow-[6px_6px_0px_0px_#000000] overflow-hidden text-white space-y-3.5 sm:space-y-5',
                 isMCU ? 'bg-halftone-marvel' : 'bg-halftone-dc'
               )}
             >
               {/* Card Header Stamp */}
-              <div className="flex items-center justify-between border-b-[3px] border-black pb-3">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between border-b-[2px] sm:border-b-[3px] border-black pb-2.5 sm:pb-3">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <div
                     className={clsx(
-                      'p-1.5 border-2 border-black text-xs font-display font-black uppercase text-white -skew-x-6',
+                      'p-1 sm:p-1.5 border-2 border-black text-[10px] sm:text-xs font-display font-black uppercase text-white -skew-x-6',
                       isMCU ? 'bg-[#E62429]' : 'bg-[#005792]'
                     )}
                   >
@@ -366,7 +366,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                       {isMCU ? 'MARVEL AUTHORIZED' : 'DC UNIVERSE SECURE'}
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-zinc-400 tracking-wider">
+                  <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400 tracking-wider">
                     ID: #{universe.toUpperCase()}-84920
                   </span>
                 </div>
@@ -376,13 +376,13 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </div>
 
               {/* Agent Profile & Rank */}
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-zinc-950 border-[3px] border-black shadow-[3px_3px_0px_0px_#000000] -skew-x-3 flex items-center justify-center text-4xl flex-shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 bg-zinc-950 border-[2px] sm:border-[3px] border-black shadow-[2px_2px_0px_0px_#000000] sm:shadow-[3px_3px_0px_0px_#000000] -skew-x-3 flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0">
                   {rank.icon}
                 </div>
-                <div className="space-y-1 min-w-0 flex-1">
+                <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
+                    <span className="text-[9px] sm:text-[10px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
                       Citizen / Holder
                     </span>
                     {!isEditingAlias && (
@@ -416,18 +416,18 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                   ) : (
                     <h3
                       onClick={() => setIsEditingAlias(true)}
-                      className="font-display font-black text-xl sm:text-2xl text-amber-400 uppercase truncate cursor-pointer hover:underline"
+                      className="font-display font-black text-lg sm:text-2xl text-amber-400 uppercase truncate cursor-pointer hover:underline"
                       title="Click to edit name"
                     >
                       {holderName}
                     </h3>
                   )}
 
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     <ComicBadge variant={rank.badge} size="sm">
                       {rank.title}
                     </ComicBadge>
-                    <span className="text-xs text-zinc-300 font-sans font-medium">
+                    <span className="text-[11px] sm:text-xs text-zinc-300 font-sans font-medium">
                       {rank.subtitle}
                     </span>
                   </div>
@@ -435,32 +435,32 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </div>
 
               {/* Progress & Stats Big Metric */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-0.5">
                 {/* Total Mastery */}
-                <div className="bg-zinc-950 border-2 border-black p-3 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="text-[10px] font-display uppercase tracking-wider text-zinc-400 block">
+                <div className="bg-zinc-950 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
+                  <span className="text-[9px] sm:text-[10px] font-display uppercase tracking-wider text-zinc-400 block">
                     Mastery Completion
                   </span>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="font-display font-black text-3xl text-emerald-400">
+                    <span className="font-display font-black text-2xl sm:text-3xl text-emerald-400">
                       {percentage}%
                     </span>
-                    <span className="text-xs text-zinc-400 font-sans">
+                    <span className="text-[11px] sm:text-xs text-zinc-400 font-sans">
                       ({watchedTitles}/{totalTitles})
                     </span>
                   </div>
                 </div>
 
                 {/* Total Watch Time */}
-                <div className="bg-zinc-950 border-2 border-black p-3 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="text-[10px] font-display uppercase tracking-wider text-zinc-400 block">
+                <div className="bg-zinc-950 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
+                  <span className="text-[9px] sm:text-[10px] font-display uppercase tracking-wider text-zinc-400 block">
                     Marathon Time Logged
                   </span>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="font-display font-black text-2xl text-cyan-400">
+                    <span className="font-display font-black text-xl sm:text-2xl text-cyan-400">
                       {hours}h
                     </span>
-                    <span className="text-xs text-zinc-400 font-sans">
+                    <span className="text-[11px] sm:text-xs text-zinc-400 font-sans">
                       ({days} Days)
                     </span>
                   </div>
@@ -468,26 +468,26 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </div>
 
               {/* Breakdown Pills */}
-              <div className="grid grid-cols-3 gap-2 text-center text-xs font-display uppercase">
-                <div className="bg-zinc-950 border border-black p-2 shadow-[1px_1px_0px_0px_#000000]">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-center text-xs font-display uppercase">
+                <div className="bg-zinc-950 border border-black p-1.5 sm:p-2 shadow-[1px_1px_0px_0px_#000000]">
                   <Film className="w-3.5 h-3.5 mx-auto text-amber-400 mb-0.5" />
-                  <span className="text-white font-bold">{watchedMovies}/{movies.length}</span>
-                  <span className="block text-[9px] text-zinc-400">Movies</span>
+                  <span className="text-white font-bold text-xs sm:text-sm">{watchedMovies}/{movies.length}</span>
+                  <span className="block text-[8px] sm:text-[9px] text-zinc-400">Movies</span>
                 </div>
-                <div className="bg-zinc-950 border border-black p-2 shadow-[1px_1px_0px_0px_#000000]">
+                <div className="bg-zinc-950 border border-black p-1.5 sm:p-2 shadow-[1px_1px_0px_0px_#000000]">
                   <Tv className="w-3.5 h-3.5 mx-auto text-cyan-400 mb-0.5" />
-                  <span className="text-white font-bold">{watchedShows}/{shows.length}</span>
-                  <span className="block text-[9px] text-zinc-400">Series</span>
+                  <span className="text-white font-bold text-xs sm:text-sm">{watchedShows}/{shows.length}</span>
+                  <span className="block text-[8px] sm:text-[9px] text-zinc-400">Series</span>
                 </div>
-                <div className="bg-zinc-950 border border-black p-2 shadow-[1px_1px_0px_0px_#000000]">
+                <div className="bg-zinc-950 border border-black p-1.5 sm:p-2 shadow-[1px_1px_0px_0px_#000000]">
                   <Sparkles className="w-3.5 h-3.5 mx-auto text-purple-400 mb-0.5" />
-                  <span className="text-white font-bold">{watchedSpecials}/{specials.length}</span>
-                  <span className="block text-[9px] text-zinc-400">Specials</span>
+                  <span className="text-white font-bold text-xs sm:text-sm">{watchedSpecials}/{specials.length}</span>
+                  <span className="block text-[8px] sm:text-[9px] text-zinc-400">Specials</span>
                 </div>
               </div>
 
               {/* Card Footer Barcode & Watermark */}
-              <div className="pt-3 border-t-2 border-black flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+              <div className="pt-2 sm:pt-3 border-t-2 border-black flex items-center justify-between text-[9px] sm:text-[10px] text-zinc-400 font-mono">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   <span>multiversetracker.com</span>
@@ -499,7 +499,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
             </div>
 
             {/* Primary Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 pt-1">
               <ComicButton
                 onClick={handleDownload}
                 disabled={isDownloading}
