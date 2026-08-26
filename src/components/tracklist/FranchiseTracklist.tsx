@@ -291,7 +291,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       <section className="relative bg-[#0d0e17] border-[3px] border-black shadow-[5px_5px_0px_0px_#000000] p-3.5 sm:p-4 space-y-3">
         {/* Row 1: Continuity Universe Selector Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[11px] font-display uppercase tracking-wider text-zinc-400 font-bold flex items-center gap-1 flex-shrink-0">
+          <span className="text-xs font-display uppercase tracking-wider text-zinc-300 font-bold flex items-center gap-1 flex-shrink-0">
             <Filter className="w-3.5 h-3.5 text-amber-400" /> Universe:
           </span>
           <div className="flex items-center gap-1.5 flex-nowrap">
@@ -302,15 +302,15 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                   key={branch.id}
                   onClick={() => setBranchFilter(branch.id)}
                   className={clsx(
-                    'px-2.5 py-1 font-display text-xs font-bold uppercase transition border-2 border-black -skew-x-3 select-none flex-shrink-0 cursor-pointer',
+                    'px-3 py-1 font-display text-xs sm:text-sm font-bold uppercase transition border-2 border-black select-none flex-shrink-0 cursor-pointer',
                     isActive
                       ? isMCU
                         ? 'bg-marvel-crimson text-white shadow-[2px_2px_0px_0px_#000000]'
                         : 'bg-[#005792] text-white shadow-[2px_2px_0px_0px_#000000]'
-                      : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                      : 'bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800'
                   )}
                 >
-                  <span className="inline-block skew-x-3">{branch.label}</span>
+                  <span>{branch.label}</span>
                 </button>
               );
             })}
@@ -336,19 +336,19 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
             />
           </div>
 
-          <div className="relative min-w-[200px] lg:w-64">
+          <div className="relative min-w-[220px] lg:w-72">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={`Search ${universe.toUpperCase()} titles...`}
-              className="w-full bg-zinc-950 border-2 border-black px-3.5 py-1.5 pl-8 text-xs font-sans text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-400 shadow-[2px_2px_0px_0px_#000000]"
+              className="w-full bg-zinc-950 border-2 border-black px-3.5 py-1.5 pl-8 text-sm font-sans text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 shadow-[2px_2px_0px_0px_#000000]"
             />
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -364,7 +364,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
             <h3 className="font-display font-black text-2xl uppercase text-amber-400 mb-2">
               No Multiverse Media Found
             </h3>
-            <p className="text-zinc-400 text-sm font-sans max-w-md mx-auto mb-4">
+            <p className="text-zinc-300 text-sm font-sans max-w-md mx-auto mb-4">
               Try adjusting your search query, content type, or universe filter tabs above.
             </p>
             <ComicButton
@@ -390,7 +390,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                 {/* Phase Chapter Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-[#12131e] border-l-[6px] border-l-amber-400 border-y-2 border-r-2 border-black shadow-[3px_3px_0px_0px_#000000]">
                   <div className="flex items-center gap-2.5">
-                    <h2 className="text-lg sm:text-xl font-display font-black uppercase text-white tracking-wider">
+                    <h2 className="text-lg sm:text-2xl font-display font-black uppercase text-white tracking-wider">
                       {group.phase}
                     </h2>
                     <ComicBadge variant={isGroupComplete ? 'green' : 'white'} size="sm">
@@ -402,7 +402,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                     <button
                       onClick={() => handlePhaseToggle(group.items, group.phase)}
                       className={clsx(
-                        'px-2.5 py-1 text-xs font-display font-bold uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer',
+                        'px-3 py-1.5 text-xs sm:text-sm font-display font-bold uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer tracking-wider',
                         isGroupComplete
                           ? 'bg-rose-600 hover:bg-rose-500 text-white'
                           : 'bg-emerald-500 hover:bg-emerald-400 text-black'
@@ -413,8 +413,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                   </div>
                 </div>
 
-                {/* Cards Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 3xl:grid-cols-8 gap-3.5 sm:gap-4.5">
+                {/* Cards Grid: Balanced columns for crisp readability on 1080p, 1440p, and 4K displays */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5">
                   {group.items.map((media) => (
                     <ComicCard
                       key={media.id}

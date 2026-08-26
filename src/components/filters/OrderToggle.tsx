@@ -29,7 +29,7 @@ export const OrderToggle: React.FC<OrderToggleProps> = ({
           'flex items-center gap-1.5 px-3 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition select-none cursor-pointer',
           orderMode === 'release'
             ? activeColor
-            : 'text-zinc-400 hover:text-white bg-transparent'
+            : 'text-zinc-300 hover:text-white bg-transparent'
         )}
       >
         <CalendarDays className="w-4 h-4" />
@@ -42,7 +42,7 @@ export const OrderToggle: React.FC<OrderToggleProps> = ({
           'flex items-center gap-1.5 px-3 py-1.5 font-display text-xs sm:text-sm font-bold uppercase transition select-none cursor-pointer',
           orderMode === 'chronological'
             ? activeColor
-            : 'text-zinc-400 hover:text-white bg-transparent'
+            : 'text-zinc-300 hover:text-white bg-transparent'
         )}
       >
         <Clock className="w-4 h-4" />

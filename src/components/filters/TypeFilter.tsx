@@ -37,7 +37,7 @@ export const TypeFilterTabs: React.FC<TypeFilterTabsProps> = ({
                 ? universe === 'mcu'
                   ? 'bg-amber-400 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000000]'
                   : 'bg-cyan-400 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000000]'
-                : 'text-zinc-400 hover:text-white bg-transparent border-2 border-transparent'
+                : 'text-zinc-300 hover:text-white bg-transparent border-2 border-transparent'
             )}
           >
             {tab.icon}

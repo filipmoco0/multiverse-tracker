@@ -41,10 +41,10 @@ export const ComicCard: React.FC<ComicCardProps> = ({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        whileHover={{ y: -5 }}
-        transition={{ duration: 0.2 }}
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.15 }}
         className={clsx(
-          'relative flex flex-col bg-[#161824] border-[3px] border-black transition-all duration-200 overflow-hidden',
+          'comic-card-sharp relative flex flex-col bg-[#161824] border-[3px] border-black transition-all duration-200 overflow-hidden',
           isWatched
             ? 'shadow-[5px_5px_0px_0px_#00E676]'
             : isMCU
@@ -69,9 +69,9 @@ export const ComicCard: React.FC<ComicCardProps> = ({
           {/* Diagonal Watched Ribbon */}
           {isWatched && (
             <motion.div
-              initial={{ scale: 1.5, opacity: 0 }}
+              initial={{ scale: 1.3, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="comic-ribbon bg-emerald-500 text-black border-y-2 border-black"
+              className="comic-ribbon bg-emerald-500 text-black border-y-2 border-black font-black"
             >
               WATCHED
             </motion.div>
@@ -86,7 +86,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
               #{orderNumber}
             </ComicBadge>
             <ComicBadge variant="dark" size="sm">
-              <span className="text-[11px] font-sans font-bold uppercase">
+              <span className="text-xs font-display font-bold uppercase">
                 {media.media_type}
               </span>
             </ComicBadge>
@@ -94,13 +94,15 @@ export const ComicCard: React.FC<ComicCardProps> = ({
         </div>
 
         {/* Card Body */}
-        <div className="p-3.5 flex-1 flex flex-col justify-between space-y-3 bg-[#161824]">
+        <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5 bg-[#161824]">
           <div className="space-y-1">
-            <div className="flex items-center justify-between text-[11px] text-zinc-400 font-sans">
-              <span className="truncate max-w-[120px]">{media.phase_or_chapter}</span>
+            <div className="flex items-center justify-between text-xs text-zinc-300 font-sans font-medium">
+              <span className="truncate max-w-[130px]" title={media.phase_or_chapter}>
+                {media.phase_or_chapter}
+              </span>
               {releaseYear && (
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-zinc-500" />
+                <span className="flex items-center gap-1 text-zinc-300">
+                  <Calendar className="w-3.5 h-3.5 text-zinc-400" />
                   {releaseYear}
                 </span>
               )}
@@ -108,7 +110,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
 
             <h3
               onClick={() => setIsModalOpen(true)}
-              className="text-base sm:text-lg font-display font-bold leading-snug line-clamp-2 text-white hover:text-amber-400 transition cursor-pointer"
+              className="text-base sm:text-lg font-display font-black leading-tight line-clamp-2 text-white hover:text-amber-400 transition cursor-pointer tracking-wide"
             >
               {media.title}
             </h3>
@@ -119,19 +121,19 @@ export const ComicCard: React.FC<ComicCardProps> = ({
             <button
               onClick={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, extractSeasonRange(media.title))}
               className={clsx(
-                'flex-1 py-1.5 px-3 border-2 border-black flex items-center justify-center gap-1.5 font-display text-xs sm:text-sm font-bold uppercase transition select-none cursor-pointer',
+                'flex-1 py-1.5 px-3 border-2 border-black flex items-center justify-center gap-1.5 font-display text-xs sm:text-sm font-black uppercase transition select-none cursor-pointer tracking-wide',
                 isWatched
                   ? 'bg-emerald-500 text-black shadow-[2px_2px_0px_0px_#000000] hover:bg-rose-500 hover:text-white'
-                  : 'bg-zinc-800 text-zinc-300 shadow-[2px_2px_0px_0px_#000000] hover:bg-emerald-500 hover:text-black'
+                  : 'bg-zinc-800 text-zinc-100 shadow-[2px_2px_0px_0px_#000000] hover:bg-emerald-500 hover:text-black'
               )}
             >
-              <Check className={clsx('w-4 h-4', isWatched ? 'stroke-[3]' : 'opacity-50')} />
+              <Check className={clsx('w-4 h-4', isWatched ? 'stroke-[3]' : 'opacity-60')} />
               <span>{isWatched ? 'Watched' : 'Watch'}</span>
             </button>
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+              className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
               title="More info"
               aria-label="More information"
             >

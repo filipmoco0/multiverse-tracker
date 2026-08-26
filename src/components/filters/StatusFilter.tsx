@@ -32,7 +32,7 @@ export const StatusFilterTabs: React.FC<StatusFilterTabsProps> = ({
               'flex items-center gap-1.5 px-3 py-1 font-display text-xs sm:text-sm font-bold uppercase transition select-none cursor-pointer',
               isActive
                 ? 'bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_#000000]'
-                : 'text-zinc-400 hover:text-white bg-transparent border-2 border-transparent'
+                : 'text-zinc-300 hover:text-white bg-transparent border-2 border-transparent'
             )}
           >
             {tab.icon}
