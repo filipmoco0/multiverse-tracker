@@ -2330,8 +2330,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 22,
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
-    "tmdb_id": 36588,
-    "poster_path": "https://image.tmdb.org/t/p/w500/eMH0bxn3GCpqn5igOhBZMkAsLQP.jpg",
+    "tmdb_id": 36648,
+    "poster_path": "https://image.tmdb.org/t/p/w500/6f7iXvPOnf83MaLB1JmPzUor1rr.jpg",
     "is_released": true,
     "release_date": "2009-01-17",
     "overview": "Blade joins forces with the Nightstalkers to take down Dracula himself."
@@ -2345,8 +2345,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 25,
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
-    "tmdb_id": 24254,
-    "poster_path": "https://image.tmdb.org/t/p/w500/3i6wviquq8F8hTVAGdMOXBwmtGX.jpg",
+    "tmdb_id": 18882,
+    "poster_path": "https://image.tmdb.org/t/p/w500/tngVauPJPc6p7wBjVHFs58wGyLY.jpg",
     "is_released": true,
     "release_date": "1989-08-16",
     "overview": "Agents of an oil tycoon disappear in a swamp; the new sheriff investigates and finds a swamp creature."
@@ -2360,13 +2360,11 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "chronological_order": 27,
     "phase_or_chapter": "Marvel Legacy Standalone",
     "trakt_id": null,
-    "tmdb_id": 2424,
-    "poster_path": "https://image.tmdb.org/t/p/w500/mAbYL7lSKMBLANXgqVp8PAbpxRN.jpg",
+    "tmdb_id": 4619,
+    "poster_path": "https://image.tmdb.org/t/p/w500/e3pnvrKkwgX3GKI0vzgQ0igFt0l.jpg",
     "is_released": true,
     "release_date": "2006-01-02",
-    "overview": "Blade continues his war against the vampires in Detroit with the help of Krista Starr.",
-    "seasons": 2,
-    "episodes": 104
+    "overview": "Blade continues his war against the vampires in Detroit with the help of Krista Starr."
   },
   {
     "id": "marvel-148",
