@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter, SlidersHorizontal, Coffee, Heart } from 'lucide-react';
 import { FranchiseMedia, OrderMode, TypeFilter, StatusFilter, Universe } from '@/lib/types';
@@ -48,16 +48,14 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const { showMarathonStats, enableConfetti } = useSettingsStore();
 
   // Detect shared progress URL parameter
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const sharedToken = urlParams.get('shared');
-      if (sharedToken) {
-        const decoded = decodeSharedProgress(sharedToken, initialMedia);
-        if (decoded) {
-          setSharedData(decoded);
-          setIsViewingShared(true);
-        }
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedToken = urlParams.get('shared');
+    if (sharedToken) {
+      const decoded = decodeSharedProgress(sharedToken, initialMedia);
+      if (decoded) {
+        setSharedData(decoded);
+        setIsViewingShared(true);
       }
     }
   }, [initialMedia]);
@@ -67,8 +65,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   const isMCU = universe === 'mcu';
 
-  // Branch Categories for Marvel
-  const marvelBranches = [
+  // Branch Categories — memoized so array identity is stable across re-renders
+  const marvelBranches = useMemo(() => [
     { id: 'all', label: 'All Marvel Multiverse' },
     { id: 'mcu_main', label: 'MCU Timeline (Phases 1–6)', match: (p: string) => p.startsWith('Phase') },
     { id: 'ssu', label: 'Sony Spider-Man (SSU)', match: (p: string) => p.includes('SSU') },
@@ -77,10 +75,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     { id: 'fox_f4', label: 'Fox Fantastic Four & Daredevil', match: (p: string) => p.includes('Fox Fantastic') },
     { id: 'defenders', label: 'Defenders & TV Saga', match: (p: string) => p.includes('Defenders') || p.includes('Marvel Television') },
     { id: 'legacy', label: 'Marvel Legacy Standalone', match: (p: string) => p.includes('Marvel Legacy') },
-  ];
+  ], []);
 
-  // Branch Categories for DC
-  const dcuBranches = [
+  const dcuBranches = useMemo(() => [
     { id: 'all', label: 'All DC Multiverse' },
     { id: 'chapter_1', label: 'DCU (Chapter 1: Gods & Monsters)', match: (p: string) => p.includes('Chapter 1') },
     { id: 'dceu', label: 'DCEU Era (Snyderverse)', match: (p: string) => p.includes('DCEU') },
@@ -91,7 +88,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     { id: 'dcamu', label: 'DCAMU (New 52 Animated)', match: (p: string) => p.includes('DC Animated Movie Universe') },
     { id: 'tomorrowverse', label: 'The Tomorrowverse', match: (p: string) => p.includes('Tomorrowverse') },
     { id: 'elseworlds', label: 'Elseworlds Cinema (Reeves, Joker, Nolan, Burton, Donner)', match: (p: string) => p.includes('Reeves') || p.includes('Joker') || p.includes('Dark Knight') || p.includes('Burton') || p.includes('Donnerverse') || p.includes('Smallville') || p.includes('Young Justice') || p.includes('Arkham') || p.includes('Injustice') },
-  ];
+  ], []);
 
   const branches = isMCU ? marvelBranches : dcuBranches;
 
@@ -174,7 +171,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   }, [filteredAndSortedMedia, initialMedia, orderMode]);
 
   // Smart Milestone Triggering (Throttled & Non-Intrusive)
-  const maybeTriggerMilestone = (data: MilestoneData) => {
+  const maybeTriggerMilestone = useCallback((data: MilestoneData) => {
     try {
       const lastShown = localStorage.getItem('multiverse_last_milestone_shown');
       const now = Date.now();
@@ -198,9 +195,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         setIsMilestoneOpen(true);
       }, 700);
     } catch {}
-  };
+  }, []);
 
-  const handleSingleCardToggle = (
+  const handleSingleCardToggle = useCallback((
     mediaId: string,
     tmdbId?: number | null,
     traktId?: number | null,
@@ -245,9 +242,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         }
       }
     }
-  };
+  }, [watchedIds, toggleWatched, enableConfetti, initialMedia, universe, maybeTriggerMilestone]);
 
-  const handlePhaseToggle = (phaseItems: FranchiseMedia[], phaseName: string) => {
+  const handlePhaseToggle = useCallback((phaseItems: FranchiseMedia[], phaseName: string) => {
     const allCurrentlyWatched = phaseItems.every((item) => watchedIds[item.id]);
     const targetState = !allCurrentlyWatched;
     markPhaseWatched(phaseItems, targetState);
@@ -263,15 +260,15 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         milestoneKey: `phase_${phaseName}`,
       });
     }
-  };
+  }, [watchedIds, markPhaseWatched, enableConfetti, universe, maybeTriggerMilestone]);
 
-  const handleFranchiseAllToggle = () => {
+  const handleFranchiseAllToggle = useCallback(() => {
     const allCurrentlyWatched = filteredAndSortedMedia.every((item) => watchedIds[item.id]);
     markAllWatched(filteredAndSortedMedia, !allCurrentlyWatched);
     if (!allCurrentlyWatched && enableConfetti) {
       triggerGrandCelebration(universe);
     }
-  };
+  }, [filteredAndSortedMedia, watchedIds, markAllWatched, enableConfetti, universe]);
 
   return (
     <div className="space-y-6 max-w-[1920px] w-full mx-auto px-3.5 sm:px-8 xl:px-12 py-5 sm:py-7 overflow-x-hidden">

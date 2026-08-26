@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Info, Calendar } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -23,7 +23,7 @@ interface ComicCardProps {
   ) => void;
 }
 
-export const ComicCard: React.FC<ComicCardProps> = ({
+export const ComicCard: React.FC<ComicCardProps> = React.memo(({
   media,
   isWatched,
   orderMode,
@@ -31,8 +31,24 @@ export const ComicCard: React.FC<ComicCardProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMCU = media.universe === 'mcu';
-  const orderNumber = orderMode === 'release' ? media.release_order : (media.chronological_order || media.release_order);
-  const releaseYear = media.release_date ? new Date(media.release_date).getFullYear() : null;
+
+  const orderNumber = orderMode === 'release'
+    ? media.release_order
+    : (media.chronological_order || media.release_order);
+
+  const releaseYear = useMemo(
+    () => media.release_date ? new Date(media.release_date).getFullYear() : null,
+    [media.release_date]
+  );
+
+  const seasonRange = useMemo(() => extractSeasonRange(media.title), [media.title]);
+
+  const handleToggle = useCallback(() => {
+    onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, seasonRange);
+  }, [onToggleWatched, media.id, media.tmdb_id, media.trakt_id, media.media_type, seasonRange]);
+
+  const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
+  const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
 
   return (
     <>
@@ -54,7 +70,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
       >
         {/* Poster Container */}
         <div
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenModal}
           className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-950 border-b-[3px] border-black group cursor-pointer"
           title="Click to view details and trailer"
         >
@@ -109,7 +125,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
             </div>
 
             <h3
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOpenModal}
               className="text-base sm:text-lg font-display font-black leading-tight line-clamp-2 text-white hover:text-amber-400 transition cursor-pointer tracking-wide"
             >
               {media.title}
@@ -119,7 +135,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
           {/* Bottom Card Watched Toggle Bar */}
           <div className="pt-2 border-t-2 border-black/60 flex items-center justify-between gap-2">
             <button
-              onClick={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, extractSeasonRange(media.title))}
+              onClick={handleToggle}
               className={clsx(
                 'flex-1 py-1.5 px-3 border-2 border-black flex items-center justify-center gap-1.5 font-display text-xs sm:text-sm font-black uppercase transition select-none cursor-pointer tracking-wide',
                 isWatched
@@ -132,7 +148,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({
             </button>
 
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOpenModal}
               className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
               title="More info"
               aria-label="More information"
@@ -147,10 +163,13 @@ export const ComicCard: React.FC<ComicCardProps> = ({
       <MediaModal
         media={media}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         isWatched={isWatched}
-        onToggleWatched={() => onToggleWatched(media.id, media.tmdb_id, media.trakt_id, media.media_type, extractSeasonRange(media.title))}
+        onToggleWatched={handleToggle}
       />
     </>
   );
-};
+});
+
+ComicCard.displayName = 'ComicCard';
+

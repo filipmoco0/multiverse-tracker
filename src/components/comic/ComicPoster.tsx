@@ -15,7 +15,7 @@ interface ComicPosterProps {
   className?: string;
 }
 
-export const ComicPoster: React.FC<ComicPosterProps> = ({
+export const ComicPoster: React.FC<ComicPosterProps> = React.memo(({
   src,
   alt,
   universe,
@@ -120,4 +120,6 @@ export const ComicPoster: React.FC<ComicPosterProps> = ({
       )}
     </div>
   );
-};
+});
+
+ComicPoster.displayName = 'ComicPoster';
