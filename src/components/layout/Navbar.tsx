@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Shield, Layers, Sliders, BookOpen, Menu, X, Home, Film, Sparkles, User, Key } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useByokStore } from '@/lib/store/useByokStore';
@@ -13,6 +13,7 @@ import { loadUserProfileFromCloud, setActiveRealtimeChannel } from '@/lib/supaba
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { isCustomTmdbActive } = useByokStore();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -103,7 +104,12 @@ export const Navbar: React.FC = () => {
         }
       });
 
-      const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          router.push('/reset-password');
+          return;
+        }
+
         const user = session?.user;
         setCurrentAuthUser(user || null);
         if (user) {

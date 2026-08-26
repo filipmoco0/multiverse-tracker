@@ -23,15 +23,37 @@ function LandingContent() {
   const errorParam = searchParams.get('error');
   const reasonParam = searchParams.get('reason');
 
-  // ONLY auto-redirect to Gate (/select) if user has an ACTIVE signed-in account (Supabase)
+  // ONLY auto-redirect to Gate (/select) if user has an ACTIVE signed-in account and is NOT in a recovery flow
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash || '';
+      const search = window.location.search || '';
+      if (hash.includes('type=recovery') || search.includes('type=recovery')) {
+        router.replace(`/reset-password${hash || search}`);
+        return;
+      }
+    }
+
     const supabase = createClient();
     if (supabase) {
-      supabase.auth.getSession().then(({ data }) => {
-        if (data.session?.user) {
-          router.replace('/select');
+      const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          router.replace('/reset-password');
         }
       });
+
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session?.user) {
+          const isRecovery = typeof window !== 'undefined' && (window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery'));
+          if (!isRecovery) {
+            router.replace('/select');
+          }
+        }
+      });
+
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
     }
   }, [router]);
 
