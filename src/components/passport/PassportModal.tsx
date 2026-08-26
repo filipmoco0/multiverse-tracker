@@ -52,7 +52,16 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [customAlias, setCustomAlias] = useState<string>('');
+  const [isEditingAlias, setIsEditingAlias] = useState(false);
 
+  // Hydrate alias from localStorage only on client after mount (avoids SSR hydration mismatch)
+  useEffect(() => {
+    const saved = localStorage.getItem('multiverse_user_alias');
+    if (saved) setCustomAlias(saved);
+  }, []);
+
+  // ⚠️ Early return MUST come after all hooks (Rules of Hooks)
   if (!isOpen) return null;
 
   const isMCU = universe === 'mcu';
@@ -104,15 +113,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   };
 
   const rank = getRank();
-
-  const [customAlias, setCustomAlias] = useState<string>('');
-  const [isEditingAlias, setIsEditingAlias] = useState(false);
-
-  // Hydrate alias from localStorage only on client after mount (avoids SSR hydration mismatch)
-  useEffect(() => {
-    const saved = localStorage.getItem('multiverse_user_alias');
-    if (saved) setCustomAlias(saved);
-  }, []);
 
   const effectiveName = customAlias.trim()
     ? customAlias.trim()
