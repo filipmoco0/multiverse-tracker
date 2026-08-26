@@ -185,8 +185,21 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
         if (error) throw error;
         if (data.user) {
           setCurrentUser(data.user);
+          useWatchlistStore.setState({
+            supabaseUser: { id: data.user.id, email: data.user.email || '' },
+            authMode: 'supabase',
+          });
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('multiverse_tracker_auth_mode_v1', 'supabase');
+          }
           await syncUserProfileToCloud();
           setStatusMsg({ text: 'Account created! Your progress is now synced.', type: 'success' });
+          if (typeof window !== 'undefined' && window.location.pathname === '/') {
+            setTimeout(() => {
+              onClose();
+              window.location.href = '/select';
+            }, 600);
+          }
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -196,8 +209,21 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
         if (error) throw error;
         if (data.user) {
           setCurrentUser(data.user);
+          useWatchlistStore.setState({
+            supabaseUser: { id: data.user.id, email: data.user.email || '' },
+            authMode: 'supabase',
+          });
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('multiverse_tracker_auth_mode_v1', 'supabase');
+          }
           await loadUserProfileFromCloud(data.user.id);
           setStatusMsg({ text: 'Signed in! Cloud watchlist hydrated.', type: 'success' });
+          if (typeof window !== 'undefined' && window.location.pathname === '/') {
+            setTimeout(() => {
+              onClose();
+              window.location.href = '/select';
+            }, 600);
+          }
         }
       }
     } catch (err: any) {

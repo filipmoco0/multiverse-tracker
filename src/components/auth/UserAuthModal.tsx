@@ -114,14 +114,23 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
         setStatusMsg({ text: error.message, type: 'error' });
       } else if (data.user) {
         setCurrentUser(data.user);
-        setStatusMsg({ text: 'Signed in! Syncing cloud watchlist...', type: 'success' });
+        setStatusMsg({ text: 'Signed in! Redirecting to Gate...', type: 'success' });
         
+        useWatchlistStore.setState({
+          supabaseUser: { id: data.user.id, email: data.user.email || '' },
+          authMode: 'supabase',
+        });
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('multiverse_tracker_auth_mode_v1', 'supabase');
+        }
+
         // Load and hydrate profile
         await loadUserProfileFromCloud(data.user.id);
 
         setTimeout(() => {
           onClose();
-        }, 1200);
+          window.location.href = '/select';
+        }, 500);
       }
     } catch (err: any) {
       setStatusMsg({ text: err.message || 'Failed to sign in', type: 'error' });
@@ -153,6 +162,14 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
         setCurrentUser(data.user);
         setStatusMsg({ text: 'Account created! Initializing cloud sync...', type: 'success' });
 
+        useWatchlistStore.setState({
+          supabaseUser: { id: data.user.id, email: data.user.email || '' },
+          authMode: 'supabase',
+        });
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('multiverse_tracker_auth_mode_v1', 'supabase');
+        }
+
         // Save current local progress to the new account
         await syncUserProfileToCloud({
           watched_ids: watchedIds,
@@ -161,7 +178,8 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ isOpen, onClose })
 
         setTimeout(() => {
           onClose();
-        }, 1500);
+          window.location.href = '/select';
+        }, 500);
       }
     } catch (err: any) {
       setStatusMsg({ text: err.message || 'Failed to sign up', type: 'error' });

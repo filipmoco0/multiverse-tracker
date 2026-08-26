@@ -36,9 +36,14 @@ function LandingContent() {
 
     const supabase = createClient();
     if (supabase) {
-      const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
           router.replace('/reset-password');
+        } else if (event === 'SIGNED_IN' || session?.user) {
+          const isRecovery = typeof window !== 'undefined' && (window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery'));
+          if (!isRecovery) {
+            router.replace('/select');
+          }
         }
       });
 
