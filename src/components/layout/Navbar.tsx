@@ -24,8 +24,48 @@ export const Navbar: React.FC = () => {
     // Load persisted localStorage data into store (must run on client after mount)
     useWatchlistStore.getState().hydrateFromStorage();
 
+    // Multi-tab sync on the same device
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'multiverse_tracker_watched_v1' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          useWatchlistStore.setState({ watchedIds: parsed, lastSyncedAt: Date.now() });
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
     const supabase = createClient();
+    let realtimeChannel: any = null;
+
     if (supabase) {
+      const setupRealtime = (userId: string) => {
+        if (realtimeChannel) {
+          supabase.removeChannel(realtimeChannel);
+        }
+        realtimeChannel = supabase
+          .channel(`user-profile-sync-${userId}`)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'user_profiles',
+              filter: `id=eq.${userId}`,
+            },
+            (payload: any) => {
+              const newWatched = payload.new?.watched_ids;
+              if (newWatched && typeof newWatched === 'object') {
+                useWatchlistStore.setState({ watchedIds: newWatched, lastSyncedAt: Date.now() });
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('multiverse_tracker_watched_v1', JSON.stringify(newWatched));
+                }
+              }
+            }
+          )
+          .subscribe();
+      };
+
       supabase.auth.getSession().then(({ data }) => {
         const user = data.session?.user;
         setCurrentAuthUser(user || null);
@@ -35,6 +75,7 @@ export const Navbar: React.FC = () => {
             authMode: 'supabase',
           });
           loadUserProfileFromCloud(user.id);
+          setupRealtime(user.id);
         }
       });
 
@@ -47,18 +88,31 @@ export const Navbar: React.FC = () => {
             authMode: 'supabase',
           });
           loadUserProfileFromCloud(user.id);
+          setupRealtime(user.id);
         } else {
           useWatchlistStore.setState({
             supabaseUser: null,
             authMode: 'guest',
           });
+          if (realtimeChannel) {
+            supabase.removeChannel(realtimeChannel);
+            realtimeChannel = null;
+          }
         }
       });
 
       return () => {
+        window.removeEventListener('storage', handleStorageChange);
         authListener.subscription.unsubscribe();
+        if (realtimeChannel) {
+          supabase.removeChannel(realtimeChannel);
+        }
       };
     }
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // Close mobile drawer whenever route changes

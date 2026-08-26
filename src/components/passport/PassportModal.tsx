@@ -37,6 +37,7 @@ interface PassportModalProps {
   watchedIds: Record<string, boolean>;
   universe: Universe;
   userName?: string | null;
+  scopeName?: string;
 }
 
 export const PassportModal: React.FC<PassportModalProps> = ({
@@ -46,6 +47,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   watchedIds,
   universe,
   userName,
+  scopeName,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -371,9 +373,16 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                     ID: #{universe.toUpperCase()}-84920
                   </span>
                 </div>
-                <ComicBadge variant="gold" size="sm">
-                  PASSPORT v1.0
-                </ComicBadge>
+                <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                  {scopeName && (
+                    <span className="text-[9px] sm:text-[10px] font-display font-black uppercase text-amber-300 bg-black/80 px-1.5 py-0.5 border border-amber-400/60 -skew-x-3">
+                      <span className="inline-block skew-x-3">{scopeName}</span>
+                    </span>
+                  )}
+                  <ComicBadge variant="gold" size="sm">
+                    PASSPORT v1.0
+                  </ComicBadge>
+                </div>
               </div>
 
               {/* Agent Profile & Rank */}

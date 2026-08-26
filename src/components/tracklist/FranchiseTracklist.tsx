@@ -92,6 +92,16 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   const branches = isMCU ? marvelBranches : dcuBranches;
 
+  const currentBranchObj = useMemo(() => branches.find((b) => b.id === branchFilter), [branches, branchFilter]);
+  const activeScopeName = branchFilter === 'all' ? (isMCU ? 'Marvel Multiverse' : 'DC Multiverse') : (currentBranchObj?.label || 'Universe');
+
+  // Media list scoped to active continuity branch (controls Marathon Stats & Passport completion calculations)
+  const activeBranchMedia = useMemo(() => {
+    if (branchFilter === 'all') return initialMedia;
+    if (!currentBranchObj || !currentBranchObj.match) return initialMedia;
+    return initialMedia.filter((item) => currentBranchObj.match(item.phase_or_chapter));
+  }, [initialMedia, branchFilter, currentBranchObj]);
+
   // Filter and Sort media
   const filteredAndSortedMedia = useMemo(() => {
     return initialMedia
@@ -339,7 +349,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                   </span>
                 </ComicBadge>
                 <ComicBadge variant="white" size="sm">
-                  {initialMedia.length} Total Titles
+                  {branchFilter === 'all'
+                    ? `${initialMedia.length} Total Titles`
+                    : `${activeBranchMedia.length} Titles (${currentBranchObj?.label})`}
                 </ComicBadge>
                 {franchisePercentage === 100 && (
                   <button
@@ -395,7 +407,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
             <ProgressBar
               total={totalItems}
               watched={totalWatched}
-              label={branchFilter === 'all' ? `${universe.toUpperCase()} Multiverse Progress` : `${branches.find(b => b.id === branchFilter)?.label} Progress`}
+              label={branchFilter === 'all' ? `${universe.toUpperCase()} Multiverse Progress` : `${currentBranchObj?.label || 'Universe'} Progress`}
               universe={universe}
               size="lg"
             />
@@ -406,9 +418,10 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       {/* Optional Marathon Stats (Configured via Settings) */}
       {showMarathonStats && (
         <MarathonStatsWidget
-          mediaList={initialMedia}
+          mediaList={activeBranchMedia}
           watchedIds={watchedIds}
           universe={universe}
+          scopeName={branchFilter === 'all' ? undefined : currentBranchObj?.label}
         />
       )}
 
@@ -591,14 +604,15 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         </a>
       </div>
 
-      {/* Multiverse Citizen Passport Modal */}
+      {/* Multiverse Citizen Passport Modal (Scope-Aware) */}
       <PassportModal
         isOpen={isPassportOpen}
         onClose={() => setIsPassportOpen(false)}
-        mediaList={initialMedia}
+        mediaList={activeBranchMedia}
         watchedIds={watchedIds}
         universe={universe}
         userName={supabaseUser?.email?.split('@')[0]}
+        scopeName={branchFilter === 'all' ? undefined : currentBranchObj?.label}
       />
 
       {/* Milestone Achievement & Supporter Celebration Modal */}

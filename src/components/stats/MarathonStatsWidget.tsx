@@ -19,12 +19,14 @@ interface MarathonStatsWidgetProps {
   mediaList: FranchiseMedia[];
   watchedIds: Record<string, boolean>;
   universe: Universe;
+  scopeName?: string;
 }
 
 export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = React.memo(({
   mediaList,
   watchedIds,
   universe,
+  scopeName,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const isMCU = universe === 'mcu';
@@ -109,9 +111,14 @@ export const MarathonStatsWidget: React.FC<MarathonStatsWidgetProps> = React.mem
               <ComicBadge variant={currentRank.badge} size="sm">
                 {currentRank.icon} {currentRank.title}
               </ComicBadge>
+              {scopeName && (
+                <span className="text-[11px] font-display font-bold uppercase text-amber-400 px-2 py-0.5 bg-black border border-amber-400/50">
+                  {scopeName}
+                </span>
+              )}
             </div>
             <p className="text-xs text-zinc-400 font-sans hidden sm:block mt-0.5">
-              {totalWatched} of {totalTitles} titles watched • {watchedHours} hours logged
+              {totalWatched} of {totalTitles} titles watched in {scopeName || 'Multiverse'} • {watchedHours} hours logged
             </p>
           </div>
         </div>
