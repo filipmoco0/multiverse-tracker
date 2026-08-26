@@ -32,7 +32,7 @@ import { ComicButton } from '@/components/comic/ComicButton';
 import { UnifiedSettingsModal, SettingsTab } from '@/components/settings/UnifiedSettingsModal';
 import { clsx } from 'clsx';
 
-type GuideTab = 'api_keys' | 'passport' | 'supabase';
+type GuideTab = 'api_keys' | 'features_ui' | 'passport' | 'supabase';
 
 export default function GuidePage() {
   const [activeTab, setActiveTab] = useState<GuideTab>('api_keys');
@@ -45,9 +45,10 @@ export default function GuidePage() {
   };
 
   const tabs: { id: GuideTab; label: string; badge: string; icon: any; color: string }[] = [
-    { id: 'api_keys', label: '1. API Keys & Media Integrations', badge: 'TMDB • JustWatch • YouTube', icon: Key, color: 'text-amber-400' },
-    { id: 'passport', label: '2. Citizen Passport & Public Sharing', badge: 'Ranks • 4K • Share Links', icon: Sparkles, color: 'text-cyan-400' },
-    { id: 'supabase', label: '3. Cloud Sync & Data Privacy', badge: 'Cross-Device & Backup', icon: Cloud, color: 'text-emerald-400' },
+    { id: 'api_keys', label: '1. API Keys & Integrations', badge: 'TMDB • JustWatch • YouTube', icon: Key, color: 'text-amber-400' },
+    { id: 'features_ui', label: '2. Features & UI Settings', badge: 'One-Shots • Stats • VFX', icon: Sliders, color: 'text-rose-400' },
+    { id: 'passport', label: '3. Citizen Passport & Sharing', badge: 'Ranks • 4K • Share Links', icon: Sparkles, color: 'text-cyan-400' },
+    { id: 'supabase', label: '4. Cloud Sync & Backup', badge: 'Realtime • Cross-Device', icon: Cloud, color: 'text-emerald-400' },
   ];
 
   return (
@@ -260,7 +261,162 @@ export default function GuidePage() {
         )}
 
         {/* ========================================================================= */}
-        {/* 2. CITIZEN PASSPORT & PUBLIC SHARING */}
+        {/* 2. FEATURES & UI SETTINGS */}
+        {/* ========================================================================= */}
+        {activeTab === 'features_ui' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b-2 border-zinc-800 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-rose-500 text-white font-black border-2 border-black -skew-x-6">
+                    <Sliders className="w-6 h-6 skew-x-6" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-display uppercase tracking-widest text-rose-400 block font-bold">
+                      Personalization & App Controls
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
+                      2. Features &amp; UI Customization
+                    </h2>
+                  </div>
+                </div>
+                <ComicBadge variant="marvel" size="sm">Realtime Cross-Device</ComicBadge>
+              </div>
+
+              <p className="text-sm text-zinc-300 font-sans leading-relaxed">
+                Multiverse Tracker provides granular toggles so you can tailor the interface, timeline density, visual effects, and analytics to your personal viewing style. All preferences sync automatically across your devices.
+              </p>
+
+              {/* Comprehensive Features Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                {/* 1. Hide Marvel One-Shots & Shorts */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-2">
+                      <Film className="w-4 h-4 text-amber-400" />
+                      Hide Marvel One-Shots &amp; Shorts
+                    </span>
+                    <ComicBadge variant="gold" size="sm">Timeline Filter</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Toggles visibility of 4-minute short films (e.g. <em>The Consultant</em>, <em>Item 47</em>, <em>Team Thor</em>, <em>Agent Carter short</em>, <em>I Am Groot</em>) from the main Marvel watchlists.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Marathon Impact:</strong> When enabled, these shorts are excluded from required title counts, allowing you to achieve 100% completion on standard movies and series. You can still view them anytime by selecting the &quot;Specials&quot; filter tab.
+                  </p>
+                </div>
+
+                {/* 2. Marathon Stats & Superhero Ranks */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-cyan-400 text-sm uppercase flex items-center gap-2">
+                      <Award className="w-4 h-4 text-cyan-400" />
+                      Marathon Stats &amp; Superhero Rank
+                    </span>
+                    <ComicBadge variant="cyan" size="sm">Analytics Widget</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Shows total runtime in hours, watched percentage progress bars, and dynamic superhero title badges at the top of your tracklist.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Branch-Aware:</strong> Dynamically recalculates stats based on your active continuity filter (e.g. scoping to MCU Phases 1–6, Sony SSU, Raimi Spider-Man, DCU Chapter 1, or Snyderverse).
+                  </p>
+                </div>
+
+                {/* 3. Trailers & Streaming Availability */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-emerald-400 text-sm uppercase flex items-center gap-2">
+                      <Play className="w-4 h-4 text-emerald-400" />
+                      Trailers &amp; Streaming Providers
+                    </span>
+                    <ComicBadge variant="green" size="sm">Details Modal</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Embeds verified YouTube HD trailers and JustWatch streaming availability (Disney+, HBO Max, Netflix, Prime Video, Apple TV) inside media detail modals.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Benefit:</strong> Instant 1-click trailer playback directly inside the app with zero popups or external redirects.
+                  </p>
+                </div>
+
+                {/* 4. Comic Confetti Celebrations */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-rose-400 text-sm uppercase flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-rose-400" />
+                      Comic Confetti Celebrations
+                    </span>
+                    <ComicBadge variant="marvel" size="sm">Visual FX</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Fires superhero-themed confetti particle bursts when you complete an entire phase, chapter, or milestone.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Customization:</strong> Can be toggled off anytime for a strictly minimal, distraction-free tracker experience.
+                  </p>
+                </div>
+
+                {/* 5. Atmospheric Unwatched Posters */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-purple-400 text-sm uppercase flex items-center gap-2">
+                      <Film className="w-4 h-4 text-purple-400" />
+                      Atmospheric Unwatched Posters
+                    </span>
+                    <ComicBadge variant="white" size="sm">Visual Style</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Displays unwatched movie and show posters in an atmospheric muted style, illuminating them in full vibrant comic color when hovered or checked off.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Visual Focus:</strong> Helps you immediately identify what you have completed versus what remains unwatched in your backlog.
+                  </p>
+                </div>
+
+                {/* 6. Live Cross-Device Synchronization */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-cyan-300 text-sm uppercase flex items-center gap-2">
+                      <Cloud className="w-4 h-4 text-cyan-300" />
+                      Realtime Cloud Sync
+                    </span>
+                    <ComicBadge variant="cyan" size="sm">Multi-Device</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Automatically saves every toggle preference to your cloud profile, synchronizing changes across all your open tabs, phones, and laptops in under 50ms.
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Zero Hassle:</strong> Toggle a setting on your mobile device and your desktop view updates instantly without manual refreshing.
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Banner */}
+              <div className="p-4 bg-rose-950/40 border-2 border-rose-500/80 flex items-center justify-between flex-wrap gap-3 shadow-[2px_2px_0px_0px_#000000]">
+                <div className="space-y-1 max-w-xl">
+                  <h4 className="font-display font-black text-sm uppercase text-white tracking-wide">
+                    Ready to configure your preferences?
+                  </h4>
+                  <p className="text-xs text-zinc-300 font-sans">
+                    Open the Features &amp; UI tab in Settings to toggle any of these options on or off in one click.
+                  </p>
+                </div>
+                <ComicButton
+                  variant="marvel"
+                  size="sm"
+                  onClick={() => openSettings('features')}
+                  rightIcon={<Sliders className="w-3.5 h-3.5" />}
+                >
+                  Open Features &amp; UI Settings
+                </ComicButton>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* 3. CITIZEN PASSPORT & PUBLIC SHARING */}
         {/* ========================================================================= */}
         {activeTab === 'passport' && (
           <div className="space-y-6 animate-fadeIn">
@@ -275,7 +431,7 @@ export default function GuidePage() {
                       Gamification, Analytics & Viral Sharing
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      2. Multiverse Citizen Passport & Sharing
+                      3. Multiverse Citizen Passport & Sharing
                     </h2>
                   </div>
                 </div>
@@ -401,7 +557,7 @@ export default function GuidePage() {
         )}
 
         {/* ========================================================================= */}
-        {/* 3. CLOUD SYNC & DATA PRIVACY */}
+        {/* 4. CLOUD SYNC & DATA PRIVACY */}
         {/* ========================================================================= */}
         {activeTab === 'supabase' && (
           <div className="space-y-6 animate-fadeIn">
@@ -416,7 +572,7 @@ export default function GuidePage() {
                       PostgreSQL Cloud & Offline LocalStorage
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      3. Cloud Sync & Data Privacy
+                      4. Cloud Sync &amp; Data Privacy
                     </h2>
                   </div>
                 </div>
