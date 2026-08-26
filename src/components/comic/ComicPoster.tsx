@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Film, Tv, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Universe, MediaType } from '@/lib/types';
@@ -25,10 +25,18 @@ export const ComicPoster: React.FC<ComicPosterProps> = React.memo(({
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const { greyscaleUnwatched } = useSettingsStore();
 
   const isMCU = universe === 'mcu';
-  const hasValidUrl = src && src.startsWith('http') && !src.includes('placeholder');
+  const hasValidUrl = Boolean(src && src.startsWith('http') && !src.includes('placeholder'));
+
+  // Immediate check if image is already cached / completed in browser memory
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoaded(true);
+    }
+  }, [src]);
 
   const typeIcon = {
     movie: <Film className="w-8 h-8" />,
@@ -100,16 +108,18 @@ export const ComicPoster: React.FC<ComicPosterProps> = React.memo(({
   return (
     <div className="relative w-full h-full overflow-hidden bg-zinc-950">
       <img
-        src={src}
+        ref={imgRef}
+        src={src!}
         alt={alt}
         loading="lazy"
+        decoding="async"
         onError={() => setImageError(true)}
         onLoad={() => setIsLoaded(true)}
         className={clsx(
           'w-full h-full object-cover transition-all duration-300',
           !isWatched && greyscaleUnwatched && 'unwatched-filter',
-          !isLoaded && 'opacity-0 scale-95',
-          isLoaded && 'opacity-100 scale-100',
+          !isLoaded && 'opacity-0',
+          isLoaded && 'opacity-100',
           className
         )}
       />
@@ -123,3 +133,4 @@ export const ComicPoster: React.FC<ComicPosterProps> = React.memo(({
 });
 
 ComicPoster.displayName = 'ComicPoster';
+
