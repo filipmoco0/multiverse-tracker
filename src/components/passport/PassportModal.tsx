@@ -18,6 +18,7 @@ import {
   Flame,
   CheckCircle2,
   AlertCircle,
+  Coffee,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
@@ -100,7 +101,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const rank = getRank();
   const holderName = userName ? `@${userName.replace('@', '')}` : 'Multiverse Agent';
 
-  // Download card as PNG
+  // Download card as PNG in Ultra 4K (3x Supersampled 300 DPI)
   const handleDownload = async () => {
     if (!cardRef.current) return;
     setIsDownloading(true);
@@ -109,15 +110,16 @@ export const PassportModal: React.FC<PassportModalProps> = ({
     try {
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 3, // Ultra 4K Crisp Supersampling (300 DPI equivalent)
+        quality: 1.0,
         backgroundColor: '#0c0d14',
       });
 
       const link = document.createElement('a');
-      link.download = `multiverse-passport-${universe}-${holderName.replace('@', '')}.png`;
+      link.download = `multiverse-passport-${universe}-${holderName.replace('@', '')}-4k.png`;
       link.href = dataUrl;
       link.click();
-      setShareFeedback('Passport image downloaded successfully!');
+      setShareFeedback('Ultra 4K Passport downloaded successfully!');
       setTimeout(() => setShareFeedback(null), 4000);
     } catch (err: any) {
       console.error('Failed to generate passport image:', err);
@@ -373,7 +375,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 className="flex-1"
                 leftIcon={<Download className="w-4 h-4" />}
               >
-                {isDownloading ? 'Generating Image...' : 'Download Image (PNG)'}
+                {isDownloading ? 'Generating 4K Image...' : 'Download Ultra HD (PNG)'}
               </ComicButton>
 
               <ComicButton
@@ -385,6 +387,28 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               >
                 {copied ? 'Copied to Clipboard!' : 'Share Progress'}
               </ComicButton>
+            </div>
+
+            {/* Support Dev / Coffee Tip Bar */}
+            <div className="pt-3 border-t-2 border-black/80 flex flex-col sm:flex-row items-center justify-between gap-2.5 bg-zinc-950/60 p-2.5 border border-zinc-800 text-center sm:text-left">
+              <div className="space-y-0.5">
+                <span className="text-xs font-display font-bold uppercase text-amber-400 flex items-center justify-center sm:justify-start gap-1">
+                  <Coffee className="w-3.5 h-3.5 text-amber-400" /> Enjoying Multiverse Tracker?
+                </span>
+                <p className="text-[11px] text-zinc-400 font-sans">
+                  Zero ads, 100% free passion project. Consider tipping the dev to fuel updates!
+                </p>
+              </div>
+
+              <a
+                href="https://revolut.me/fmoslavac"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000000] font-display text-xs font-black uppercase transition active:scale-95 cursor-pointer"
+              >
+                <Coffee className="w-3.5 h-3.5" />
+                <span>Buy a Coffee ($3)</span>
+              </a>
             </div>
           </div>
         </motion.div>
