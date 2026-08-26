@@ -289,24 +289,41 @@ export default function GuidePage() {
 
               {/* Comprehensive Features Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                {/* 1. Hide Marvel One-Shots & Shorts */}
+                {/* 1. Hide Marvel One-Shots */}
                 <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
                   <div className="flex items-center justify-between">
                     <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-2">
                       <Film className="w-4 h-4 text-amber-400" />
-                      Hide Marvel One-Shots &amp; Shorts
+                      Hide Marvel One-Shots (Short Films)
                     </span>
-                    <ComicBadge variant="gold" size="sm">Timeline Filter</ComicBadge>
+                    <ComicBadge variant="gold" size="sm">Shorts Filter</ComicBadge>
                   </div>
                   <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                    <strong>What it does:</strong> Toggles visibility of 4-minute short films (e.g. <em>The Consultant</em>, <em>Item 47</em>, <em>Team Thor</em>, <em>Agent Carter short</em>, <em>I Am Groot</em>) from the main Marvel watchlists.
+                    <strong>What it does:</strong> Toggles visibility of 4-minute short films (e.g. <em>The Consultant</em>, <em>Item 47</em>, <em>All Hail the King</em>, <em>Agent Carter short</em>) from the main Marvel watchlists.
                   </p>
                   <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    <strong>Marathon Impact:</strong> When enabled, these shorts are excluded from required title counts, allowing you to achieve 100% completion on standard movies and series. You can still view them anytime by selecting the &quot;Specials&quot; filter tab.
+                    <strong>Marathon Impact:</strong> Excludes these shorts from required title counts, allowing you to achieve 100% completion purely on standard movies and series. You can still view them anytime by clicking the &quot;Specials&quot; filter tab.
                   </p>
                 </div>
 
-                {/* 2. Marathon Stats & Superhero Ranks */}
+                {/* 2. Hide Special Presentations */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-bold text-rose-400 text-sm uppercase flex items-center gap-2">
+                      <Tv2 className="w-4 h-4 text-rose-400" />
+                      Hide Special Presentations &amp; TV Specials
+                    </span>
+                    <ComicBadge variant="marvel" size="sm">Specials Filter</ComicBadge>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    <strong>What it does:</strong> Toggles visibility of full-length television special presentations (e.g. <em>Werewolf by Night</em>, <em>The Guardians of the Galaxy Holiday Special</em>, <em>The Punisher: One Last Kill</em>, <em>Man-Thing</em>).
+                  </p>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    <strong>Granular Control:</strong> Kept separate from One-Shots so you can choose to keep 50-minute Special Presentations while hiding 4-minute bonus shorts, or vice-versa.
+                  </p>
+                </div>
+
+                {/* 3. Marathon Stats & Superhero Ranks */}
                 <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2.5 shadow-[3px_3px_0px_0px_#000000]">
                   <div className="flex items-center justify-between">
                     <span className="font-display font-bold text-cyan-400 text-sm uppercase flex items-center gap-2">

@@ -833,17 +833,17 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                     </button>
                   </div>
 
-                  {/* Toggle 5: Hide Marvel One-Shots & Shorts */}
+                  {/* Toggle 5: Hide Marvel One-Shots */}
                   <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
                     <div className="space-y-0.5 max-w-[80%]">
                       <div className="flex items-center gap-2">
                         <strong className="font-display text-sm uppercase tracking-wide text-white">
-                          Hide Marvel One-Shots & Shorts
+                          Hide Marvel One-Shots (Short Films)
                         </strong>
-                        <ComicBadge variant="marvel" size="sm">Timeline</ComicBadge>
+                        <ComicBadge variant="gold" size="sm">Shorts</ComicBadge>
                       </div>
                       <p className="text-xs text-zinc-400 font-sans">
-                        Hides short films (The Consultant, Item 47, Team Thor, etc.) from the main watchlists and completion stats.
+                        Hides 4-minute short films (The Consultant, Item 47, All Hail the King, Agent Carter short, etc.) from the main watchlists and stats.
                       </p>
                     </div>
                     <button
@@ -854,6 +854,30 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       )}
                     >
                       {settings.hideOneShots ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+
+                  {/* Toggle 6: Hide Special Presentations & TV Specials */}
+                  <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
+                    <div className="space-y-0.5 max-w-[80%]">
+                      <div className="flex items-center gap-2">
+                        <strong className="font-display text-sm uppercase tracking-wide text-white">
+                          Hide Special Presentations &amp; TV Specials
+                        </strong>
+                        <ComicBadge variant="marvel" size="sm">Specials</ComicBadge>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans">
+                        Hides full-length television specials (Werewolf by Night, The Guardians of the Galaxy Holiday Special, Man-Thing) from watchlists and stats.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => settings.toggleSetting('hideSpecials')}
+                      className={clsx(
+                        'px-3.5 py-1.5 border-2 border-black font-display text-xs font-black uppercase transition shadow-[2px_2px_0px_0px_#000000] cursor-pointer',
+                        settings.hideSpecials ? 'bg-emerald-400 text-black' : 'bg-zinc-800 text-zinc-500'
+                      )}
+                    >
+                      {settings.hideSpecials ? 'ON' : 'OFF'}
                     </button>
                   </div>
                 </div>

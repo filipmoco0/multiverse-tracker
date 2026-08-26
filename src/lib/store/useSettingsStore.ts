@@ -8,6 +8,7 @@ export interface AppSettings {
   enableConfetti: boolean;
   greyscaleUnwatched: boolean;
   hideOneShots: boolean;
+  hideSpecials: boolean;
 }
 
 interface SettingsStore extends AppSettings {
@@ -22,6 +23,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   enableConfetti: true,
   greyscaleUnwatched: true,
   hideOneShots: false,
+  hideSpecials: false,
 };
 
 export const useSettingsStore = create<SettingsStore>()(

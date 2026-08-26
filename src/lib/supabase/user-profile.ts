@@ -95,6 +95,7 @@ export async function syncUserProfileToCloud(data: Partial<UserProfileData> = {}
         enableConfetti: currentSettings.enableConfetti,
         greyscaleUnwatched: currentSettings.greyscaleUnwatched,
         hideOneShots: currentSettings.hideOneShots,
+        hideSpecials: currentSettings.hideSpecials,
       };
 
       const payload: any = {

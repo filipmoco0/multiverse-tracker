@@ -27,12 +27,26 @@ interface FranchiseTracklistProps {
   subtitle: string;
 }
 
+const ONE_SHOT_IDS = new Set(['marvel-6', 'marvel-7', 'marvel-9', 'marvel-11', 'marvel-13']);
+
+function isOneShot(item: FranchiseMedia): boolean {
+  if (ONE_SHOT_IDS.has(item.id)) return true;
+  const title = item.title.toLowerCase();
+  return title.includes('one-shot') || title.includes('team thor') || title.includes('team darryl') || title.includes("peter's to-do list");
+}
+
+function isSpecialItem(item: FranchiseMedia): boolean {
+  return item.media_type === 'special' && !isOneShot(item);
+}
+
 export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   universe,
   initialMedia,
   title,
   subtitle,
 }) => {
+  const [activeMedia, setActiveMedia] = useState<FranchiseMedia | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderMode, setOrderMode] = useState<OrderMode>('release');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
@@ -45,7 +59,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [isViewingShared, setIsViewingShared] = useState(false);
 
   const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, supabaseUser } = useWatchlistStore();
-  const { showMarathonStats, enableConfetti, hideOneShots } = useSettingsStore();
+  const { showMarathonStats, enableConfetti, hideOneShots, hideSpecials } = useSettingsStore();
 
   // Hydrate persisted filters on client mount
   useEffect(() => {
@@ -148,18 +162,26 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         base = base.filter((item) => currentBranchObj.match!(item.phase_or_chapter));
       }
     }
-    if (isMCU && hideOneShots) {
-      base = base.filter((item) => item.media_type !== 'special');
+    if (hideOneShots) {
+      base = base.filter((item) => !isOneShot(item));
+    }
+    if (hideSpecials) {
+      base = base.filter((item) => !isSpecialItem(item));
     }
     return base;
-  }, [initialMedia, branchFilter, currentBranchObj, isMCU, hideOneShots]);
+  }, [initialMedia, branchFilter, currentBranchObj, hideOneShots, hideSpecials]);
 
   // Filter and Sort media
   const filteredAndSortedMedia = useMemo(() => {
     return initialMedia
       .filter((item) => {
-        // 0. Hide One-Shots / Shorts setting (unless user explicitly filters by 'special')
-        if (isMCU && hideOneShots && typeFilter !== 'special' && item.media_type === 'special') {
+        // 0a. Hide One-Shots setting (unless user explicitly filters by 'special')
+        if (hideOneShots && typeFilter !== 'special' && isOneShot(item)) {
+          return false;
+        }
+
+        // 0b. Hide Specials setting (unless user explicitly filters by 'special')
+        if (hideSpecials && typeFilter !== 'special' && isSpecialItem(item)) {
           return false;
         }
 
