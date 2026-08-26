@@ -37,6 +37,7 @@ import {
   SlidersHorizontal,
   FolderEdit,
   ArrowUpDown,
+  GripVertical,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -412,9 +413,138 @@ export default function AdminDashboardPage() {
     URL.revokeObjectURL(url);
   };
 
+  // Drag & Drop Reordering State
+  const [draggedPhase, setDraggedPhase] = useState<string | null>(null);
+  const [dragOverPhase, setDragOverPhase] = useState<string | null>(null);
+  const [draggedRowId, setDraggedRowId] = useState<string | null>(null);
+  const [dragOverRowId, setDragOverRowId] = useState<string | null>(null);
+
   // ----------------------------------------------------
-  // PHASE & ITEM REORDERING HANDLERS
+  // PHASE & ITEM REORDERING HANDLERS (DRAG & DROP + ARROWS)
   // ----------------------------------------------------
+
+  // Phase Drag & Drop Handlers
+  const handlePhaseDragStart = (e: React.DragEvent, phaseName: string) => {
+    setDraggedPhase(phaseName);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', phaseName);
+  };
+
+  const handlePhaseDragOver = (e: React.DragEvent, phaseName: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverPhase !== phaseName) {
+      setDragOverPhase(phaseName);
+    }
+  };
+
+  const handlePhaseDrop = async (e: React.DragEvent, targetPhaseName: string) => {
+    e.preventDefault();
+    if (!draggedPhase || draggedPhase === targetPhaseName) {
+      setDraggedPhase(null);
+      setDragOverPhase(null);
+      return;
+    }
+
+    const fromIndex = uniquePhases.indexOf(draggedPhase);
+    const toIndex = uniquePhases.indexOf(targetPhaseName);
+    if (fromIndex === -1 || toIndex === -1) {
+      setDraggedPhase(null);
+      setDragOverPhase(null);
+      return;
+    }
+
+    const reorderedPhases = [...uniquePhases];
+    const [removed] = reorderedPhases.splice(fromIndex, 1);
+    reorderedPhases.splice(toIndex, 0, removed);
+
+    // Group media by phase preserving order inside phase
+    const phaseMap = new Map<string, FranchiseMedia[]>();
+    reorderedPhases.forEach((p) => phaseMap.set(p, []));
+
+    mediaList.forEach((item) => {
+      const p = item.phase_or_chapter || 'Uncategorized';
+      if (!phaseMap.has(p)) phaseMap.set(p, []);
+      phaseMap.get(p)!.push(item);
+    });
+
+    const updated: FranchiseMedia[] = [];
+    reorderedPhases.forEach((p) => {
+      const items = phaseMap.get(p) || [];
+      updated.push(...items);
+    });
+
+    // Re-index release orders sequentially
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    setDraggedPhase(null);
+    setDragOverPhase(null);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Reordered Phase "${draggedPhase}" to position #${toIndex + 1}!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
+  const handlePhaseDragEnd = () => {
+    setDraggedPhase(null);
+    setDragOverPhase(null);
+  };
+
+  // Row Drag & Drop Handlers
+  const handleRowDragStart = (e: React.DragEvent, itemId: string) => {
+    setDraggedRowId(itemId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', itemId);
+  };
+
+  const handleRowDragOver = (e: React.DragEvent, itemId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverRowId !== itemId) {
+      setDragOverRowId(itemId);
+    }
+  };
+
+  const handleRowDrop = async (e: React.DragEvent, targetItemId: string) => {
+    e.preventDefault();
+    if (!draggedRowId || draggedRowId === targetItemId) {
+      setDraggedRowId(null);
+      setDragOverRowId(null);
+      return;
+    }
+
+    const fromIndex = mediaList.findIndex((m) => m.id === draggedRowId);
+    const toIndex = mediaList.findIndex((m) => m.id === targetItemId);
+
+    if (fromIndex === -1 || toIndex === -1) {
+      setDraggedRowId(null);
+      setDragOverRowId(null);
+      return;
+    }
+
+    const updated = [...mediaList];
+    const [draggedItem] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, draggedItem);
+
+    // Renumber release orders
+    updated.forEach((m, idx) => {
+      m.release_order = idx + 1;
+    });
+
+    setMediaList(updated);
+    setDraggedRowId(null);
+    setDragOverRowId(null);
+    await saveToCodebase(updated, selectedUniverse);
+    setStatusMsg({ text: `Moved "${draggedItem.title}" to position #${toIndex + 1}!`, type: 'success' });
+    setTimeout(() => setStatusMsg(null), 2500);
+  };
+
+  const handleRowDragEnd = () => {
+    setDraggedRowId(null);
+    setDragOverRowId(null);
+  };
 
   // Move Single Item Up in Table
   const handleMoveRowUp = async (index: number) => {
@@ -768,27 +898,44 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <p className="text-xs text-zinc-400 font-sans">
-            Manage storyline phases below. Use <strong>▲ / ▼</strong> on each phase badge to shift entire storylines and all their titles in the timeline, or click <strong>Rename</strong> to update a phase name across all titles at once.
+          <p className="text-xs text-zinc-300 font-sans">
+            Manage storyline phases below. <strong>Drag and drop</strong> phase cards to reorder entire sagas instantly, use <strong>▲ / ▼</strong> buttons, or click <strong>Rename</strong> to update a phase name across all titles at once.
           </p>
 
-          {/* Interactive Phase Badges Grid */}
+          {/* Interactive Phase Badges Grid with Drag & Drop */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 pt-1">
             {uniquePhases.map((phase, idx) => {
               const phaseCount = mediaList.filter((m) => m.phase_or_chapter === phase).length;
+              const isDraggingThis = draggedPhase === phase;
+              const isDragOverThis = dragOverPhase === phase && draggedPhase !== phase;
+
               return (
                 <div
                   key={phase}
+                  draggable
+                  onDragStart={(e) => handlePhaseDragStart(e, phase)}
+                  onDragOver={(e) => handlePhaseDragOver(e, phase)}
+                  onDrop={(e) => handlePhaseDrop(e, phase)}
+                  onDragEnd={handlePhaseDragEnd}
                   className={clsx(
-                    'bg-zinc-950 border-2 border-black p-2.5 shadow-[3px_3px_0px_0px_#000000] flex flex-col justify-between gap-2 transition hover:border-amber-400',
-                    selectedPhaseFilter === phase && 'ring-2 ring-amber-400 bg-[#1e1c14]'
+                    'bg-zinc-950 border-2 p-2.5 shadow-[3px_3px_0px_0px_#000000] flex flex-col justify-between gap-2 transition select-none cursor-grab active:cursor-grabbing',
+                    isDraggingThis
+                      ? 'opacity-40 border-dashed border-amber-400 scale-95'
+                      : isDragOverThis
+                      ? 'border-cyan-400 bg-cyan-950/40 ring-2 ring-cyan-400 scale-[1.03] shadow-[0_0_15px_rgba(0,234,255,0.4)]'
+                      : selectedPhaseFilter === phase
+                      ? 'border-amber-400 ring-2 ring-amber-400 bg-[#1e1c14]'
+                      : 'border-black hover:border-amber-400'
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-display font-bold text-xs text-white truncate" title={phase}>
-                      {idx + 1}. {phase}
-                    </span>
-                    <span className="text-[10px] font-sans font-bold bg-zinc-800 text-amber-400 px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000000]">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <GripVertical className="w-4 h-4 text-zinc-500 hover:text-amber-400 flex-shrink-0" />
+                      <span className="font-display font-bold text-xs text-white truncate" title={phase}>
+                        {idx + 1}. {phase}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-sans font-bold bg-zinc-800 text-amber-400 px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000000] flex-shrink-0">
                       {phaseCount} titles
                     </span>
                   </div>
@@ -1098,8 +1245,8 @@ export default function AdminDashboardPage() {
               <h3 className="text-xl font-display font-black uppercase text-white tracking-wider">
                 {selectedUniverse.toUpperCase()} Tracklist Live Table ({filteredMediaList.length} / {mediaList.length} Titles)
               </h3>
-              <span className="text-xs text-zinc-400 font-sans">
-                Use <strong>▲ / ▼</strong> to reorder release sequence or change phases directly inline!
+              <span className="text-xs text-zinc-300 font-sans">
+                <strong>Drag and drop</strong> any row with the grip handle (or use <strong>▲ / ▼</strong>) to reorder release sequence instantly!
               </span>
             </div>
 
@@ -1154,11 +1301,36 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-zinc-800">
                 {filteredMediaList.map((item, idx) => {
                   const globalIndex = mediaList.findIndex((m) => m.id === item.id);
+                  const isDraggingThis = draggedRowId === item.id;
+                  const isDragOverThis = dragOverRowId === item.id && draggedRowId !== item.id;
+
                   return (
-                    <tr key={item.id} className="hover:bg-zinc-900/60 transition">
-                      {/* Move Up / Move Down Sequence Buttons */}
+                    <tr
+                      key={item.id}
+                      draggable
+                      onDragStart={(e) => handleRowDragStart(e, item.id)}
+                      onDragOver={(e) => handleRowDragOver(e, item.id)}
+                      onDrop={(e) => handleRowDrop(e, item.id)}
+                      onDragEnd={handleRowDragEnd}
+                      className={clsx(
+                        'transition select-none',
+                        isDraggingThis
+                          ? 'opacity-30 bg-amber-950/40 border-2 border-dashed border-amber-400'
+                          : isDragOverThis
+                          ? 'bg-cyan-950/70 border-t-4 border-t-cyan-400 shadow-[0_0_15px_rgba(0,234,255,0.35)]'
+                          : 'hover:bg-zinc-900/80'
+                      )}
+                    >
+                      {/* Drag Grip Handle + Move Up / Move Down Buttons */}
                       <td className="p-2.5 whitespace-nowrap">
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <div
+                            className="p-1 hover:bg-zinc-800 text-zinc-400 hover:text-amber-400 cursor-grab active:cursor-grabbing rounded"
+                            title="Drag to reorder anywhere in table"
+                          >
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+
                           <button
                             onClick={() => handleMoveRowUp(globalIndex)}
                             disabled={globalIndex <= 0}
