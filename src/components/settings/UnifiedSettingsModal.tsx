@@ -27,6 +27,12 @@ import {
   BookOpen,
   Coffee,
   Heart,
+  Lock,
+  Mail,
+  KeyRound,
+  ChevronDown,
+  ChevronUp,
+  Shield,
 } from 'lucide-react';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -69,7 +75,12 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
-  const [isSignUpMode, setIsSignUpMode] = useState(false);
+  const [authModeView, setAuthModeView] = useState<'signin' | 'signup' | 'forgot'>('signin');
+
+  // Logged-in profile updates
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [newEmailInput, setNewEmailInput] = useState('');
+  const [isSecurityExpanded, setIsSecurityExpanded] = useState(false);
 
   // Local state for TMDB Key
   const [inputTmdbKey, setInputTmdbKey] = useState('');
@@ -83,6 +94,9 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     if (isOpen) {
       setActiveTab(initialTab);
       setStatusMsg(null);
+      setAuthModeView('signin');
+      setNewPasswordInput('');
+      setNewEmailInput('');
     }
   }, [isOpen, initialTab]);
 
@@ -101,10 +115,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
     setInputTmdbKey(byok.tmdbApiKey || '');
   }, [isOpen]);
 
-  // Clear feedback after 4 seconds
+  // Clear feedback after 5 seconds
   useEffect(() => {
     if (statusMsg) {
-      const timer = setTimeout(() => setStatusMsg(null), 4000);
+      const timer = setTimeout(() => setStatusMsg(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [statusMsg]);
@@ -116,10 +130,6 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
   // Account Handlers
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authEmail.trim() || !authPassword.trim()) {
-      setStatusMsg({ text: 'Please enter both email and password.', type: 'error' });
-      return;
-    }
 
     const supabase = createClient();
     if (!supabase) {
@@ -127,11 +137,47 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
       return;
     }
 
+    // 1. Forgot Password Request Flow
+    if (authModeView === 'forgot') {
+      if (!authEmail.trim()) {
+        setStatusMsg({ text: 'Please enter your email address.', type: 'error' });
+        return;
+      }
+      setIsAuthLoading(true);
+      setStatusMsg(null);
+      try {
+        const redirectUrl = typeof window !== 'undefined'
+          ? `${window.location.origin}/reset-password`
+          : 'https://multiversetracker.com/reset-password';
+
+        const { error } = await supabase.auth.resetPasswordForEmail(authEmail.trim(), {
+          redirectTo: redirectUrl,
+        });
+        if (error) throw error;
+
+        setStatusMsg({
+          text: 'Password recovery link sent! Please check your email inbox.',
+          type: 'success',
+        });
+      } catch (err: any) {
+        setStatusMsg({ text: err.message || 'Failed to send reset email.', type: 'error' });
+      } finally {
+        setIsAuthLoading(false);
+      }
+      return;
+    }
+
+    // 2. Sign In or Sign Up Flow
+    if (!authEmail.trim() || !authPassword.trim()) {
+      setStatusMsg({ text: 'Please enter both email and password.', type: 'error' });
+      return;
+    }
+
     setIsAuthLoading(true);
     setStatusMsg(null);
 
     try {
-      if (isSignUpMode) {
+      if (authModeView === 'signup') {
         const { data, error } = await supabase.auth.signUp({
           email: authEmail.trim(),
           password: authPassword,
@@ -156,6 +202,63 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
       }
     } catch (err: any) {
       setStatusMsg({ text: err.message || 'Authentication error', type: 'error' });
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  // Change Password for Logged In User
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPasswordInput.length < 6) {
+      setStatusMsg({ text: 'New password must be at least 6 characters.', type: 'error' });
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) return;
+
+    setIsAuthLoading(true);
+    setStatusMsg(null);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPasswordInput,
+      });
+      if (error) throw error;
+      setNewPasswordInput('');
+      setStatusMsg({ text: 'Password updated successfully!', type: 'success' });
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Failed to update password.', type: 'error' });
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  // Change Email for Logged In User
+  const handleChangeEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmailInput.trim() || !newEmailInput.includes('@')) {
+      setStatusMsg({ text: 'Please enter a valid email address.', type: 'error' });
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) return;
+
+    setIsAuthLoading(true);
+    setStatusMsg(null);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        email: newEmailInput.trim(),
+      });
+      if (error) throw error;
+      setNewEmailInput('');
+      setStatusMsg({
+        text: 'Confirmation links sent to both your old and new email addresses! Please verify to finish updating.',
+        type: 'success',
+      });
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Failed to update email address.', type: 'error' });
     } finally {
       setIsAuthLoading(false);
     }
@@ -351,9 +454,10 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
               <div className="space-y-5">
                 {currentUser ? (
                   <div className="space-y-4">
+                    {/* Logged in User Card */}
                     <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400">
+                        <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400 font-bold">
                           Signed In User
                         </span>
                         <ComicBadge variant="green" size="sm">
@@ -362,7 +466,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                           </span>
                         </ComicBadge>
                       </div>
-                      <div className="font-display font-black text-lg text-amber-400">
+                      <div className="font-display font-black text-lg text-amber-400 truncate">
                         {currentUser.email}
                       </div>
                       <div className="text-xs font-sans pt-2 border-t border-zinc-800">
@@ -373,6 +477,7 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       </div>
                     </div>
 
+                    {/* Sync & Logout Actions */}
                     <div className="flex gap-3">
                       <ComicButton
                         onClick={handleManualCloudSync}
@@ -394,19 +499,103 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                         Sign Out
                       </ComicButton>
                     </div>
+
+                    {/* Account Security Management (Change Password & Change Email) */}
+                    <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] space-y-4">
+                      <div
+                        onClick={() => setIsSecurityExpanded(!isSecurityExpanded)}
+                        className="flex items-center justify-between cursor-pointer select-none"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-amber-400" />
+                          <h4 className="font-display font-black text-sm uppercase text-white tracking-wide">
+                            Account Security & Details
+                          </h4>
+                        </div>
+                        <button className="text-zinc-400 hover:text-white p-1">
+                          {isSecurityExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+                      </div>
+
+                      {isSecurityExpanded && (
+                        <div className="space-y-4 pt-2 border-t border-zinc-800">
+                          {/* 1. Change Password */}
+                          <form onSubmit={handleChangePassword} className="space-y-2 bg-[#10121d] p-3 border border-zinc-800">
+                            <div className="flex items-center gap-1.5 text-xs font-display uppercase font-bold text-amber-400">
+                              <KeyRound className="w-3.5 h-3.5" />
+                              <span>Change Password</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="password"
+                                required
+                                minLength={6}
+                                value={newPasswordInput}
+                                onChange={(e) => setNewPasswordInput(e.target.value)}
+                                placeholder="New password (min 6 chars)..."
+                                className="flex-1 bg-zinc-900 border-2 border-black px-3 py-1.5 text-xs font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                              />
+                              <ComicButton
+                                type="submit"
+                                disabled={isAuthLoading || !newPasswordInput}
+                                variant="gold"
+                                size="sm"
+                              >
+                                {isAuthLoading ? 'Saving...' : 'Update Password'}
+                              </ComicButton>
+                            </div>
+                          </form>
+
+                          {/* 2. Change Email */}
+                          <form onSubmit={handleChangeEmail} className="space-y-2 bg-[#10121d] p-3 border border-zinc-800">
+                            <div className="flex items-center gap-1.5 text-xs font-display uppercase font-bold text-cyan-400">
+                              <Mail className="w-3.5 h-3.5" />
+                              <span>Change Email Address</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="email"
+                                required
+                                value={newEmailInput}
+                                onChange={(e) => setNewEmailInput(e.target.value)}
+                                placeholder="New email address..."
+                                className="flex-1 bg-zinc-900 border-2 border-black px-3 py-1.5 text-xs font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-400"
+                              />
+                              <ComicButton
+                                type="submit"
+                                disabled={isAuthLoading || !newEmailInput}
+                                variant="cyan"
+                                size="sm"
+                              >
+                                {isAuthLoading ? 'Sending...' : 'Update Email'}
+                              </ComicButton>
+                            </div>
+                            <p className="text-[10px] text-zinc-500 font-sans">
+                              Verification links will be sent to both email addresses to confirm ownership.
+                            </p>
+                          </form>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display font-black text-sm uppercase text-amber-400">
-                          {isSignUpMode ? 'Create Cloud Account' : 'Sign In with Cloud Account'}
+                          {authModeView === 'forgot'
+                            ? 'Reset Your Password'
+                            : authModeView === 'signup'
+                            ? 'Create Cloud Account'
+                            : 'Sign In with Cloud Account'}
                         </h4>
                         <ComicBadge variant="cyan" size="sm">Free Cross-Device Sync</ComicBadge>
                       </div>
 
                       <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                        Sign in to automatically sync your Marvel and DC watch progress across all your phones, laptops, and tablets in real time.
+                        {authModeView === 'forgot'
+                          ? "Enter your registered email address below and we'll send you a password reset recovery link."
+                          : 'Sign in to automatically sync your Marvel and DC watch progress across all your phones, laptops, and tablets in real time.'}
                       </p>
 
                       <form onSubmit={handleAuthSubmit} className="space-y-3">
@@ -424,19 +613,35 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                           />
                         </div>
 
-                        <div>
-                          <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400 mb-1">
-                            Password
-                          </label>
-                          <input
-                            type="password"
-                            required
-                            value={authPassword}
-                            onChange={(e) => setAuthPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
-                          />
-                        </div>
+                        {authModeView !== 'forgot' && (
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[11px] font-display uppercase tracking-wider text-zinc-400">
+                                Password
+                              </label>
+                              {authModeView === 'signin' && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setAuthModeView('forgot');
+                                    setStatusMsg(null);
+                                  }}
+                                  className="text-[10px] font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer"
+                                >
+                                  Forgot password?
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="password"
+                              required
+                              value={authPassword}
+                              onChange={(e) => setAuthPassword(e.target.value)}
+                              placeholder="••••••••"
+                              className="w-full bg-zinc-900 border-2 border-black px-3 py-2 text-sm font-sans text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400"
+                            />
+                          </div>
+                        )}
 
                         <div className="flex gap-2 pt-1">
                           <ComicButton
@@ -446,24 +651,44 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                             size="md"
                             className="flex-1"
                           >
-                            {isAuthLoading ? 'Processing...' : isSignUpMode ? 'Create Account' : 'Sign In'}
+                            {isAuthLoading
+                              ? 'Processing...'
+                              : authModeView === 'forgot'
+                              ? 'Send Password Reset Link'
+                              : authModeView === 'signup'
+                              ? 'Create Account'
+                              : 'Sign In'}
                           </ComicButton>
                         </div>
                       </form>
 
-                      <div className="text-center pt-2 border-t border-zinc-800">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsSignUpMode(!isSignUpMode);
-                            setStatusMsg(null);
-                          }}
-                          className="text-xs font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer"
-                        >
-                          {isSignUpMode
-                            ? 'Already have an account? Sign In'
-                            : "Don't have an account? Sign Up Free"}
-                        </button>
+                      {/* Navigation links between login / signup / forgot modes */}
+                      <div className="text-center pt-2 border-t border-zinc-800 space-y-1.5">
+                        {authModeView === 'forgot' ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAuthModeView('signin');
+                              setStatusMsg(null);
+                            }}
+                            className="text-xs font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer block w-full"
+                          >
+                            ← Back to Sign In
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAuthModeView(authModeView === 'signup' ? 'signin' : 'signup');
+                              setStatusMsg(null);
+                            }}
+                            className="text-xs font-sans text-amber-400 hover:text-amber-300 underline cursor-pointer block w-full"
+                          >
+                            {authModeView === 'signup'
+                              ? 'Already have an account? Sign In'
+                              : "Don't have an account? Sign Up Free"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
