@@ -20,7 +20,7 @@ import {
   AlertCircle,
   Coffee,
 } from 'lucide-react';
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
@@ -47,6 +47,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -101,29 +102,75 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   const rank = getRank();
   const holderName = userName ? `@${userName.replace('@', '')}` : 'Multiverse Agent';
 
-  // Download card as PNG in Ultra 4K (3x Supersampled 300 DPI)
+  // Bulletproof cross-platform export handler (PWA, iOS Safari, Android, Desktop)
   const handleDownload = async () => {
     if (!cardRef.current) return;
     setIsDownloading(true);
     setShareFeedback(null);
 
+    const filename = `multiverse-passport-${universe}-${holderName.replace('@', '')}.png`;
+
     try {
-      const dataUrl = await toPng(cardRef.current, {
+      // 1. Generate crisp high-resolution blob
+      const blob = await toBlob(cardRef.current, {
         cacheBust: true,
-        pixelRatio: 3, // Ultra 4K Crisp Supersampling (300 DPI equivalent)
-        quality: 1.0,
+        pixelRatio: 2.5,
         backgroundColor: '#0c0d14',
       });
 
+      if (!blob) {
+        throw new Error('Failed to generate image blob');
+      }
+
+      const file = new File([blob], filename, { type: 'image/png' });
+
+      // 2. If mobile browser or PWA supports native file sharing (iOS / Android), use native save dialog
+      if (typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `${holderName}'s Multiverse Passport`,
+            text: `My Multiverse Citizen Passport: ${percentage}% Complete (${hours}h logged)!`,
+          });
+          setShareFeedback('Passport image shared / saved successfully!');
+          setTimeout(() => setShareFeedback(null), 4000);
+          return;
+        } catch (shareErr: any) {
+          if (shareErr.name === 'AbortError') {
+            return; // User cancelled share sheet
+          }
+        }
+      }
+
+      // 3. Desktop / Browser direct download via Object URL
+      const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.download = `multiverse-passport-${universe}-${holderName.replace('@', '')}-4k.png`;
-      link.href = dataUrl;
+      link.download = filename;
+      link.href = objectUrl;
+      link.style.display = 'none';
+      document.body.appendChild(link);
       link.click();
-      setShareFeedback('Ultra 4K Passport downloaded successfully!');
-      setTimeout(() => setShareFeedback(null), 4000);
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+
+      // Also set preview image so user can long-press to save if browser blocked programmatic download
+      setPreviewImage(objectUrl);
+      setShareFeedback('Passport image generated! (You can also long press image below to save)');
+      setTimeout(() => setShareFeedback(null), 5000);
     } catch (err: any) {
       console.error('Failed to generate passport image:', err);
-      setShareFeedback('Failed to download image. Try taking a screenshot.');
+      // Fallback: try toPng data URL
+      try {
+        const dataUrl = await toPng(cardRef.current, {
+          cacheBust: true,
+          pixelRatio: 2,
+          backgroundColor: '#0c0d14',
+        });
+        setPreviewImage(dataUrl);
+        setShareFeedback('Image ready! Long press on the image to Save to Photos.');
+      } catch (fallbackErr) {
+        setShareFeedback('Failed to download image. Try taking a screenshot.');
+      }
     } finally {
       setIsDownloading(false);
     }
@@ -412,6 +459,49 @@ export const PassportModal: React.FC<PassportModalProps> = ({
             </div>
           </div>
         </motion.div>
+
+        {/* Fullscreen Image Preview Modal for Mobile / PWA Long-Press Saving */}
+        {previewImage && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+            <div className="relative max-w-md w-full bg-[#141624] border-[3px] border-black p-4 space-y-3 text-center shadow-[8px_8px_0px_0px_#000000]">
+              <div className="flex items-center justify-between border-b-2 border-black pb-2">
+                <span className="font-display font-black text-sm uppercase text-amber-400">
+                  📱 Save Passport (PWA / Mobile)
+                </span>
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  className="p-1 bg-zinc-900 hover:bg-zinc-800 text-white border border-black cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-zinc-300 font-sans">
+                <strong>Tap & hold</strong> the image below to <em>Save to Photos</em> or share:
+              </p>
+
+              <div className="border-2 border-black overflow-hidden shadow-[3px_3px_0px_0px_#000000]">
+                <img src={previewImage} alt="Passport Preview" className="w-full h-auto object-contain" />
+              </div>
+
+              <div className="flex gap-2">
+                <a
+                  href={previewImage}
+                  download={`multiverse-passport-${universe}-${holderName.replace('@', '')}.png`}
+                  className="flex-1 py-2 bg-amber-400 hover:bg-amber-300 text-black font-display text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000000]"
+                >
+                  Save File
+                </a>
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-display text-xs font-bold uppercase border-2 border-black cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AnimatePresence>
   );
