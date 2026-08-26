@@ -7,6 +7,7 @@ import { Shield, Layers, Sliders, BookOpen, Menu, X, Home, Film, Sparkles, User,
 import { clsx } from 'clsx';
 import { useByokStore } from '@/lib/store/useByokStore';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { UnifiedSettingsModal, SettingsTab } from '../settings/UnifiedSettingsModal';
 import { createClient } from '@/lib/supabase/client';
 import { loadUserProfileFromCloud, setActiveRealtimeChannel } from '@/lib/supabase/user-profile';
@@ -66,6 +67,11 @@ export const Navbar: React.FC = () => {
               if (typeof window !== 'undefined') {
                 localStorage.setItem('multiverse_tracker_watched_v1', JSON.stringify(payload.watchedIds));
               }
+            }
+          })
+          .on('broadcast', { event: 'settings_update' }, ({ payload }: any) => {
+            if (payload?.settings && typeof payload.settings === 'object') {
+              useSettingsStore.setState(payload.settings);
             }
           })
           .on(

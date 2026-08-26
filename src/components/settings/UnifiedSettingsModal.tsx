@@ -832,6 +832,30 @@ export const UnifiedSettingsModal: React.FC<UnifiedSettingsModalProps> = ({
                       {settings.greyscaleUnwatched ? 'ON' : 'OFF'}
                     </button>
                   </div>
+
+                  {/* Toggle 5: Hide Marvel One-Shots & Shorts */}
+                  <div className="bg-zinc-950 border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between">
+                    <div className="space-y-0.5 max-w-[80%]">
+                      <div className="flex items-center gap-2">
+                        <strong className="font-display text-sm uppercase tracking-wide text-white">
+                          Hide Marvel One-Shots & Shorts
+                        </strong>
+                        <ComicBadge variant="marvel" size="sm">Timeline</ComicBadge>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans">
+                        Hides short films (The Consultant, Item 47, Team Thor, etc.) from the main watchlists and completion stats.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => settings.toggleSetting('hideOneShots')}
+                      className={clsx(
+                        'px-3.5 py-1.5 border-2 border-black font-display text-xs font-black uppercase transition shadow-[2px_2px_0px_0px_#000000] cursor-pointer',
+                        settings.hideOneShots ? 'bg-emerald-400 text-black' : 'bg-zinc-800 text-zinc-500'
+                      )}
+                    >
+                      {settings.hideOneShots ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

@@ -45,7 +45,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [isViewingShared, setIsViewingShared] = useState(false);
 
   const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, supabaseUser } = useWatchlistStore();
-  const { showMarathonStats, enableConfetti } = useSettingsStore();
+  const { showMarathonStats, enableConfetti, hideOneShots } = useSettingsStore();
 
   // Hydrate persisted filters on client mount
   useEffect(() => {
@@ -142,15 +142,27 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   // Media list scoped to active continuity branch (controls Marathon Stats & Passport completion calculations)
   const activeBranchMedia = useMemo(() => {
-    if (branchFilter === 'all') return initialMedia;
-    if (!currentBranchObj || !currentBranchObj.match) return initialMedia;
-    return initialMedia.filter((item) => currentBranchObj.match(item.phase_or_chapter));
-  }, [initialMedia, branchFilter, currentBranchObj]);
+    let base = initialMedia;
+    if (branchFilter !== 'all') {
+      if (currentBranchObj && currentBranchObj.match) {
+        base = base.filter((item) => currentBranchObj.match!(item.phase_or_chapter));
+      }
+    }
+    if (isMCU && hideOneShots) {
+      base = base.filter((item) => item.media_type !== 'special');
+    }
+    return base;
+  }, [initialMedia, branchFilter, currentBranchObj, isMCU, hideOneShots]);
 
   // Filter and Sort media
   const filteredAndSortedMedia = useMemo(() => {
     return initialMedia
       .filter((item) => {
+        // 0. Hide One-Shots / Shorts setting (unless user explicitly filters by 'special')
+        if (isMCU && hideOneShots && typeFilter !== 'special' && item.media_type === 'special') {
+          return false;
+        }
+
         // 1. Branch continuity filter
         if (branchFilter !== 'all') {
           const currentBranch = branches.find((b) => b.id === branchFilter);
