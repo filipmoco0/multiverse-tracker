@@ -47,6 +47,51 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, supabaseUser } = useWatchlistStore();
   const { showMarathonStats, enableConfetti } = useSettingsStore();
 
+  // Hydrate persisted filters on client mount
+  useEffect(() => {
+    try {
+      const savedBranch = localStorage.getItem(`multiverse_${universe}_branch_filter`);
+      if (savedBranch) setBranchFilter(savedBranch);
+
+      const savedOrder = localStorage.getItem(`multiverse_${universe}_order_mode`) as OrderMode;
+      if (savedOrder && (savedOrder === 'release' || savedOrder === 'chronological')) setOrderMode(savedOrder);
+
+      const savedType = localStorage.getItem(`multiverse_${universe}_type_filter`) as TypeFilter;
+      if (savedType) setTypeFilter(savedType);
+
+      const savedStatus = localStorage.getItem(`multiverse_${universe}_status_filter`) as StatusFilter;
+      if (savedStatus) setStatusFilter(savedStatus);
+    } catch {}
+  }, [universe]);
+
+  const handleBranchChange = useCallback((branchId: string) => {
+    setBranchFilter(branchId);
+    try {
+      localStorage.setItem(`multiverse_${universe}_branch_filter`, branchId);
+    } catch {}
+  }, [universe]);
+
+  const handleOrderChange = useCallback((mode: OrderMode) => {
+    setOrderMode(mode);
+    try {
+      localStorage.setItem(`multiverse_${universe}_order_mode`, mode);
+    } catch {}
+  }, [universe]);
+
+  const handleTypeChange = useCallback((type: TypeFilter) => {
+    setTypeFilter(type);
+    try {
+      localStorage.setItem(`multiverse_${universe}_type_filter`, type);
+    } catch {}
+  }, [universe]);
+
+  const handleStatusChange = useCallback((status: StatusFilter) => {
+    setStatusFilter(status);
+    try {
+      localStorage.setItem(`multiverse_${universe}_status_filter`, status);
+    } catch {}
+  }, [universe]);
+
   // Detect shared progress URL parameter
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -438,7 +483,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
               return (
                 <button
                   key={branch.id}
-                  onClick={() => setBranchFilter(branch.id)}
+                  onClick={() => handleBranchChange(branch.id)}
                   className={clsx(
                     'px-3 py-1 font-display text-xs sm:text-sm font-bold uppercase transition border-2 border-black select-none flex-shrink-0 cursor-pointer',
                     isActive
@@ -460,17 +505,17 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             <OrderToggle
               orderMode={orderMode}
-              onChange={setOrderMode}
+              onChange={handleOrderChange}
               universe={universe}
             />
             <TypeFilterTabs
               currentType={typeFilter}
-              onChange={setTypeFilter}
+              onChange={handleTypeChange}
               universe={universe}
             />
             <StatusFilterTabs
               currentStatus={statusFilter}
-              onChange={setStatusFilter}
+              onChange={handleStatusChange}
             />
           </div>
 
@@ -507,9 +552,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
             </p>
             <ComicButton
               onClick={() => {
-                setTypeFilter('all');
-                setStatusFilter('all');
-                setBranchFilter('all');
+                handleTypeChange('all');
+                handleStatusChange('all');
+                handleBranchChange('all');
                 setSearchQuery('');
               }}
               variant="cyan"

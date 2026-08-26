@@ -9,7 +9,7 @@ import { useByokStore } from '@/lib/store/useByokStore';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { UnifiedSettingsModal, SettingsTab } from '../settings/UnifiedSettingsModal';
 import { createClient } from '@/lib/supabase/client';
-import { loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
+import { loadUserProfileFromCloud, setActiveRealtimeChannel } from '@/lib/supabase/user-profile';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -35,6 +35,18 @@ export const Navbar: React.FC = () => {
     };
     window.addEventListener('storage', handleStorageChange);
 
+    // Auto re-sync from cloud whenever user returns to tab / unlocks device
+    const handleVisibilityOrFocus = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        const currentUser = useWatchlistStore.getState().supabaseUser;
+        if (currentUser?.id) {
+          loadUserProfileFromCloud(currentUser.id);
+        }
+      }
+    };
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
     const supabase = createClient();
     let realtimeChannel: any = null;
 
@@ -44,7 +56,17 @@ export const Navbar: React.FC = () => {
           supabase.removeChannel(realtimeChannel);
         }
         realtimeChannel = supabase
-          .channel(`user-profile-sync-${userId}`)
+          .channel(`user-profile-sync-${userId}`, {
+            config: { broadcast: { self: false } },
+          })
+          .on('broadcast', { event: 'watched_update' }, ({ payload }: any) => {
+            if (payload?.watchedIds && typeof payload.watchedIds === 'object') {
+              useWatchlistStore.setState({ watchedIds: payload.watchedIds, lastSyncedAt: Date.now() });
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('multiverse_tracker_watched_v1', JSON.stringify(payload.watchedIds));
+              }
+            }
+          })
           .on(
             'postgres_changes',
             {
@@ -64,6 +86,8 @@ export const Navbar: React.FC = () => {
             }
           )
           .subscribe();
+
+        setActiveRealtimeChannel(realtimeChannel);
       };
 
       supabase.auth.getSession().then(({ data }) => {
@@ -94,6 +118,7 @@ export const Navbar: React.FC = () => {
             supabaseUser: null,
             authMode: 'guest',
           });
+          setActiveRealtimeChannel(null);
           if (realtimeChannel) {
             supabase.removeChannel(realtimeChannel);
             realtimeChannel = null;
@@ -103,7 +128,10 @@ export const Navbar: React.FC = () => {
 
       return () => {
         window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('focus', handleVisibilityOrFocus);
+        document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
         authListener.subscription.unsubscribe();
+        setActiveRealtimeChannel(null);
         if (realtimeChannel) {
           supabase.removeChannel(realtimeChannel);
         }
@@ -112,6 +140,8 @@ export const Navbar: React.FC = () => {
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
     };
   }, []);
 

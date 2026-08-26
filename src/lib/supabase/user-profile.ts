@@ -9,6 +9,23 @@ export interface UserProfileData {
 
 let syncTimeout: NodeJS.Timeout | null = null;
 let pendingWatchedIds: Record<string, boolean> | null = null;
+let activeRealtimeChannel: any = null;
+
+export function setActiveRealtimeChannel(channel: any) {
+  activeRealtimeChannel = channel;
+}
+
+export function broadcastWatchedUpdate(watchedIds: Record<string, boolean>) {
+  if (activeRealtimeChannel) {
+    try {
+      activeRealtimeChannel.send({
+        type: 'broadcast',
+        event: 'watched_update',
+        payload: { watchedIds },
+      });
+    } catch {}
+  }
+}
 
 /**
  * Saves or updates user profile in Supabase table `user_profiles` with debouncing.
@@ -21,6 +38,8 @@ export async function syncUserProfileToCloud(data: Partial<UserProfileData> = {}
       if (v) clean[k] = true;
     }
     pendingWatchedIds = clean;
+    // Broadcast immediately over websocket to all connected devices in real time
+    broadcastWatchedUpdate(clean);
   }
 
   if (syncTimeout) {
