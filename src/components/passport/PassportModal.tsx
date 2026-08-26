@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -105,13 +105,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   const rank = getRank();
 
-  const [customAlias, setCustomAlias] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('multiverse_user_alias') || '';
-    }
-    return '';
-  });
+  const [customAlias, setCustomAlias] = useState<string>('');
   const [isEditingAlias, setIsEditingAlias] = useState(false);
+
+  // Hydrate alias from localStorage only on client after mount (avoids SSR hydration mismatch)
+  useEffect(() => {
+    const saved = localStorage.getItem('multiverse_user_alias');
+    if (saved) setCustomAlias(saved);
+  }, []);
 
   const effectiveName = customAlias.trim()
     ? customAlias.trim()
