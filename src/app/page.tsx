@@ -144,7 +144,7 @@ function LandingContent() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 text-xs text-zinc-400 font-sans">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                No sign-up required — guest progress saves locally in your browser.
+                No sign-up required, guest progress saves locally in your browser.
               </span>
               <button
                 onClick={() => router.push('/admin')}

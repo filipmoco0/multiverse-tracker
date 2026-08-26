@@ -642,8 +642,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 232125,
     "poster_path": "https://image.tmdb.org/t/p/w500/3QfQYECgu6DX5UUWCBvv1Fl0BAJ.jpg",
     "is_released": true,
-    "release_date": "2021-09-22",
-    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses."
+    "release_date": "2022-08-10",
+    "overview": "There's no guarding the galaxy from this mischievous toddler! Get ready as Baby Groot takes center stage in his very own collection of shorts, exploring his glory days growing up and getting into trouble among the stars."
   },
   {
     "id": "marvel-43",
@@ -766,8 +766,8 @@ export const MCU_SEED_DATA: FranchiseMedia[] = [
     "tmdb_id": 232125,
     "poster_path": "https://image.tmdb.org/t/p/w500/lYwFSsP4KsoRhOLhJvBFp3GEGEm.jpg",
     "is_released": true,
-    "release_date": "2023-05-04",
-    "overview": "This anthology of animated shorts from around the world celebrates the mythos of Star Wars through unique cultural lenses."
+    "release_date": "2023-09-06",
+    "overview": "The troublemaking twig returns for more mischief in the second season of I Am Groot. This time, Baby Groot finds himself exploring the universe and beyond aboard the Guardians' spaceships, coming face-to-face (or nose-to-nose) with new and colorful creatures and environments."
   },
   {
     "id": "marvel-51",

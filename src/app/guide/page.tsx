@@ -199,7 +199,7 @@ export default function GuidePage() {
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <span className="font-display font-bold text-emerald-400 uppercase text-sm block">
-                    Zero Setup Required — Works Out of the Box!
+                    Zero Setup Required: Works Out of the Box!
                   </span>
                   <p className="text-xs text-zinc-300 font-sans leading-relaxed">
                     The app comes pre-configured with a built-in server proxy key. All posters, cards, trailers, and streaming provider badges work automatically for all visitors.
