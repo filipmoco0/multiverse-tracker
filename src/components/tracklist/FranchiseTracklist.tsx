@@ -17,6 +17,7 @@ import { triggerComicConfetti, triggerGrandCelebration } from '@/components/comi
 import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
 import { PassportModal } from '@/components/passport/PassportModal';
 import { MilestoneDonationModal, MilestoneData } from '@/components/comic/MilestoneDonationModal';
+import { decodeSharedProgress, SharedProgressData } from '@/lib/utils/share-progress';
 import { clsx } from 'clsx';
 
 interface FranchiseTracklistProps {
@@ -40,9 +41,29 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
   const [isPassportOpen, setIsPassportOpen] = useState(false);
   const [milestoneData, setMilestoneData] = useState<MilestoneData | null>(null);
   const [isMilestoneOpen, setIsMilestoneOpen] = useState(false);
+  const [sharedData, setSharedData] = useState<SharedProgressData | null>(null);
+  const [isViewingShared, setIsViewingShared] = useState(false);
 
   const { watchedIds, toggleWatched, markPhaseWatched, markAllWatched, resetProgress, supabaseUser } = useWatchlistStore();
   const { showMarathonStats, enableConfetti } = useSettingsStore();
+
+  // Detect shared progress URL parameter
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedToken = urlParams.get('shared');
+      if (sharedToken) {
+        const decoded = decodeSharedProgress(sharedToken, initialMedia);
+        if (decoded) {
+          setSharedData(decoded);
+          setIsViewingShared(true);
+        }
+      }
+    }
+  }, [initialMedia]);
+
+  // Effective watched status (switches to shared user's watchlist in shared view)
+  const activeWatchedIds = isViewingShared && sharedData ? sharedData.sharedWatchedIds : watchedIds;
 
   const isMCU = universe === 'mcu';
 
@@ -92,10 +113,10 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         }
 
         // 3. Status filter
-        if (statusFilter === 'watched' && !watchedIds[item.id]) {
+        if (statusFilter === 'watched' && !activeWatchedIds[item.id]) {
           return false;
         }
-        if (statusFilter === 'unwatched' && watchedIds[item.id]) {
+        if (statusFilter === 'unwatched' && activeWatchedIds[item.id]) {
           return false;
         }
 
@@ -123,13 +144,13 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           return aOrder - bOrder;
         }
       });
-  }, [initialMedia, typeFilter, statusFilter, branchFilter, searchQuery, orderMode, watchedIds, branches]);
+  }, [initialMedia, typeFilter, statusFilter, branchFilter, searchQuery, orderMode, activeWatchedIds, branches]);
 
   // Overall progress calculation based on active branch selection
   const totalItems = filteredAndSortedMedia.length;
   const totalWatched = useMemo(() => {
-    return filteredAndSortedMedia.filter((item) => Boolean(watchedIds[item.id])).length;
-  }, [filteredAndSortedMedia, watchedIds]);
+    return filteredAndSortedMedia.filter((item) => Boolean(activeWatchedIds[item.id])).length;
+  }, [filteredAndSortedMedia, activeWatchedIds]);
 
   const franchisePercentage = totalItems > 0 ? Math.round((totalWatched / totalItems) * 100) : 0;
 
@@ -254,6 +275,57 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   return (
     <div className="space-y-6 max-w-[1920px] w-full mx-auto px-3.5 sm:px-8 xl:px-12 py-5 sm:py-7 overflow-x-hidden">
+      {/* Public Shared Progress Hero Alert Banner */}
+      {isViewingShared && sharedData && (
+        <div className="relative bg-[#10121d] border-[4px] border-amber-400 p-4 sm:p-5 shadow-[8px_8px_0px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center gap-3.5 text-center md:text-left flex-col md:flex-row">
+            <div className="w-12 h-12 bg-amber-400 text-black border-2 border-black -skew-x-3 font-black text-2xl flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] flex-shrink-0">
+              🦸‍♂️
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                <span className="font-display font-black text-base sm:text-lg uppercase text-white tracking-wide">
+                  Viewing <strong className="text-amber-400">@{sharedData.userName}</strong>&apos;s Public Watchlist
+                </span>
+                <ComicBadge variant="gold" size="sm">
+                  {sharedData.percentage}% Complete ({sharedData.watchedCount}/{sharedData.totalCount} Titles)
+                </ComicBadge>
+              </div>
+              <p className="text-xs text-zinc-300 font-sans">
+                You are viewing their completed multiverse watchlist in <strong>Read-Only Mode</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 flex-wrap w-full md:w-auto justify-center">
+            <ComicButton
+              onClick={() => {
+                Object.keys(sharedData.sharedWatchedIds).forEach((id) => {
+                  if (!watchedIds[id]) {
+                    const item = initialMedia.find((m) => m.id === id);
+                    toggleWatched(id, item?.tmdb_id, item?.trakt_id, item?.media_type, item?.seasons);
+                  }
+                });
+                setIsViewingShared(false);
+              }}
+              variant="gold"
+              size="sm"
+              className="flex-1 md:flex-none text-xs font-black"
+              leftIcon={<Sparkles className="w-3.5 h-3.5 text-black" />}
+            >
+              Copy to My Tracker
+            </ComicButton>
+
+            <button
+              onClick={() => setIsViewingShared(false)}
+              className="flex-1 md:flex-none px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white font-display text-xs font-bold uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000000] transition active:scale-95 cursor-pointer"
+            >
+              Exit Shared View
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Streamlined Franchise Hero Banner */}
       <section className="relative bg-[#141624] border-[4px] border-black shadow-[8px_8px_0px_0px_#000000] p-5 sm:p-7 overflow-hidden">
         <div className={isMCU ? 'absolute inset-0 bg-halftone-marvel opacity-60 pointer-events-none' : 'absolute inset-0 bg-halftone-dc opacity-60 pointer-events-none'} />
@@ -438,7 +510,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           </div>
         ) : (
           groupedMedia.map((group) => {
-            const groupWatchedCount = group.items.filter((item) => watchedIds[item.id]).length;
+            const groupWatchedCount = group.items.filter((item) => activeWatchedIds[item.id]).length;
             const isGroupComplete = groupWatchedCount === group.items.length && group.items.length > 0;
 
             return (
@@ -475,7 +547,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                     <ComicCard
                       key={media.id}
                       media={media}
-                      isWatched={Boolean(watchedIds[media.id])}
+                      isWatched={Boolean(activeWatchedIds[media.id])}
                       orderMode={orderMode}
                       onToggleWatched={handleSingleCardToggle}
                     />

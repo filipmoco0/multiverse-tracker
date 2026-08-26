@@ -19,11 +19,14 @@ import {
   CheckCircle2,
   AlertCircle,
   Coffee,
+  Link as LinkIcon,
+  Globe,
 } from 'lucide-react';
 import { toPng, toBlob } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
 import { ComicButton } from '../comic/ComicButton';
 import { ComicBadge } from '../comic/ComicBadge';
+import { encodeSharedProgress } from '@/lib/utils/share-progress';
 import { clsx } from 'clsx';
 
 interface PassportModalProps {
@@ -205,40 +208,58 @@ export const PassportModal: React.FC<PassportModalProps> = ({
     }
   };
 
+  // Generate dynamic public share link (URL safe, 0 database overhead)
+  const getPublicShareUrl = () => {
+    if (typeof window === 'undefined') return `https://multiversetracker.com/${universe}`;
+    const token = encodeSharedProgress(mediaList, watchedIds, holderName.replace('@', ''));
+    return `${window.location.origin}/${universe}?shared=${token}`;
+  };
+
+  const handleCopyPublicLink = async () => {
+    const publicUrl = getPublicShareUrl();
+    const success = await copyTextToClipboard(publicUrl);
+    if (success) {
+      setCopied(true);
+      setShareFeedback('Public watchlist link copied! Anyone with this link can view your progress.');
+      setTimeout(() => {
+        setCopied(false);
+        setShareFeedback(null);
+      }, 5000);
+    }
+  };
+
+  const handleShareToX = () => {
+    const publicUrl = getPublicShareUrl();
+    const tweetText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Watchlist: ${percentage}% Complete (${hours}h Logged) • Rank: ${rank.title}!\n\nCheck out my tracker progress:`;
+    const hashtags = isMCU ? 'Marvel,MCU,MultiverseTracker' : 'DC,DCU,MultiverseTracker';
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(publicUrl)}&hashtags=${hashtags}`;
+    window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+  };
+
   // Share action with native Web Share and Clipboard fallback
-  const handleShare = async () => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : `https://multiversetracker.com/${universe}`;
-    const shareText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!\nTrack yours at ${shareUrl}`;
+  const handleNativeShare = async () => {
+    const publicUrl = getPublicShareUrl();
+    const shareText = `🦸‍♂️ My ${isMCU ? 'Marvel Multiverse' : 'DC Universe'} Progress: ${percentage}% Complete (${hours} Hours Logged) • Rank: ${rank.title}!\nView my tracker: ${publicUrl}`;
 
     if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
       try {
         await navigator.share({
           title: `${holderName}'s Multiverse Passport`,
           text: shareText,
-          url: shareUrl,
+          url: publicUrl,
         });
         setShareFeedback('Shared successfully!');
         setTimeout(() => setShareFeedback(null), 4000);
         return;
       } catch (err: any) {
         if (err.name === 'AbortError') {
-          return; // User dismissed share sheet
+          return;
         }
       }
     }
 
     // Fallback: Copy to clipboard
-    const success = await copyTextToClipboard(shareText);
-    if (success) {
-      setCopied(true);
-      setShareFeedback('Copied share text and link to clipboard! Ready to paste.');
-      setTimeout(() => {
-        setCopied(false);
-        setShareFeedback(null);
-      }, 4000);
-    } else {
-      setShareFeedback(`Please copy link manually: ${shareUrl}`);
-    }
+    handleCopyPublicLink();
   };
 
   return (
@@ -412,8 +433,8 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            {/* Primary Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <ComicButton
                 onClick={handleDownload}
                 disabled={isDownloading}
@@ -426,14 +447,33 @@ export const PassportModal: React.FC<PassportModalProps> = ({
               </ComicButton>
 
               <ComicButton
-                onClick={handleShare}
+                onClick={handleCopyPublicLink}
                 variant="cyan"
                 size="md"
                 className="flex-1"
-                leftIcon={copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+                leftIcon={copied ? <Check className="w-4 h-4 text-emerald-400" /> : <LinkIcon className="w-4 h-4" />}
               >
-                {copied ? 'Copied to Clipboard!' : 'Share Progress'}
+                {copied ? 'Link Copied!' : 'Copy Public Share Link'}
               </ComicButton>
+            </div>
+
+            {/* Quick Social Share Buttons (X / Twitter & Native App Share) */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleShareToX}
+                className="flex-1 py-2 px-3 bg-black hover:bg-zinc-900 text-white font-display text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
+              >
+                <span className="font-bold">𝕏</span>
+                <span>Post on X (Twitter)</span>
+              </button>
+
+              <button
+                onClick={handleNativeShare}
+                className="flex-1 py-2 px-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white font-display text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
+              >
+                <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Share via App...</span>
+              </button>
             </div>
 
             {/* Support Dev / Coffee Tip Bar */}
