@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Shield, Layers, Sliders, BookOpen, Menu, X, Home, Film, Sparkles, User, Key } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useByokStore } from '@/lib/store/useByokStore';
+import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { UnifiedSettingsModal, SettingsTab } from '../settings/UnifiedSettingsModal';
 import { createClient } from '@/lib/supabase/client';
 import { loadUserProfileFromCloud } from '@/lib/supabase/user-profile';
@@ -26,6 +27,10 @@ export const Navbar: React.FC = () => {
         const user = data.session?.user;
         setCurrentAuthUser(user || null);
         if (user) {
+          useWatchlistStore.setState({
+            supabaseUser: { id: user.id, email: user.email || '' },
+            authMode: 'supabase',
+          });
           loadUserProfileFromCloud(user.id);
         }
       });
@@ -34,7 +39,16 @@ export const Navbar: React.FC = () => {
         const user = session?.user;
         setCurrentAuthUser(user || null);
         if (user) {
+          useWatchlistStore.setState({
+            supabaseUser: { id: user.id, email: user.email || '' },
+            authMode: 'supabase',
+          });
           loadUserProfileFromCloud(user.id);
+        } else {
+          useWatchlistStore.setState({
+            supabaseUser: null,
+            authMode: 'guest',
+          });
         }
       });
 

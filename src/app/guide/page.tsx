@@ -8,21 +8,23 @@ import {
   Tv,
   Key,
   Cloud,
-  Layers,
   Sparkles,
   CheckCircle2,
   ArrowRight,
-  ExternalLink,
   Sliders,
-  ShieldCheck,
   Zap,
   Globe,
-  Lock,
   Database,
   Play,
-  Heart,
   Youtube,
   Tv2,
+  Share2,
+  Download,
+  Award,
+  Link as LinkIcon,
+  Clock,
+  Shield,
+  Edit2,
 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { ComicBadge } from '@/components/comic/ComicBadge';
@@ -30,10 +32,10 @@ import { ComicButton } from '@/components/comic/ComicButton';
 import { UnifiedSettingsModal, SettingsTab } from '@/components/settings/UnifiedSettingsModal';
 import { clsx } from 'clsx';
 
-type GuideTab = 'tmdb' | 'justwatch' | 'youtube' | 'supabase' | 'timelines';
+type GuideTab = 'api_keys' | 'passport' | 'supabase';
 
 export default function GuidePage() {
-  const [activeTab, setActiveTab] = useState<GuideTab>('tmdb');
+  const [activeTab, setActiveTab] = useState<GuideTab>('api_keys');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<SettingsTab>('account');
 
@@ -43,11 +45,9 @@ export default function GuidePage() {
   };
 
   const tabs: { id: GuideTab; label: string; badge: string; icon: any; color: string }[] = [
-    { id: 'tmdb', label: '1. TMDB (Posters & Data)', badge: 'Metadata', icon: Film, color: 'text-cyan-400' },
-    { id: 'justwatch', label: '2. JustWatch (Streaming)', badge: 'Where to Watch', icon: Tv, color: 'text-amber-400' },
-    { id: 'youtube', label: '3. YouTube (HD Trailers)', badge: 'Video HD', icon: Youtube, color: 'text-rose-500' },
-    { id: 'supabase', label: '4. Supabase (Cloud Sync)', badge: 'Database', icon: Cloud, color: 'text-emerald-400' },
-    { id: 'timelines', label: '5. Timelines & Watch Orders', badge: 'Timeline', icon: Layers, color: 'text-purple-400' },
+    { id: 'api_keys', label: '1. API Keys & Media Integrations', badge: 'TMDB • JustWatch • YouTube', icon: Key, color: 'text-amber-400' },
+    { id: 'passport', label: '2. Citizen Passport & Public Sharing', badge: 'Ranks • 4K • Share Links', icon: Sparkles, color: 'text-cyan-400' },
+    { id: 'supabase', label: '3. Cloud Sync & Data Privacy', badge: 'Cross-Device & Backup', icon: Cloud, color: 'text-emerald-400' },
   ];
 
   return (
@@ -65,11 +65,11 @@ export default function GuidePage() {
               <ComicBadge variant="gold" size="md">
                 <span className="flex items-center gap-1 font-black">
                   <Sparkles className="w-4 h-4 text-black" />
-                  SYSTEM & API ARCHITECTURE GUIDE
+                  SYSTEM & FEATURE GUIDE
                 </span>
               </ComicBadge>
               <ComicBadge variant="white" size="sm">
-                Complete Feature Breakdown
+                Complete Architecture Breakdown
               </ComicBadge>
             </div>
 
@@ -78,11 +78,19 @@ export default function GuidePage() {
             </h1>
 
             <p className="text-sm sm:text-base text-zinc-300 font-sans max-w-3xl leading-relaxed">
-              Discover how our modular tech stack powers your ultimate comic experience: <strong>TMDB</strong> for high-resolution artwork and metadata, <strong>JustWatch</strong> for real-time streaming availability, <strong>YouTube</strong> for embedded video trailers, <strong>Supabase</strong> for seamless multi-device cloud synchronization, and our custom <strong>Multiverse Timeline Engine</strong>.
+              Explore the features and technologies powering your comic universe tracker: <strong>API integrations</strong> for artwork and legal streaming, the <strong>Multiverse Citizen Passport</strong> with gamified ranks and 4K sharing, and <strong>Supabase</strong> for seamless cloud synchronization.
             </p>
 
             {/* Quick Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+              <ComicButton
+                variant="gold"
+                size="md"
+                onClick={() => openSettings('byok')}
+                rightIcon={<Key className="w-4 h-4 text-black" />}
+              >
+                Personal TMDB Key (BYOK)
+              </ComicButton>
               <ComicButton
                 variant="cyan"
                 size="md"
@@ -90,14 +98,6 @@ export default function GuidePage() {
                 rightIcon={<Cloud className="w-4 h-4" />}
               >
                 Cloud Account Settings
-              </ComicButton>
-              <ComicButton
-                variant="gold"
-                size="md"
-                onClick={() => openSettings('byok')}
-                rightIcon={<Key className="w-4 h-4" />}
-              >
-                Personal TMDB Key (BYOK)
               </ComicButton>
               <Link href="/select">
                 <ComicButton variant="white" size="md" rightIcon={<ArrowRight className="w-4 h-4" />}>
@@ -132,229 +132,268 @@ export default function GuidePage() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 1. TMDB (THE MOVIE DATABASE) */}
+        {/* 1. API KEYS & MEDIA INTEGRATIONS */}
         {/* ========================================================================= */}
-        {activeTab === 'tmdb' && (
+        {activeTab === 'api_keys' && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-cyan-500 text-black font-black border-2 border-black -skew-x-6">
-                    <Film className="w-6 h-6 skew-x-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-display uppercase tracking-widest text-cyan-400 block font-bold">
-                      Primary Media & Visuals Engine
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      1. The Movie Database (TMDB API)
-                    </h2>
-                  </div>
-                </div>
-                <ComicBadge variant="cyan" size="sm">Database & Posters</ComicBadge>
-              </div>
-
-              <p className="text-sm text-zinc-300 font-sans leading-relaxed">
-                <strong>The Movie Database (TMDB)</strong> is the world&apos;s leading open community-built movie and TV database. It serves as the primary metadata engine for Multiverse Tracker.
-              </p>
-
-              {/* What TMDB Powers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
-                <div className="bg-zinc-950/90 border-2 border-black p-4 space-y-1.5 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-cyan-400 text-sm uppercase flex items-center gap-1.5">
-                    <Film className="w-4 h-4" /> Official HD Posters
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Fetches high-resolution theatrical and comic-styled artwork directly from TMDB&apos;s global CDN (`image.tmdb.org`).
-                  </p>
-                </div>
-
-                <div className="bg-zinc-950/90 border-2 border-black p-4 space-y-1.5 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4" /> Theatrical Backdrops
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Supplies widescreen cinematic concept art and background headers displayed inside each media detail modal.
-                  </p>
-                </div>
-
-                <div className="bg-zinc-950/90 border-2 border-black p-4 space-y-1.5 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-emerald-400 text-sm uppercase flex items-center gap-1.5">
-                    <Database className="w-4 h-4" /> Overviews, Ratings & Dates
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Provides official plot synopses, world premiere dates, runtimes, audience ratings, and episode breakdowns.
-                  </p>
-                </div>
-              </div>
-
-              {/* Built-in Key Notice */}
-              <div className="p-4 bg-emerald-950/40 border-2 border-emerald-500 space-y-2">
-                <div className="flex items-center gap-2 font-display text-emerald-400 font-bold uppercase text-xs sm:text-sm">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                  Zero Setup Required — Works Out of the Box!
-                </div>
-                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                  Our application comes pre-configured with a built-in server-side TMDB API integration. All posters, media cards, and details work instantly for every visitor without any registration.
-                </p>
-              </div>
-
-              {/* BYOK Guide */}
-              <div className="bg-zinc-950 border-2 border-black p-5 space-y-4 shadow-[3px_3px_0px_0px_#000000]">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="font-display font-bold text-sm uppercase text-amber-400">
-                    Optional: Bring Your Own Key (BYOK)
-                  </h3>
-                  <ComicBadge variant="gold" size="sm">For Power Users</ComicBadge>
-                </div>
-                <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                  If you prefer to bypass all shared server rate limits and use your own private API quota, you can configure your free personal key:
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-sans">
-                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
-                    <strong className="text-white block font-display uppercase">1. Register</strong>
-                    <p className="text-zinc-400">Create a free account on <a href="https://www.themoviedb.org/signup" target="_blank" rel="noreferrer" className="text-cyan-400 underline">themoviedb.org</a>.</p>
-                  </div>
-                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
-                    <strong className="text-white block font-display uppercase">2. Generate Key</strong>
-                    <p className="text-zinc-400">Navigate to profile <strong>Settings → API → Create Developer Key</strong>.</p>
-                  </div>
-                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
-                    <strong className="text-white block font-display uppercase">3. Save Key</strong>
-                    <p className="text-zinc-400">Open our <strong>Settings → TMDB Key</strong>, paste your key, and click Save.</p>
-                  </div>
-                </div>
-
-                <ComicButton
-                  variant="gold"
-                  size="sm"
-                  onClick={() => openSettings('byok')}
-                  rightIcon={<Key className="w-3.5 h-3.5" />}
-                >
-                  Open TMDB Key Settings
-                </ComicButton>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* 2. JUSTWATCH STREAMING ENGINE */}
-        {/* ========================================================================= */}
-        {activeTab === 'justwatch' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b-2 border-zinc-800 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-amber-400 text-black font-black border-2 border-black -skew-x-6">
-                    <Tv className="w-6 h-6 skew-x-6" />
+                    <Key className="w-6 h-6 skew-x-6" />
                   </div>
                   <div>
                     <span className="text-[10px] font-display uppercase tracking-widest text-amber-400 block font-bold">
-                      Legal Streaming Service Availability
+                      Metadata, Streaming & Video Engine
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      2. JustWatch Streaming Integration
+                      1. API Keys & Media Integrations
                     </h2>
                   </div>
                 </div>
-                <ComicBadge variant="gold" size="sm">Where To Watch</ComicBadge>
+                <ComicBadge variant="gold" size="sm">TMDB • JustWatch • YouTube</ComicBadge>
               </div>
 
               <p className="text-sm text-zinc-300 font-sans leading-relaxed">
-                <strong>JustWatch</strong> is the international standard for searching streaming availability across licensed providers. It is integrated seamlessly inside every movie and TV series detail card.
+                Multiverse Tracker integrates three world-class APIs to deliver high-resolution posters, real-time streaming availability, and cinematic video trailers directly in your browser.
               </p>
 
-              {/* What JustWatch Powers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-1.5">
-                    <Tv2 className="w-4 h-4" /> Live Provider Detection
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Displays official platform badges showing where you can stream right now: <strong>Disney+</strong>, <strong>HBO Max</strong>, <strong>Netflix</strong>, <strong>Apple TV+</strong>, <strong>Amazon Prime Video</strong>, and <strong>SkyShowtime</strong>.
+              {/* 3 Unified Services Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                {/* TMDB */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center gap-2 font-display font-bold text-cyan-400 text-sm uppercase">
+                    <Film className="w-4 h-4 flex-shrink-0" />
+                    <span>The Movie DB (TMDB)</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Fetches official theatrical posters, widescreen concept artwork, release dates, plot overviews, and episode counts from TMDB&apos;s global CDN.
                   </p>
                 </div>
 
-                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-cyan-400 text-sm uppercase flex items-center gap-1.5">
-                    <Globe className="w-4 h-4" /> Automated Watch Provider Feed
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Data is synced automatically through the official TMDB Watch Providers feed maintained in real time by the JustWatch curation team.
+                {/* JustWatch */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center gap-2 font-display font-bold text-amber-400 text-sm uppercase">
+                    <Tv2 className="w-4 h-4 flex-shrink-0" />
+                    <span>JustWatch Streaming</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Detects where titles are streaming legally across <strong>Disney+</strong>, <strong>HBO Max</strong>, <strong>Netflix</strong>, <strong>Prime Video</strong>, and <strong>Apple TV</strong> in 50+ countries.
+                  </p>
+                </div>
+
+                {/* YouTube */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="flex items-center gap-2 font-display font-bold text-rose-400 text-sm uppercase">
+                    <Youtube className="w-4 h-4 flex-shrink-0" />
+                    <span>YouTube HD Trailers</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Embeds verified official trailers from Marvel Studios and DC Studios right inside the media details modal with zero popups.
                   </p>
                 </div>
               </div>
 
-              {/* UI Toggle in Settings */}
-              <div className="bg-zinc-950 border-2 border-black p-4 flex items-center justify-between flex-wrap gap-3">
-                <div className="space-y-0.5">
-                  <strong className="font-display text-sm uppercase text-white block">
-                    Prefer a Minimal Interface?
-                  </strong>
-                  <p className="text-xs text-zinc-400 font-sans">
-                    You can toggle streaming providers and trailer widgets ON or OFF anytime in your settings.
+              {/* Zero Setup Banner */}
+              <div className="p-4 bg-emerald-950/50 border-2 border-emerald-500 flex items-start gap-3 shadow-[2px_2px_0px_0px_#000000]">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span className="font-display font-bold text-emerald-400 uppercase text-sm block">
+                    Zero Setup Required — Works Out of the Box!
+                  </span>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    The app comes pre-configured with a built-in server proxy key. All posters, cards, trailers, and streaming provider badges work automatically for all visitors.
                   </p>
                 </div>
-                <ComicButton
-                  variant="cyan"
-                  size="sm"
-                  onClick={() => openSettings('features')}
-                  rightIcon={<Sliders className="w-3.5 h-3.5" />}
-                >
-                  Customize in Features Tab
-                </ComicButton>
+              </div>
+
+              {/* BYOK Section */}
+              <div className="bg-zinc-950 border-2 border-black p-5 sm:p-6 space-y-4 shadow-[4px_4px_0px_0px_#000000]">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="space-y-0.5">
+                    <h3 className="font-display font-black text-base uppercase text-amber-400">
+                      Optional: Bring Your Own Key (BYOK)
+                    </h3>
+                    <p className="text-xs text-zinc-400 font-sans">
+                      Power users can configure their private TMDB API key to bypass shared rate limits.
+                    </p>
+                  </div>
+                  <ComicBadge variant="gold" size="sm">For Power Users</ComicBadge>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-sans">
+                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1 shadow-[1px_1px_0px_0px_#000000]">
+                    <strong className="text-white block font-display uppercase">1. Register</strong>
+                    <p className="text-zinc-400">Create a free account on <a href="https://www.themoviedb.org/signup" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">themoviedb.org</a>.</p>
+                  </div>
+                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1 shadow-[1px_1px_0px_0px_#000000]">
+                    <strong className="text-white block font-display uppercase">2. Generate Key</strong>
+                    <p className="text-zinc-400">Navigate to <strong>Settings → API → Create Developer Key</strong>.</p>
+                  </div>
+                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1 shadow-[1px_1px_0px_0px_#000000]">
+                    <strong className="text-white block font-display uppercase">3. Save in App</strong>
+                    <p className="text-zinc-400">Open <strong>Settings → TMDB Key</strong>, paste your key, and click Save.</p>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex flex-wrap gap-3">
+                  <ComicButton
+                    variant="gold"
+                    size="sm"
+                    onClick={() => openSettings('byok')}
+                    rightIcon={<Key className="w-3.5 h-3.5 text-black" />}
+                  >
+                    Open TMDB Key Settings
+                  </ComicButton>
+                  <ComicButton
+                    variant="cyan"
+                    size="sm"
+                    onClick={() => openSettings('features')}
+                    rightIcon={<Sliders className="w-3.5 h-3.5" />}
+                  >
+                    Customize Trailers & Providers
+                  </ComicButton>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {/* ========================================================================= */}
-        {/* 3. YOUTUBE HD TRAILER ENGINE */}
+        {/* 2. CITIZEN PASSPORT & PUBLIC SHARING */}
         {/* ========================================================================= */}
-        {activeTab === 'youtube' && (
+        {activeTab === 'passport' && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b-2 border-zinc-800 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-rose-600 text-white font-black border-2 border-black -skew-x-6">
-                    <Youtube className="w-6 h-6 skew-x-6" />
+                  <div className="p-2.5 bg-cyan-500 text-black font-black border-2 border-black -skew-x-6">
+                    <Sparkles className="w-6 h-6 skew-x-6" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-display uppercase tracking-widest text-rose-400 block font-bold">
-                      Embedded In-App Media Player
+                    <span className="text-[10px] font-display uppercase tracking-widest text-cyan-400 block font-bold">
+                      Gamification, Analytics & Viral Sharing
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      3. YouTube HD Theatrical Trailers
+                      2. Multiverse Citizen Passport & Sharing
                     </h2>
                   </div>
                 </div>
-                <ComicBadge variant="marvel" size="sm">Video Player</ComicBadge>
+                <ComicBadge variant="cyan" size="sm">Ranks • 4K Export • Public Links</ComicBadge>
               </div>
 
               <p className="text-sm text-zinc-300 font-sans leading-relaxed">
-                Multiverse Tracker lets you watch official teasers and theatrical trailers right inside your browser modal without leaving the page and with zero third-party video popups.
+                The <strong>Multiverse Citizen Passport</strong> turns your movie marathons into a gamified journey. Track your completion rate, unlock superhero ranks, export ultra-high-resolution cards, and share your watch journey with friends.
               </p>
 
-              {/* What YouTube Powers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              {/* 4 Feature Columns */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+                {/* 1. Ranks */}
                 <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-rose-400 text-sm uppercase flex items-center gap-1.5">
-                    <Play className="w-4 h-4" /> Official Teaser & Trailer Discovery
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Resolves official trailer video keys verified directly from Marvel Studios and DC Studios YouTube channels.
+                  <div className="flex items-center gap-1.5 font-display font-bold text-amber-400 text-sm uppercase">
+                    <Award className="w-4 h-4 text-amber-400" />
+                    <span>Superhero Ranks</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Level up from <em>Civilian</em> to <em>Avenger</em>, <em>Sorcerer Supreme</em>, or <em>Prime Earth Legend</em> as you log more titles.
                   </p>
                 </div>
 
+                {/* 2. Marathon Time */}
                 <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-1.5">
-                    <Lock className="w-4 h-4" /> Privacy-Enhanced Embedded Player
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Videos stream in crisp high definition with full mobile fullscreen and keyboard playback controls.
+                  <div className="flex items-center gap-1.5 font-display font-bold text-cyan-400 text-sm uppercase">
+                    <Clock className="w-4 h-4 text-cyan-400" />
+                    <span>Marathon Analytics</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Calculates exact watch time in hours and days, plus breakdowns across Movies, TV Series, and Special Presentations.
                   </p>
+                </div>
+
+                {/* 3. 4K PNG Export */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
+                  <div className="flex items-center gap-1.5 font-display font-bold text-emerald-400 text-sm uppercase">
+                    <Download className="w-4 h-4 text-emerald-400" />
+                    <span>Ultra HD 4K Cards</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Download crisp 300 DPI images directly to your Photos gallery (PWA) or desktop, perfect for Instagram Stories & Discord.
+                  </p>
+                </div>
+
+                {/* 4. Public Links */}
+                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
+                  <div className="flex items-center gap-1.5 font-display font-bold text-purple-400 text-sm uppercase">
+                    <LinkIcon className="w-4 h-4 text-purple-400" />
+                    <span>Public Share Links</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                    Generate instant share links (`?shared=...`). Friends can view your watched list or copy all your checkmarks with 1 click!
+                  </p>
+                </div>
+              </div>
+
+              {/* Ranks Breakdown Table */}
+              <div className="bg-zinc-950 border-2 border-black p-5 space-y-4 shadow-[3px_3px_0px_0px_#000000]">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h3 className="font-display font-bold text-sm uppercase text-amber-400 flex items-center gap-1.5">
+                    <Shield className="w-4 h-4" /> Marvel & DC Rank Tiers
+                  </h3>
+                  <ComicBadge variant="gold" size="sm">7 Progression Tiers</ComicBadge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans">
+                  {/* MCU Ranks */}
+                  <div className="bg-[#141624] border border-zinc-800 p-4 space-y-2">
+                    <span className="font-display font-black text-marvel-crimson text-sm uppercase block border-b border-zinc-800 pb-1">
+                      Marvel MCU Ranks
+                    </span>
+                    <ul className="space-y-1.5 text-zinc-300">
+                      <li><strong>0%:</strong> 👤 Civilian (Daily Bugle Reader)</li>
+                      <li><strong>1–15%:</strong> 🛡️ S.H.I.E.L.D. Recruit (Level 1 Clearance)</li>
+                      <li><strong>16–35%:</strong> 🕸️ Street-Level Hero (Defender of NY)</li>
+                      <li><strong>36–60%:</strong> 🦸‍♂️ Official Avenger (Earth&apos;s Mightiest)</li>
+                      <li><strong>61–85%:</strong> ✨ Sorcerer Supreme (Mystic Arts Master)</li>
+                      <li><strong>86–99%:</strong> 🪐 Multiverse Guardian (Nexus Being)</li>
+                      <li><strong>100%:</strong> 👑 The One Above All (Master of the Multiverse)</li>
+                    </ul>
+                  </div>
+
+                  {/* DCU Ranks */}
+                  <div className="bg-[#141624] border border-zinc-800 p-4 space-y-2">
+                    <span className="font-display font-black text-cyan-400 text-sm uppercase block border-b border-zinc-800 pb-1">
+                      DC Universe Ranks
+                    </span>
+                    <ul className="space-y-1.5 text-zinc-300">
+                      <li><strong>0%:</strong> 👤 Gotham Citizen (Watching the Skies)</li>
+                      <li><strong>1–15%:</strong> 🚨 GCPD Detective (Badge #1939)</li>
+                      <li><strong>16–35%:</strong> 🦇 Bat-Family Vigilante (Knight of Gotham)</li>
+                      <li><strong>36–60%:</strong> ⚡ Justice League Member (Hall of Justice)</li>
+                      <li><strong>61–85%:</strong> 💚 Green Lantern Corps (Sector 2814 Guardian)</li>
+                      <li><strong>86–99%:</strong> 🌀 Speed Force Champion (Crisis Survivor)</li>
+                      <li><strong>100%:</strong> 👑 Prime Earth Legend (100% DC Universe Master)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* How Public Sharing Works */}
+              <div className="bg-zinc-950 border-2 border-black p-5 space-y-3 shadow-[3px_3px_0px_0px_#000000]">
+                <h3 className="font-display font-bold text-sm uppercase text-white flex items-center gap-1.5">
+                  <Share2 className="w-4 h-4 text-cyan-400" /> How Public Watchlist Links Work
+                </h3>
+                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                  When you click <strong>&quot;Copy Public Share Link&quot;</strong> in your passport, your completed checkmarks and custom name are encoded into a compact URL token. When a friend opens the link:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans pt-1">
+                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
+                    <strong className="text-amber-400 font-display uppercase block">1. Read-Only Shared Mode</strong>
+                    <p className="text-zinc-400">They see all your watched titles marked with gold borders without altering their own list.</p>
+                  </div>
+                  <div className="bg-[#141624] border border-zinc-800 p-3 space-y-1">
+                    <strong className="text-emerald-400 font-display uppercase block">2. &quot;Copy to My Tracker&quot;</strong>
+                    <p className="text-zinc-400">With 1 click, they can import all your watched titles into their own personal tracker profile.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -362,22 +401,22 @@ export default function GuidePage() {
         )}
 
         {/* ========================================================================= */}
-        {/* 4. SUPABASE CLOUD & LOCALSTORAGE */}
+        {/* 3. CLOUD SYNC & DATA PRIVACY */}
         {/* ========================================================================= */}
         {activeTab === 'supabase' && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b-2 border-zinc-800 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-emerald-500 text-black font-black border-2 border-black -skew-x-6">
                     <Cloud className="w-6 h-6 skew-x-6" />
                   </div>
                   <div>
                     <span className="text-[10px] font-display uppercase tracking-widest text-emerald-400 block font-bold">
-                      Cloud Database & Multi-Device Sync
+                      PostgreSQL Cloud & Offline LocalStorage
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      4. Supabase Cloud & Local Storage
+                      3. Cloud Sync & Data Privacy
                     </h2>
                   </div>
                 </div>
@@ -385,11 +424,11 @@ export default function GuidePage() {
               </div>
 
               <p className="text-sm text-zinc-300 font-sans leading-relaxed">
-                Multiverse Tracker utilizes a high-performance dual-storage architecture — instant local storage for 0ms UI response times and Supabase PostgreSQL in the cloud for cross-device synchronization.
+                Multiverse Tracker uses a hybrid storage architecture: instant local browser storage for 0ms responsiveness and Supabase PostgreSQL in the cloud for seamless multi-device synchronization.
               </p>
 
               {/* 2 Methods */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
                   <div className="flex items-center justify-between">
                     <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-1.5">
@@ -398,7 +437,7 @@ export default function GuidePage() {
                     <ComicBadge variant="dark" size="sm">0ms Latency</ComicBadge>
                   </div>
                   <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Every click on *"Watch"* is saved immediately to your browser&apos;s local storage. No registration is required, and your progress is preserved even when browsing offline.
+                    Every click on <em>&quot;Watched&quot;</em> is saved immediately to your browser&apos;s local storage. Zero registration required, completely private with no cookies or ads.
                   </p>
                 </div>
 
@@ -410,7 +449,7 @@ export default function GuidePage() {
                     <ComicBadge variant="green" size="sm">Phone + Laptop + TV</ComicBadge>
                   </div>
                   <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Sign up with your email and password. Your entire watch history is automatically backed up in the cloud and synced in real time across your smartphone, laptop, tablet, and smart TV.
+                    Sign up with your email. Your entire watch history and custom BYOK settings automatically back up and sync in real time across your smartphone, tablet, and PC.
                   </p>
                 </div>
               </div>
@@ -418,90 +457,22 @@ export default function GuidePage() {
               {/* JSON Backup */}
               <div className="bg-zinc-950 border-2 border-black p-5 space-y-3 shadow-[3px_3px_0px_0px_#000000]">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="font-display font-bold text-sm uppercase text-white">
-                    Portable JSON Data Backups
+                  <h3 className="font-display font-bold text-sm uppercase text-white flex items-center gap-1.5">
+                    <Database className="w-4 h-4 text-emerald-400" /> Portable JSON Data Backups
                   </h3>
                   <ComicBadge variant="gold" size="sm">Data Sovereignty</ComicBadge>
                 </div>
                 <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                  You own your data. Open <strong>Settings → Data & Backup</strong> anytime to download a portable `.json` backup file or restore your history onto any fresh device.
+                  You own 100% of your data. Open <strong>Settings → Data &amp; Backup</strong> anytime to download a portable `.json` backup file or restore your history onto any device.
                 </p>
                 <ComicButton
                   variant="gold"
                   size="sm"
                   onClick={() => openSettings('data')}
-                  rightIcon={<Database className="w-3.5 h-3.5" />}
+                  rightIcon={<Database className="w-3.5 h-3.5 text-black" />}
                 >
-                  Open Data & Backup Tab
+                  Open Data &amp; Backup Tab
                 </ComicButton>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* 5. MULTIVERSE TIMELINE ENGINE */}
-        {/* ========================================================================= */}
-        {activeTab === 'timelines' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="bg-[#141624] border-[3px] border-black p-6 sm:p-8 shadow-[5px_5px_0px_0px_#000000] space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-purple-600 text-white font-black border-2 border-black -skew-x-6">
-                    <Layers className="w-6 h-6 skew-x-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-display uppercase tracking-widest text-purple-400 block font-bold">
-                      Viewing Orders & Franchise Sagas
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl font-display font-black uppercase text-white tracking-wide">
-                      5. Multiverse Timelines & Watch Orders
-                    </h2>
-                  </div>
-                </div>
-                <ComicBadge variant="marvel" size="sm">Curated Canon</ComicBadge>
-              </div>
-
-              <p className="text-sm text-zinc-300 font-sans leading-relaxed">
-                Multiverse Tracker is carefully structured to provide both theatrical release order and in-universe chronological story timelines:
-              </p>
-
-              {/* Orders */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-marvel-crimson text-sm uppercase flex items-center gap-1.5">
-                    <Film className="w-4 h-4" /> 1. Release Order
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Movies and shows organized strictly by theatrical premiere date, starting with <em>Iron Man</em> (2008) through Phases 1, 2, 3, 4, 5, and 6. Recommended for first-time viewers!
-                  </p>
-                </div>
-
-                <div className="bg-zinc-950/90 border-2 border-black p-5 space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <span className="font-display font-bold text-amber-400 text-sm uppercase flex items-center gap-1.5">
-                    <Layers className="w-4 h-4" /> 2. Chronological Story Timeline
-                  </span>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                    Re-orders every entry strictly according to in-universe storyline chronology, starting from <em>Captain America: The First Avenger</em> (1942), through <em>Captain Marvel</em> (1995), and onwards.
-                  </p>
-                </div>
-              </div>
-
-              {/* Multiverse Branch Filtering */}
-              <div className="bg-zinc-950 border-2 border-black p-5 space-y-3 shadow-[3px_3px_0px_0px_#000000]">
-                <h3 className="font-display font-bold text-sm uppercase text-cyan-400">
-                  Multiverse Branch Filtering
-                </h3>
-                <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                  Use the tracklist branch dropdown to filter specific sagas across the multiverse:
-                </p>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <span className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-xs font-display uppercase text-white">Sacred Timeline (MCU)</span>
-                  <span className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-xs font-display uppercase text-white">Defenders Saga (Daredevil/Punisher)</span>
-                  <span className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-xs font-display uppercase text-white">Fox X-Men & Deadpool</span>
-                  <span className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-xs font-display uppercase text-white">Sony Spider-Man (Spider-Verse)</span>
-                  <span className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-xs font-display uppercase text-white">DC Extended Universe & Elseworlds</span>
-                </div>
               </div>
             </div>
           </div>
@@ -517,3 +488,4 @@ export default function GuidePage() {
     </div>
   );
 }
+

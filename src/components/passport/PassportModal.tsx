@@ -21,6 +21,7 @@ import {
   Coffee,
   Link as LinkIcon,
   Globe,
+  Edit2,
 } from 'lucide-react';
 import { toPng, toBlob } from 'html-to-image';
 import { FranchiseMedia, Universe } from '@/lib/types';
@@ -103,7 +104,35 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   };
 
   const rank = getRank();
-  const holderName = userName ? `@${userName.replace('@', '')}` : 'Multiverse Agent';
+
+  const [customAlias, setCustomAlias] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('multiverse_user_alias') || '';
+    }
+    return '';
+  });
+  const [isEditingAlias, setIsEditingAlias] = useState(false);
+
+  const effectiveName = customAlias.trim()
+    ? customAlias.trim()
+    : userName
+    ? userName.replace(/^@+/, '')
+    : 'Multiverse Agent';
+
+  const holderName = `@${effectiveName.replace(/^@+/, '')}`;
+
+  const handleSaveAlias = (newVal: string) => {
+    const clean = newVal.trim().replace(/^@+/, '');
+    setCustomAlias(clean);
+    if (typeof window !== 'undefined') {
+      if (clean) {
+        localStorage.setItem('multiverse_user_alias', clean);
+      } else {
+        localStorage.removeItem('multiverse_user_alias');
+      }
+    }
+    setIsEditingAlias(false);
+  };
 
   // Bulletproof cross-platform export handler (PWA, iOS Safari, Android, Desktop)
   const handleDownload = async () => {
@@ -351,13 +380,49 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-zinc-950 border-[3px] border-black shadow-[3px_3px_0px_0px_#000000] -skew-x-3 flex items-center justify-center text-4xl flex-shrink-0">
                   {rank.icon}
                 </div>
-                <div className="space-y-1 min-w-0">
-                  <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
-                    Citizen / Holder
-                  </span>
-                  <h3 className="font-display font-black text-xl sm:text-2xl text-amber-400 uppercase truncate">
-                    {holderName}
-                  </h3>
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-display uppercase tracking-widest text-zinc-400 font-bold block">
+                      Citizen / Holder
+                    </span>
+                    {!isEditingAlias && (
+                      <button
+                        onClick={() => setIsEditingAlias(true)}
+                        className="text-[10px] text-zinc-400 hover:text-amber-400 font-sans flex items-center gap-1 cursor-pointer transition"
+                        title="Customize your superhero name / alias"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                        <span>Edit Name</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {isEditingAlias ? (
+                    <div className="flex items-center gap-1.5 pt-0.5">
+                      <span className="text-amber-400 font-bold font-display text-sm">@</span>
+                      <input
+                        type="text"
+                        autoFocus
+                        defaultValue={effectiveName === 'Multiverse Agent' ? '' : effectiveName}
+                        placeholder="Your superhero name..."
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveAlias((e.target as HTMLInputElement).value);
+                          if (e.key === 'Escape') setIsEditingAlias(false);
+                        }}
+                        onBlur={(e) => handleSaveAlias(e.target.value)}
+                        className="bg-black border-2 border-amber-400 px-2 py-0.5 text-xs text-white font-display uppercase font-bold focus:outline-none w-full max-w-[200px]"
+                      />
+                    </div>
+                  ) : (
+                    <h3
+                      onClick={() => setIsEditingAlias(true)}
+                      className="font-display font-black text-xl sm:text-2xl text-amber-400 uppercase truncate cursor-pointer hover:underline"
+                      title="Click to edit name"
+                    >
+                      {holderName}
+                    </h3>
+                  )}
+
                   <div className="flex items-center gap-2 flex-wrap">
                     <ComicBadge variant={rank.badge} size="sm">
                       {rank.title}
