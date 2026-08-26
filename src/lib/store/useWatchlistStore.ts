@@ -5,32 +5,25 @@ import { syncUserProfileToCloud } from '../supabase/user-profile';
 const WATCHED_STORAGE_KEY = 'multiverse_tracker_watched_v1';
 const AUTH_MODE_KEY = 'multiverse_tracker_auth_mode_v1';
 
-const getStoredWatched = (): Record<string, boolean> => {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = localStorage.getItem(WATCHED_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-};
-
-const getStoredAuthMode = (): 'guest' | 'supabase' => {
-  if (typeof window === 'undefined') return 'guest';
-  try {
-    const raw = localStorage.getItem(AUTH_MODE_KEY);
-    if (raw === 'supabase' || raw === 'guest') return raw;
-    return 'guest';
-  } catch {
-    return 'guest';
-  }
-};
-
 export const useWatchlistStore = create<WatchlistState>((set, get) => ({
-  watchedIds: getStoredWatched(),
-  authMode: getStoredAuthMode(),
+  // Always start with empty/default values — same on server & client (no hydration mismatch)
+  watchedIds: {},
+  authMode: 'guest',
   supabaseUser: null,
   lastSyncedAt: null,
+
+  // Called once on client mount to load persisted localStorage values
+  hydrateFromStorage: () => {
+    try {
+      const raw = localStorage.getItem(WATCHED_STORAGE_KEY);
+      const watchedIds = raw ? JSON.parse(raw) : {};
+      const rawAuth = localStorage.getItem(AUTH_MODE_KEY);
+      const authMode: 'guest' | 'supabase' = rawAuth === 'supabase' ? 'supabase' : 'guest';
+      set({ watchedIds, authMode });
+    } catch {
+      // ignore storage errors
+    }
+  },
 
   setAuthMode: (mode) => {
     if (typeof window !== 'undefined') {

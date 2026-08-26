@@ -37,6 +37,7 @@ export interface WatchlistState {
   markPhaseWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
   markAllWatched: (mediaItems: FranchiseMedia[], watched: boolean) => Promise<void>;
   setAuthMode: (mode: 'guest' | 'supabase') => void;
+  hydrateFromStorage: () => void;
   exportWatchlistJson: () => string;
   importWatchlistJson: (jsonString: string) => boolean;
   resetProgress: (universe?: Universe) => void;

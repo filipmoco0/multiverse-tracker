@@ -21,6 +21,9 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    // Load persisted localStorage data into store (must run on client after mount)
+    useWatchlistStore.getState().hydrateFromStorage();
+
     const supabase = createClient();
     if (supabase) {
       supabase.auth.getSession().then(({ data }) => {
