@@ -173,6 +173,11 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   // Filter and Sort media
   const filteredAndSortedMedia = useMemo(() => {
+    const currentBranch = branchFilter === 'all'
+      ? undefined
+      : branches.find((branch) => branch.id === branchFilter);
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
     return initialMedia
       .filter((item) => {
         // 0a. Hide One-Shots setting (unless user explicitly filters by 'special')
@@ -186,11 +191,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         }
 
         // 1. Branch continuity filter
-        if (branchFilter !== 'all') {
-          const currentBranch = branches.find((b) => b.id === branchFilter);
-          if (currentBranch && currentBranch.match) {
-            if (!currentBranch.match(item.phase_or_chapter)) return false;
-          }
+        if (currentBranch?.match && !currentBranch.match(item.phase_or_chapter)) {
+          return false;
         }
 
         // 2. Type filter
@@ -207,11 +209,10 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         }
 
         // 4. Search query
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          const matchTitle = item.title.toLowerCase().includes(q);
-          const matchPhase = item.phase_or_chapter.toLowerCase().includes(q);
-          const matchOverview = item.overview?.toLowerCase().includes(q);
+        if (normalizedQuery) {
+          const matchTitle = item.title.toLowerCase().includes(normalizedQuery);
+          const matchPhase = item.phase_or_chapter.toLowerCase().includes(normalizedQuery);
+          const matchOverview = item.overview?.toLowerCase().includes(normalizedQuery);
           if (!matchTitle && !matchPhase && !matchOverview) {
             return false;
           }
@@ -246,16 +247,24 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       return [{ phase: 'Chronological Multiverse Timeline', items: filteredAndSortedMedia }];
     }
 
+    const groupsByPhase = new Map<string, FranchiseMedia[]>();
+    for (const item of filteredAndSortedMedia) {
+      const phaseItems = groupsByPhase.get(item.phase_or_chapter);
+      if (phaseItems) phaseItems.push(item);
+      else groupsByPhase.set(item.phase_or_chapter, [item]);
+    }
+
+    // Preserve the source catalog's phase order while grouping in one pass.
     const groups: { phase: string; items: FranchiseMedia[] }[] = [];
-    const phaseOrder = Array.from(new Set(initialMedia.map((m) => m.phase_or_chapter)));
-
-    phaseOrder.forEach((phaseName) => {
-      const phaseItems = filteredAndSortedMedia.filter((m) => m.phase_or_chapter === phaseName);
-      if (phaseItems.length > 0) {
-        groups.push({ phase: phaseName, items: phaseItems });
+    const emittedPhases = new Set<string>();
+    for (const item of initialMedia) {
+      const phase = item.phase_or_chapter;
+      const phaseItems = groupsByPhase.get(phase);
+      if (phaseItems && !emittedPhases.has(phase)) {
+        groups.push({ phase, items: phaseItems });
+        emittedPhases.add(phase);
       }
-    });
-
+    }
     return groups;
   }, [filteredAndSortedMedia, initialMedia, orderMode]);
 
