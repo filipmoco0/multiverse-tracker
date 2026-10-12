@@ -4,7 +4,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Info, Calendar } from 'lucide-react';
 import { clsx } from 'clsx';
-import { FranchiseMedia, OrderMode } from '@/lib/types';
+import { FranchiseMedia } from '@/lib/types';
 import { extractSeasonRange } from '@/lib/utils/season';
 import { ComicBadge } from './ComicBadge';
 import { ComicPoster } from './ComicPoster';
@@ -13,7 +13,6 @@ import { MediaModal } from './MediaModal';
 interface ComicCardProps {
   media: FranchiseMedia;
   isWatched: boolean;
-  orderMode: OrderMode;
   onToggleWatched: (
     mediaId: string,
     tmdbId?: number | null,
@@ -26,15 +25,12 @@ interface ComicCardProps {
 export const ComicCard: React.FC<ComicCardProps> = React.memo(({
   media,
   isWatched,
-  orderMode,
   onToggleWatched,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMCU = media.universe === 'mcu';
 
-  const orderNumber = orderMode === 'release'
-    ? media.release_order
-    : (media.chronological_order || media.release_order);
+  const orderNumber = media.release_order;
 
   const releaseYear = useMemo(
     () => media.release_date ? new Date(media.release_date).getFullYear() : null,
@@ -93,10 +89,10 @@ export const ComicCard: React.FC<ComicCardProps> = React.memo(({
             </motion.div>
           )}
 
-          {/* Top Badges (Order # & Media Type) */}
+          {/* Top Badges (Release # & Media Type) */}
           <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
             <ComicBadge
-              variant={orderMode === 'chronological' ? 'cyan' : isMCU ? 'marvel' : 'dc'}
+              variant={isMCU ? 'marvel' : 'dc'}
               size="sm"
             >
               #{orderNumber}

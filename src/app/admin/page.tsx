@@ -74,7 +74,6 @@ export default function AdminDashboardPage() {
   const [formTitle, setFormTitle] = useState('');
   const [formMediaType, setFormMediaType] = useState<MediaType>('movie');
   const [formReleaseOrder, setFormReleaseOrder] = useState<number>(1);
-  const [formChronoOrder, setFormChronoOrder] = useState<number | string>('');
   const [formPhase, setFormPhase] = useState('Phase 5');
   const [formPosterPath, setFormPosterPath] = useState('');
   const [formReleaseDate, setFormReleaseDate] = useState('');
@@ -263,7 +262,6 @@ export default function AdminDashboardPage() {
       title: formTitle.trim(),
       media_type: formMediaType,
       release_order: Number(formReleaseOrder) || 1,
-      chronological_order: formChronoOrder ? Number(formChronoOrder) : null,
       phase_or_chapter: formPhase.trim() || (formUniverse === 'mcu' ? 'Phase 5' : 'DCEU Era'),
       poster_path: formPosterPath.trim() || null,
       release_date: formReleaseDate.trim() || null,
@@ -320,7 +318,6 @@ export default function AdminDashboardPage() {
     setFormOverview('');
     setFormTmdbId('');
     setFormTraktId('');
-    setFormChronoOrder('');
     const currentMax = mediaList.reduce((max, item) => Math.max(max, item.release_order), 0);
     setFormReleaseOrder(currentMax + 1);
   };
@@ -331,7 +328,6 @@ export default function AdminDashboardPage() {
     setFormTitle(item.title);
     setFormMediaType(item.media_type);
     setFormReleaseOrder(item.release_order);
-    setFormChronoOrder(item.chronological_order !== null ? item.chronological_order : '');
     setFormPhase(item.phase_or_chapter);
     setFormPosterPath(item.poster_path || '');
     setFormReleaseDate(item.release_date || '');
@@ -726,7 +722,7 @@ export default function AdminDashboardPage() {
             </div>
 
             <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-              Curate tracklists, select official poster artwork, and configure chronological orders.
+              Curate tracklists and select official poster artwork.
             </p>
 
             <form onSubmit={handleAdminLogin} className="space-y-4">
@@ -1169,7 +1165,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     <div>
                       <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
                         Phase / Chapter
@@ -1197,18 +1193,6 @@ export default function AdminDashboardPage() {
                         type="number"
                         value={formReleaseOrder}
                         onChange={(e) => setFormReleaseOrder(Number(e.target.value))}
-                        className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-display uppercase tracking-wider text-zinc-400 mb-1">
-                        Chrono #
-                      </label>
-                      <input
-                        type="number"
-                        value={formChronoOrder}
-                        onChange={(e) => setFormChronoOrder(e.target.value)}
                         className="w-full bg-zinc-950 border-2 border-black p-2 text-xs text-white font-sans focus:outline-none focus:border-amber-400"
                       />
                     </div>
@@ -1289,7 +1273,6 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th className="p-2.5">Reorder</th>
                   <th className="p-2.5">Rel #</th>
-                  <th className="p-2.5">Chrono #</th>
                   <th className="p-2.5">Poster</th>
                   <th className="p-2.5">Title</th>
                   <th className="p-2.5">Phase / Universe</th>
@@ -1351,9 +1334,6 @@ export default function AdminDashboardPage() {
                       </td>
 
                       <td className="p-2.5 font-display font-bold text-amber-400">#{item.release_order}</td>
-                      <td className="p-2.5 font-display font-bold text-cyan-400">
-                        {item.chronological_order ? `#${item.chronological_order}` : '—'}
-                      </td>
                       <td className="p-2.5">
                         <div
                           onClick={() => handleOpenRowPosterPicker(item)}

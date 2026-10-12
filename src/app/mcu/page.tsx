@@ -10,7 +10,7 @@ export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Marvel MCU',
-  description: 'Track all MCU Phases 1 to 6, Disney+ series, and Special Presentations in release and chronological orders.',
+  description: 'Track MCU Phases 1 to 6, Disney+ series, and Special Presentations in release order.',
 };
 
 export default async function McuPage() {
@@ -24,7 +24,7 @@ export default async function McuPage() {
           universe="mcu"
           initialMedia={mcuMedia}
           title="MARVEL CINEMATIC UNIVERSE"
-          subtitle="Track Earth’s Mightiest Heroes from Phase 1 through the Multiverse Saga with release order or canonical in-universe chronological timelines."
+          subtitle="Track Earth’s Mightiest Heroes from Phase 1 through the Multiverse Saga in release order."
         />
       </main>
       <Footer />

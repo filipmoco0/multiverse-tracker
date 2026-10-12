@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: 'Multiverse Tracker',
     template: '%s | Multiverse Tracker',
   },
-  description: 'Curated progress tracker for Marvel Cinematic Universe & DC Universe in release and chronological orders. Instant local tracking and cross-device cloud sync.',
+  description: 'Curated release-order progress tracker for Marvel Cinematic Universe & DC Universe. Instant local tracking and cross-device cloud sync.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Multiverse Tracker | Marvel & DC Cinematic Universe',
-    description: 'Track your MCU & DCU movies and TV shows in release and chronological orders.',
+    description: 'Track your MCU & DCU movies and TV shows in release order.',
     url: 'https://multiversetracker.com',
     siteName: 'Multiverse Tracker',
     images: [

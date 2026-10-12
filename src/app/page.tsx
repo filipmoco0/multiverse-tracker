@@ -92,7 +92,6 @@ function LandingContent() {
               <span className="font-display text-zinc-500 font-bold">VS</span>
               <ComicBadge variant="dc" size="sm">DC COMICS</ComicBadge>
             </div>
-            <ComicBadge variant="gold" size="sm">v1.0 Edition</ComicBadge>
           </div>
 
           {/* Error Feedback Alert */}
@@ -117,7 +116,7 @@ function LandingContent() {
               MULTIVERSE <span className="text-amber-400">TRACKER</span>
             </h1>
             <p className="text-sm sm:text-base text-zinc-300 font-sans max-w-xl mx-auto leading-relaxed">
-              The ultimate progress tracker for the Marvel Cinematic Universe and DC Universe. Follow release order or chronological timelines, sync across all your devices, or jump in instantly!
+              The ultimate progress tracker for the Marvel Cinematic Universe and DC Universe. Follow release order, sync across all your devices, or jump in instantly!
             </p>
           </div>
 
@@ -125,7 +124,7 @@ function LandingContent() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs font-display uppercase tracking-wider">
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-amber-400">
               <Film className="w-4 h-4 mx-auto mb-1 text-white" />
-              Release & Chrono
+              Release Order
             </div>
             <div className="bg-zinc-900/90 border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000] text-cyan-400">
               <Tv className="w-4 h-4 mx-auto mb-1 text-white" />

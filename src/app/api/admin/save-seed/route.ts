@@ -12,12 +12,6 @@ function sanitizeMediaItem(item: any): any {
     title: String(item.title || '').trim(),
     media_type: item.media_type || 'movie',
     release_order: Number(item.release_order) || 1,
-    chronological_order:
-      item.chronological_order !== null &&
-      item.chronological_order !== undefined &&
-      item.chronological_order !== ''
-        ? Number(item.chronological_order)
-        : null,
     phase_or_chapter: String(item.phase_or_chapter || (item.universe === 'mcu' ? 'Phase 1' : 'Chapter 1')).trim(),
     trakt_id: item.trakt_id ? Number(item.trakt_id) : null,
     tmdb_id: item.tmdb_id ? Number(item.tmdb_id) : null,

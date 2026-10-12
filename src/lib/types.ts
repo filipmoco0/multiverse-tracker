@@ -7,7 +7,6 @@ export interface FranchiseMedia {
   title: string;
   media_type: MediaType;
   release_order: number;
-  chronological_order: number | null;
   phase_or_chapter: string;
   trakt_id?: number | null;
   tmdb_id?: number | null;
@@ -20,7 +19,6 @@ export interface FranchiseMedia {
   created_at?: string;
 }
 
-export type OrderMode = 'release' | 'chronological';
 export type TypeFilter = 'all' | 'movie' | 'show' | 'special';
 export type StatusFilter = 'all' | 'watched' | 'unwatched';
 

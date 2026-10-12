@@ -379,9 +379,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                       <span className="inline-block skew-x-3">{scopeName}</span>
                     </span>
                   )}
-                  <ComicBadge variant="gold" size="sm">
-                    PASSPORT v1.0
-                  </ComicBadge>
                 </div>
               </div>
 

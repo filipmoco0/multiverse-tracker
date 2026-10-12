@@ -44,10 +44,6 @@ export async function getFranchiseMedia(universe: 'mcu' | 'dcu'): Promise<Franch
       title: d.title,
       media_type: d.media_type,
       release_order: Number(d.release_order) || 1,
-      chronological_order:
-        d.chronological_order !== null && d.chronological_order !== undefined && d.chronological_order !== ''
-          ? Number(d.chronological_order)
-          : null,
       phase_or_chapter: d.phase_or_chapter || (universe === 'mcu' ? 'Phase 1' : 'Chapter 1'),
       trakt_id: d.trakt_id ? Number(d.trakt_id) : null,
       tmdb_id: d.tmdb_id ? Number(d.tmdb_id) : null,

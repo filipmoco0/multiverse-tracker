@@ -130,7 +130,7 @@ export const MediaModal: React.FC<MediaModalProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
-            {/* Left Column: Poster & Order Badges */}
+              {/* Left Column: Poster & Release Number */}
             <div className="relative flex flex-col items-center space-y-3">
               <div className="relative w-full aspect-[2/3] border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] overflow-hidden bg-zinc-900">
                 <ComicPoster
@@ -147,17 +147,11 @@ export const MediaModal: React.FC<MediaModalProps> = ({
                 )}
               </div>
 
-              {/* Order Numbers Display */}
-              <div className="w-full grid grid-cols-2 gap-2 text-center">
+              {/* Release Number Display */}
+              <div className="w-full text-center">
                 <div className="bg-zinc-900 border-2 border-black p-2 shadow-[2px_2px_0px_0px_#000000]">
                   <div className="text-[10px] uppercase font-sans text-zinc-400">Release #</div>
                   <div className="font-display text-base font-bold text-amber-400">#{media.release_order}</div>
-                </div>
-                <div className="bg-zinc-900 border-2 border-black p-2 shadow-[2px_2px_0px_0px_#000000]">
-                  <div className="text-[10px] uppercase font-sans text-zinc-400">Chrono #</div>
-                  <div className="font-display text-base font-bold text-cyan-400">
-                    {media.chronological_order ? `#${media.chronological_order}` : 'TBD'}
-                  </div>
                 </div>
               </div>
 

@@ -10,12 +10,6 @@ function sanitizeMediaItem(item: any): any {
     title: String(item.title || '').trim(),
     media_type: item.media_type || 'movie',
     release_order: Number(item.release_order) || 1,
-    chronological_order:
-      item.chronological_order !== null &&
-      item.chronological_order !== undefined &&
-      item.chronological_order !== ''
-        ? Number(item.chronological_order)
-        : null,
     phase_or_chapter: String(item.phase_or_chapter || (item.universe === 'mcu' ? 'Phase 1' : 'Chapter 1')).trim(),
     trakt_id: item.trakt_id ? Number(item.trakt_id) : null,
     tmdb_id: item.tmdb_id ? Number(item.tmdb_id) : null,
@@ -47,10 +41,6 @@ export async function GET(request: NextRequest) {
           title: d.title,
           media_type: d.media_type,
           release_order: Number(d.release_order) || 1,
-          chronological_order:
-            d.chronological_order !== null && d.chronological_order !== undefined && d.chronological_order !== ''
-              ? Number(d.chronological_order)
-              : null,
           phase_or_chapter: d.phase_or_chapter || (universe === 'mcu' ? 'Phase 1' : 'Chapter 1'),
           trakt_id: d.trakt_id ? Number(d.trakt_id) : null,
           tmdb_id: d.tmdb_id ? Number(d.tmdb_id) : null,

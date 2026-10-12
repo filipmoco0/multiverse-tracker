@@ -3,20 +3,19 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Flame, Zap, CheckCircle2, RotateCcw, CheckSquare, Sparkles, X, Filter, SlidersHorizontal, Coffee, Heart } from 'lucide-react';
-import { FranchiseMedia, OrderMode, TypeFilter, StatusFilter, Universe } from '@/lib/types';
+import { FranchiseMedia, TypeFilter, StatusFilter, Universe } from '@/lib/types';
 import { useWatchlistStore } from '@/lib/store/useWatchlistStore';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { ComicCard } from '@/components/comic/ComicCard';
 import { ComicBadge } from '@/components/comic/ComicBadge';
 import { ComicButton } from '@/components/comic/ComicButton';
 import { ProgressBar } from '@/components/comic/ProgressBar';
-import { OrderToggle } from '@/components/filters/OrderToggle';
 import { TypeFilterTabs } from '@/components/filters/TypeFilter';
 import { StatusFilterTabs } from '@/components/filters/StatusFilter';
 import { triggerComicConfetti, triggerGrandCelebration } from '@/components/comic/ConfettiCelebration';
 import { MarathonStatsWidget } from '@/components/stats/MarathonStatsWidget';
 import { PassportModal } from '@/components/passport/PassportModal';
-import { MilestoneDonationModal, MilestoneData } from '@/components/comic/MilestoneDonationModal';
+import { MilestoneModal, MilestoneData } from '@/components/comic/MilestoneModal';
 import { decodeSharedProgress, SharedProgressData } from '@/lib/utils/share-progress';
 import { clsx } from 'clsx';
 
@@ -28,6 +27,12 @@ interface FranchiseTracklistProps {
 }
 
 const ONE_SHOT_IDS = new Set(['marvel-6', 'marvel-7', 'marvel-9', 'marvel-11', 'marvel-13']);
+const WATCH_COUNT_MILESTONES = [15, 30, 60, 100];
+
+function getNewWatchCountMilestone(previousCount: number, nextCount: number): number | null {
+  const reached = WATCH_COUNT_MILESTONES.filter((milestone) => milestone > previousCount && milestone <= nextCount);
+  return reached.length ? reached[reached.length - 1] : null;
+}
 
 function isOneShot(item: FranchiseMedia): boolean {
   if (ONE_SHOT_IDS.has(item.id)) return true;
@@ -47,7 +52,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 }) => {
   const [activeMedia, setActiveMedia] = useState<FranchiseMedia | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [orderMode, setOrderMode] = useState<OrderMode>('release');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [branchFilter, setBranchFilter] = useState<string>('all');
@@ -67,8 +71,7 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       const savedBranch = localStorage.getItem(`multiverse_${universe}_branch_filter`);
       if (savedBranch) setBranchFilter(savedBranch);
 
-      const savedOrder = localStorage.getItem(`multiverse_${universe}_order_mode`) as OrderMode;
-      if (savedOrder && (savedOrder === 'release' || savedOrder === 'chronological')) setOrderMode(savedOrder);
+      localStorage.removeItem(`multiverse_${universe}_order_mode`);
 
       const savedType = localStorage.getItem(`multiverse_${universe}_type_filter`) as TypeFilter;
       if (savedType) setTypeFilter(savedType);
@@ -82,13 +85,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     setBranchFilter(branchId);
     try {
       localStorage.setItem(`multiverse_${universe}_branch_filter`, branchId);
-    } catch {}
-  }, [universe]);
-
-  const handleOrderChange = useCallback((mode: OrderMode) => {
-    setOrderMode(mode);
-    try {
-      localStorage.setItem(`multiverse_${universe}_order_mode`, mode);
     } catch {}
   }, [universe]);
 
@@ -220,18 +216,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
         return true;
       })
-      .sort((a, b) => {
-        if (orderMode === 'chronological') {
-          const aOrder = a.chronological_order !== null ? a.chronological_order : a.release_order;
-          const bOrder = b.chronological_order !== null ? b.chronological_order : b.release_order;
-          return aOrder - bOrder;
-        } else {
-          const aOrder = a.release_order;
-          const bOrder = b.release_order;
-          return aOrder - bOrder;
-        }
-      });
-  }, [initialMedia, typeFilter, statusFilter, branchFilter, searchQuery, orderMode, activeWatchedIds, branches]);
+      .sort((a, b) => a.release_order - b.release_order);
+  }, [initialMedia, typeFilter, statusFilter, branchFilter, searchQuery, activeWatchedIds, branches]);
 
   // Overall progress calculation based on active branch selection
   const totalItems = filteredAndSortedMedia.length;
@@ -243,10 +229,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
 
   // Group media by Phase/Chapter
   const groupedMedia = useMemo(() => {
-    if (orderMode === 'chronological') {
-      return [{ phase: 'Chronological Multiverse Timeline', items: filteredAndSortedMedia }];
-    }
-
     const groupsByPhase = new Map<string, FranchiseMedia[]>();
     for (const item of filteredAndSortedMedia) {
       const phaseItems = groupsByPhase.get(item.phase_or_chapter);
@@ -266,14 +248,14 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       }
     }
     return groups;
-  }, [filteredAndSortedMedia, initialMedia, orderMode]);
+  }, [filteredAndSortedMedia, initialMedia]);
 
-  // Smart Milestone Triggering (Throttled & Non-Intrusive)
+  // Limit achievement popups to one per day and each achievement to one time.
   const maybeTriggerMilestone = useCallback((data: MilestoneData) => {
     try {
       const lastShown = localStorage.getItem('multiverse_last_milestone_shown');
       const now = Date.now();
-      // Throttle: Max 1 milestone celebration prompt per 24 hours
+      // Throttle: show at most one milestone popup every 24 hours.
       if (lastShown && now - parseInt(lastShown, 10) < 24 * 60 * 60 * 1000) {
         return;
       }
@@ -287,7 +269,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
       localStorage.setItem('multiverse_shown_milestone_keys', JSON.stringify(shownKeys));
       localStorage.setItem('multiverse_last_milestone_shown', now.toString());
 
-      // Open milestone modal with natural celebratory timing
       setTimeout(() => {
         setMilestoneData(data);
         setIsMilestoneOpen(true);
@@ -306,38 +287,35 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     toggleWatched(mediaId, tmdbId, traktId, mediaType, seasonNumber);
 
     if (!isCurrentlyWatched) {
+      const targetItem = initialMedia.find((item) => item.id === mediaId);
+      const phaseItems = targetItem
+        ? initialMedia.filter((item) => item.phase_or_chapter === targetItem.phase_or_chapter)
+        : [];
+      const phaseCompleted = Boolean(targetItem) && phaseItems
+        .filter((item) => item.id !== mediaId)
+        .every((item) => Boolean(watchedIds[item.id]));
+      const currentWatchedCount = initialMedia.filter((item) => Boolean(watchedIds[item.id])).length;
+      const countMilestone = getNewWatchCountMilestone(currentWatchedCount, currentWatchedCount + 1);
+
       if (enableConfetti) {
-        // Check if this action completes its phase
-        const targetItem = initialMedia.find((m) => m.id === mediaId);
-        if (targetItem) {
-          const phaseItems = initialMedia.filter((m) => m.phase_or_chapter === targetItem.phase_or_chapter);
-          const otherItemsWatched = phaseItems
-            .filter((m) => m.id !== mediaId)
-            .every((m) => Boolean(watchedIds[m.id]));
+        if (countMilestone) triggerGrandCelebration(universe);
+        else if (phaseCompleted) triggerComicConfetti(universe);
+      }
 
-          if (otherItemsWatched && phaseItems.length >= 1) {
-            triggerComicConfetti(universe);
-            maybeTriggerMilestone({
-              type: 'phase_complete',
-              title: `${targetItem.phase_or_chapter} Conquered!`,
-              count: phaseItems.length,
-              milestoneKey: `phase_${targetItem.phase_or_chapter}`,
-            });
-          }
-        }
-
-        // Check if milestone title count reached (15, 30, 60, 100)
-        const currentWatchedCount = initialMedia.filter((m) => Boolean(watchedIds[m.id])).length;
-        const newWatchedCount = currentWatchedCount + 1;
-        if ([15, 30, 60, 100].includes(newWatchedCount)) {
-          triggerGrandCelebration(universe);
-          maybeTriggerMilestone({
-            type: 'count_reached',
-            title: `${newWatchedCount} Multiverse Titles Logged!`,
-            count: newWatchedCount,
-            milestoneKey: `count_${newWatchedCount}`,
-          });
-        }
+      if (countMilestone) {
+        maybeTriggerMilestone({
+          type: 'count_reached',
+          title: `${countMilestone} ${universe.toUpperCase()} Titles Watched!`,
+          count: countMilestone,
+          milestoneKey: `${universe}_count_${countMilestone}`,
+        });
+      } else if (phaseCompleted && targetItem) {
+        maybeTriggerMilestone({
+          type: 'phase_complete',
+          title: `${targetItem.phase_or_chapter} Conquered!`,
+          count: phaseItems.length,
+          milestoneKey: `${universe}_phase_${targetItem.phase_or_chapter}`,
+        });
       }
     }
   }, [watchedIds, toggleWatched, enableConfetti, initialMedia, universe, maybeTriggerMilestone]);
@@ -348,25 +326,54 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
     markPhaseWatched(phaseItems, targetState);
 
     if (targetState) {
+      const currentWatchedCount = initialMedia.filter((item) => Boolean(watchedIds[item.id])).length;
+      const newlyWatchedCount = phaseItems.filter((item) => !watchedIds[item.id]).length;
+      const countMilestone = getNewWatchCountMilestone(currentWatchedCount, currentWatchedCount + newlyWatchedCount);
+
       if (enableConfetti) {
-        triggerComicConfetti(universe);
+        if (countMilestone) triggerGrandCelebration(universe);
+        else triggerComicConfetti(universe);
       }
-      maybeTriggerMilestone({
-        type: 'phase_complete',
-        title: `${phaseName} Conquered!`,
-        count: phaseItems.length,
-        milestoneKey: `phase_${phaseName}`,
-      });
+
+      if (countMilestone) {
+        maybeTriggerMilestone({
+          type: 'count_reached',
+          title: `${countMilestone} ${universe.toUpperCase()} Titles Watched!`,
+          count: countMilestone,
+          milestoneKey: `${universe}_count_${countMilestone}`,
+        });
+      } else {
+        maybeTriggerMilestone({
+          type: 'phase_complete',
+          title: `${phaseName} Conquered!`,
+          count: phaseItems.length,
+          milestoneKey: `${universe}_phase_${phaseName}`,
+        });
+      }
     }
-  }, [watchedIds, markPhaseWatched, enableConfetti, universe, maybeTriggerMilestone]);
+  }, [watchedIds, initialMedia, markPhaseWatched, enableConfetti, universe, maybeTriggerMilestone]);
 
   const handleFranchiseAllToggle = useCallback(() => {
     const allCurrentlyWatched = filteredAndSortedMedia.every((item) => watchedIds[item.id]);
-    markAllWatched(filteredAndSortedMedia, !allCurrentlyWatched);
-    if (!allCurrentlyWatched && enableConfetti) {
-      triggerGrandCelebration(universe);
+    const targetState = !allCurrentlyWatched;
+    markAllWatched(filteredAndSortedMedia, targetState);
+
+    if (targetState) {
+      const currentWatchedCount = initialMedia.filter((item) => Boolean(watchedIds[item.id])).length;
+      const newlyWatchedCount = filteredAndSortedMedia.filter((item) => !watchedIds[item.id]).length;
+      const countMilestone = getNewWatchCountMilestone(currentWatchedCount, currentWatchedCount + newlyWatchedCount);
+
+      if (enableConfetti) triggerGrandCelebration(universe);
+      if (countMilestone) {
+        maybeTriggerMilestone({
+          type: 'count_reached',
+          title: `${countMilestone} ${universe.toUpperCase()} Titles Watched!`,
+          count: countMilestone,
+          milestoneKey: `${universe}_count_${countMilestone}`,
+        });
+      }
     }
-  }, [filteredAndSortedMedia, watchedIds, markAllWatched, enableConfetti, universe]);
+  }, [filteredAndSortedMedia, initialMedia, watchedIds, markAllWatched, enableConfetti, universe, maybeTriggerMilestone]);
 
   return (
     <div className="space-y-6 max-w-[1920px] w-full mx-auto px-3.5 sm:px-8 xl:px-12 py-5 sm:py-7 overflow-x-hidden">
@@ -543,14 +550,9 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
           </div>
         </div>
 
-        {/* Row 2: Order Toggle + Type + Status + Search */}
+        {/* Row 2: Type + Status + Search */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 pt-2 border-t border-zinc-800">
           <div className="flex flex-wrap items-center gap-2">
-            <OrderToggle
-              orderMode={orderMode}
-              onChange={handleOrderChange}
-              universe={universe}
-            />
             <TypeFilterTabs
               currentType={typeFilter}
               onChange={handleTypeChange}
@@ -646,7 +648,6 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
                       key={media.id}
                       media={media}
                       isWatched={Boolean(activeWatchedIds[media.id])}
-                      orderMode={orderMode}
                       onToggleWatched={handleSingleCardToggle}
                     />
                   ))}
@@ -703,8 +704,8 @@ export const FranchiseTracklist: React.FC<FranchiseTracklistProps> = ({
         scopeName={branchFilter === 'all' ? undefined : currentBranchObj?.label}
       />
 
-      {/* Milestone Achievement & Supporter Celebration Modal */}
-      <MilestoneDonationModal
+      {/* Milestone achievement */}
+      <MilestoneModal
         isOpen={isMilestoneOpen}
         onClose={() => setIsMilestoneOpen(false)}
         data={milestoneData}

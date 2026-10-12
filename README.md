@@ -1,6 +1,6 @@
 # 💥 Multiverse Tracker (MCU & DCU Watchlist)
 
-> A modern, responsive Neo-Brutalist comic-styled web application to track release & chronological watch orders across the **Marvel Multiverse** and **DC Universe**.
+> A modern, responsive Neo-Brutalist comic-styled web application to track release order across the **Marvel Multiverse** and **DC Universe**.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat&logo=typescript)
@@ -19,7 +19,7 @@
   - **Sony Legacy Live-Action:** Sam Raimi Trilogy & Marc Webb Amazing Spider-Man duology
   - **20th Century Fox X-Men Universe:** 15 films & series including Deadpool, Logan, Legion, The Gifted
   - **Fox Fantastic Four & Daredevil:** 2000s classics & 2015 reboot
-  - **Marvel Television & Defenders Saga:** 32 individual chronological seasons (Daredevil, Agents of S.H.I.E.L.D., Punisher, Jessica Jones, Luke Cage, Iron Fist, Defenders, Runaways, Cloak & Dagger, Helstrom, M.O.D.O.K., Hit-Monkey)
+  - **Marvel Television & Defenders Saga:** 32 individual seasons (Daredevil, Agents of S.H.I.E.L.D., Punisher, Jessica Jones, Luke Cage, Iron Fist, Defenders, Runaways, Cloak & Dagger, Helstrom, M.O.D.O.K., Hit-Monkey)
   - **Marvel Standalone Legacy:** Wesley Snipes Blade Trilogy, 2003 Ang Lee Hulk, 2004 Punisher, Ghost Rider
 
 - **⚡ DC Universe & Elseworlds (27 Titles):**

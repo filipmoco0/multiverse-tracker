@@ -9,7 +9,6 @@ create table if not exists public.franchise_media (
   title text not null,
   media_type text check (media_type in ('movie', 'show', 'special')) not null,
   release_order int not null,
-  chronological_order int,
   phase_or_chapter text not null,
   trakt_id int,
   tmdb_id int,
@@ -26,6 +25,7 @@ create table if not exists public.franchise_media (
 alter table public.franchise_media alter column release_date type text using release_date::text;
 alter table public.franchise_media add column if not exists seasons int;
 alter table public.franchise_media add column if not exists episodes int;
+alter table public.franchise_media drop column if exists chronological_order;
 
 -- Enable Row Level Security (RLS)
 alter table public.franchise_media enable row level security;
